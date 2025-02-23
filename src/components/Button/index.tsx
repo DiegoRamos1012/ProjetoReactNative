@@ -2,7 +2,6 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native"; // 1. Importações
 import { styles } from "./styles"; // 2. Importa os estilos
-
 interface ButtonProps {
   // 3. Define as Props
   title: string;
