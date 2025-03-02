@@ -5,5 +5,5 @@ import { Home } from "./Home";
 export default function App() {
   const [user, setUser] = useState();
 
-  return !user ? <Login setUser={setUser} /> : <Home />;
+  return !user ? <Login setUser={setUser} /> : <Home setUser={setUser} user={user} />;
 }

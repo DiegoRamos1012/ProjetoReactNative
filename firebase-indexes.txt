@@ -1,0 +1,45 @@
+// INSTRUÇÕES PARA CRIAR ÍNDICE COMPOSTO NO FIRESTORE
+
+Para resolver o erro "The query requires an index", você precisa criar um índice composto.
+
+OPÇÃO 1 - PELO CONSOLE:
+1. Acesse o console do Firebase: https://console.firebase.google.com/
+2. Selecione seu projeto
+3. Clique em "Firestore Database" no menu lateral
+4. Selecione a aba "Indexes"
+5. Clique em "Create index"
+6. Configure o índice:
+   - Collection ID: agendamentos
+   - Field paths a serem indexados:
+     - userId (Ascending)
+     - data (Descending)
+   - Query scope: Collection
+7. Clique em "Create index"
+
+OPÇÃO 2 - PELO LINK DE ERRO:
+Quando o erro ocorrer, um link será mostrado no console. 
+Clique nesse link para ser direcionado diretamente à página de criação do índice.
+
+OPÇÃO 3 - USANDO FIREBASE.INDEXES.JSON:
+Para projetos que usam Firebase CLI, você pode adicionar este índice ao seu arquivo firebase.indexes.json:
+
+{
+  "indexes": [
+    {
+      "collectionGroup": "agendamentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "data",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ]
+}
+
+E então execute: firebase deploy --only firestore:indexes

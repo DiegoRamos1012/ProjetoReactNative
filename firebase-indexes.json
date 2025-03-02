@@ -1,0 +1,18 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "agendamentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "data_timestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ]
+}

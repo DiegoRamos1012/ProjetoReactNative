@@ -1,31 +1,110 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { ScrollView, RefreshControl } from "react-native";
+import globalStyles from "./components/globalStyle/styles";
+import { HomeProps, Servico } from "./types";
+import { useAppointments } from "./hooks/useAppointments";
+import { servicosBarbearia } from "./data/services";
 
-export const Home: React.FC = () => {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Bem-vindo à Página Home</Text>
-            <Text style={styles.subtitle}>Esta é uma página de exemplo.</Text>
-        </View>
-    );
+// Componentes modulares
+import Header from "./components/home/Header";
+import Banner from "./components/home/Banner";
+import ServicesList from "./components/home/ServicesList";
+import AppointmentsList from "./components/home/AppointmentsList";
+import AppointmentModal from "./components/home/AppointmentModal";
+
+export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
+    null
+  );
+
+  // Usar o hook personalizado para gerenciar agendamentos
+  const {
+    agendamentos,
+    loading,
+    refreshing,
+    errorMessage,
+    fetchAppointments,
+    refreshAppointments,
+    createAppointment,
+  } = useAppointments(user);
+
+  // Carregar agendamentos quando o componente montar
+  useEffect(() => {
+    console.log("Componente montado, carregando agendamentos iniciais");
+    fetchAppointments();
+  }, [fetchAppointments]);
+
+  // Log do usuário autenticado
+  useEffect(() => {
+    console.log("Usuário autenticado:", user.displayName);
+  }, [user]);
+
+  // Handlers para o modal de agendamento
+  const handleOpenModal = (servico: Servico) => {
+    setServicoSelecionado(servico);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setServicoSelecionado(null);
+  };
+
+  const handleConfirmAppointment = async (hora: string) => {
+    if (servicoSelecionado) {
+      const success = await createAppointment(servicoSelecionado, hora);
+      if (success) {
+        handleCloseModal();
+      }
+    }
+  };
+
+  return (
+    <ScrollView
+      style={globalStyles.homeContainer}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={refreshAppointments}
+          colors={["#2A4A73"]}
+          tintColor="#2A4A73"
+        />
+      }
+    >
+      {/* Header com informações do usuário */}
+      <Header user={user} setUser={setUser} />
+
+      {/* Banner de destaque */}
+      <Banner
+        title="Barbearia Premium"
+        subtitle="Qualidade e estilo para você"
+      />
+
+      {/* Lista de serviços */}
+      <ServicesList
+        servicos={servicosBarbearia}
+        onServicoPress={handleOpenModal}
+      />
+
+      {/* Lista de agendamentos */}
+      <AppointmentsList
+        agendamentos={agendamentos}
+        loading={loading}
+        refreshing={refreshing}
+        errorMessage={errorMessage}
+      />
+
+      {/* Modal de agendamento */}
+      <AppointmentModal
+        visible={modalVisible}
+        servico={servicoSelecionado}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmAppointment}
+        loading={loading}
+      />
+    </ScrollView>
+  );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-    },
-});
 
 export default Home;
