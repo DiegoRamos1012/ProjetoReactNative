@@ -123,7 +123,6 @@ export const useAppointments = (user: User) => {
           preco: servico.preco,
           data: dataFormatada,
           hora: hora,
-          barbeiro: "A definir",
           status: "confirmado",
           criado_em: Timestamp.now(),
           data_timestamp: Timestamp.now(),

@@ -49,9 +49,6 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
           <Text style={globalStyles.agendamentoData}>
             {agendamento.data} às {agendamento.hora}
           </Text>
-          <Text style={globalStyles.agendamentoBarbeiro}>
-            Barbeiro: {agendamento.barbeiro || "Não definido"}
-          </Text>
         </View>
         <MaterialIcons name="event" size={24} color="#333" />
       </View>

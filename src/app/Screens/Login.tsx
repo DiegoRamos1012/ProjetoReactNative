@@ -12,13 +12,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  User,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../config/firebaseConfig";
-import globalStyles from "./components/globalStyle/styles";
+import { auth, db } from "../../config/firebaseConfig";
+import globalStyles from "../components/globalStyle/styles";
 
 interface LoginProps {
-  setUser: (user: any) => void;
+  setUser: (user: User | null) => void;
 }
 
 // Define screen modes
@@ -30,11 +31,13 @@ interface WelcomeScreenProps {
   onRegisterPress: () => void;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onLoginPress, onRegisterPress }) => (
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
+  onLoginPress,
+  onRegisterPress,
+}) => (
   <View style={globalStyles.container}>
     <Image
       style={globalStyles.image}
-      source={require("../../assets/images/Barbearia.png")}
     />
     <Text style={[globalStyles.singleButtonText, { marginBottom: 20 }]}>
       Bem-vindo à Barbearia
@@ -79,7 +82,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   <View style={globalStyles.container}>
     <Image
       style={globalStyles.image}
-      source={require("../../assets/images/Barbearia.png")}
     />
     <TextInput
       style={globalStyles.textInput}
@@ -133,9 +135,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
       disabled={isLoading}
     >
       <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
-      <Text style={globalStyles.backButtonText}>
-        Voltar à Tela Principal
-      </Text>
+      <Text style={globalStyles.backButtonText}>Voltar à Tela Principal</Text>
     </TouchableOpacity>
   </View>
 );
@@ -170,7 +170,6 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   <View style={globalStyles.container}>
     <Image
       style={globalStyles.image}
-      source={require("../../assets/images/Barbearia.png")}
     />
     <TextInput
       style={globalStyles.textInput}
@@ -231,9 +230,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
       disabled={isLoading}
     >
       <MaterialIcons name="arrow-back" size={20} color="#FFFFFF" />
-      <Text style={globalStyles.backButtonText}>
-        Voltar à Tela Principal
-      </Text>
+      <Text style={globalStyles.backButtonText}>Voltar à Tela Principal</Text>
     </TouchableOpacity>
   </View>
 );
@@ -288,12 +285,11 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
       await updateProfile(user, {
         displayName: name,
       }),
-
-      await setDoc(doc(db, "usuarios", user.uid), {
-        nome: name,
-        email: email,
-        dataCadastro: new Date(),
-      });
+        await setDoc(doc(db, "usuarios", user.uid), {
+          nome: name,
+          email: email,
+          dataCadastro: new Date(),
+        });
 
       setUser(user);
       alert("Usuário cadastrado com sucesso!");
@@ -331,7 +327,6 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
         password
       );
       setUser(userCredential.user);
-      alert("Login realizado com sucesso!");
     } catch (error: any) {
       if (error.code === "auth/invalid-credential") {
         alert("E-mail ou senha incorretos. Por favor, tente novamente.");

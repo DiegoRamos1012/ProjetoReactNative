@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, RefreshControl } from "react-native";
-import globalStyles from "./components/globalStyle/styles";
-import { HomeProps, Servico } from "./types";
-import { useAppointments } from "./hooks/useAppointments";
-import { servicosBarbearia } from "./data/services";
-
+import globalStyles from "../components/globalStyle/styles";
+import { HomeProps, Servico } from "../types";
+import { useAppointments } from "../hooks/useAppointments";
+import { servicosBarbearia } from "../data/services";
 // Componentes modulares
-import Header from "./components/home/Header";
-import Banner from "./components/home/Banner";
-import ServicesList from "./components/home/ServicesList";
-import AppointmentsList from "./components/home/AppointmentsList";
-import AppointmentModal from "./components/home/AppointmentModal";
+import Header from "../components/home/Header";
+import Banner from "../components/home/Banner";
+import ServicesList from "../components/home/ServicesList";
+import AppointmentsList from "../components/home/AppointmentsList";
+import AppointmentModal from "../components/home/AppointmentModal";
 
 export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
   const [modalVisible, setModalVisible] = useState(false);

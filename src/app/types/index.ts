@@ -1,15 +1,15 @@
 import { User } from "firebase/auth";
 import { Timestamp } from "firebase/firestore";
+import { ReactNode } from "react";
 
 export interface Servico {
+  tempo: ReactNode;
   id: string;
   nome: string;
   preco: string;
-  tempo: string;
   iconName: string;
   descricao: string;
   duracao: number;
-  image: any;
 }
 
 export interface Agendamento {
@@ -28,4 +28,13 @@ export interface Agendamento {
 export interface HomeProps {
   setUser: (user: User | null) => void;
   user: User;
+  password: string;
+}
+
+export interface profileProps {
+  setUser: (user: User | null) => void;
+  user: User;
+  sexo: string,
+  dataNascimento: string,
+  telefone: string,
 }

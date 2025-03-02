@@ -1,28 +1,32 @@
 import { Servico } from "../types";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const servicosBarbearia: Servico[] = [
   {
     id: "1",
     nome: "Corte de Cabelo",
     descricao: "Corte tradicional ou moderno",
-    preco: "35",
+    preco: "R$35,00",
     duracao: 30,
-    imagem: require("../assets/images/corte.jpg"),
+    iconName: "content-cut",
+    tempo: "30 minutos"
   },
   {
     id: "2",
     nome: "Barba",
     descricao: "Aparar e modelar a barba",
-    preco: "25",
+    preco: "R$25,00",
     duracao: 20,
-    imagem: require("../assets/images/barba.jpg"),
+    iconName: "face",
+    tempo: "20 minutos"
   },
   {
     id: "3",
     nome: "Corte + Barba",
     descricao: "Combinação de corte e barba",
-    preco: "55",
+    preco: "R$55,00",
     duracao: 50,
-    imagem: require("../assets/images/combo.jpg"),
+    iconName: "spa",
+    tempo: "50 minutos"
   },
 ];

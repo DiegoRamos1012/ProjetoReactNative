@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
-import Login from "./Login";
-import Home from "./Home";
+import Login from "./Screens/Login";
+import Home from "./Screens/Home";
 import globalStyles from "./components/globalStyle/styles";
 
 export default function App() {
