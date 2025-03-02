@@ -4,12 +4,12 @@ import { getAuth } from "firebase/auth";
 
 // Substitua os valores abaixo pelas informações do seu projeto Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyExampleXYZ", // sua apiKey
-  authDomain: "projetoreactnative.firebaseapp.com",
-  projectId: "projetoreactnative",
-  storageBucket: "projetoreactnative", // se necessário, ajuste para "projetoreactnative.appspot.com"
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456",
+  apiKey: "AIzaSyC3e3Yijv2g2Vp4MRGn0uhkYaoBBDd6CcA", // sua apiKey
+  authDomain: "appbarbearia-b30c8.firebaseapp.com",
+  projectId: "appbarbearia-b30c8",
+  storageBucket: "appbarbearia-b30c8.firebasestorage.app",
+  messagingSenderId: "33108730466",
+  appId: "1:33108730466:android:eb4f4acae565732a01e73b",
 };
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);

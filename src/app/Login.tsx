@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
+import globalStyles from "./components/globalStyle/styles";
 
 interface LoginProps {
   setUser: (user: any) => void;
@@ -35,6 +32,25 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
       });
   };
 
+  const handleLogin = () => {
+    if (!emailValidation(email)) {
+      return;
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+        alert("Login realizado com sucesso!");
+      })
+      .catch((error) => {
+        if (error.code === "auth/invalid-credential") {
+          alert("Email ou senha incorretos. Por favor, tente novamente.");
+        } else {
+          alert(`Erro: ${error.message}`);
+        }
+      });
+  };
+
   const emailValidation = (email: string): boolean => {
     // Condicional pra validar e-mail
     if (email === "") {
@@ -46,20 +62,20 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Image
-        style={{ width: 600, height: 400 }}
+        style={globalStyles.image}
         source={require("../../assets/images/Barbearia.png")}
       />
       <TextInput
-        style={styles.textInput}
+        style={globalStyles.textInput}
         placeholder="Endereço de E-mail"
         placeholderTextColor={"#FFFFFF"}
         onChangeText={(text) => setEmail(text)}
       />
-      <View style={styles.passwordGroup}>
+      <View style={globalStyles.passwordGroup}>
         <TextInput
-          style={[styles.textInput, styles.passwordInput]}
+          style={[globalStyles.textInput, globalStyles.passwordInput]}
           placeholder="Senha"
           placeholderTextColor={"#FFFFFF"}
           secureTextEntry={!showPassword}
@@ -67,7 +83,7 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
         />
         <TouchableOpacity
           onPress={toggleShowPassword}
-          style={styles.iconContainer}
+          style={globalStyles.iconContainer}
         >
           <MaterialIcons
             name={showPassword ? "visibility" : "visibility-off"}
@@ -77,68 +93,13 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
-        style={styles.singleButton}
+        style={globalStyles.singleButton}
         onPress={() => handleRegister()}
       >
-        <Text style={styles.singleButtonText}> Cadastrar </Text>
+        <Text style={globalStyles.singleButtonText}> Cadastrar </Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#F7F7F8",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 32,
-  },
-  textInput: {
-    width: "100%",
-    height: 40,
-    backgroundColor: "gray",
-    borderRadius: 20,
-    paddingLeft: 20,
-    color: "#FFFFFF",
-    marginBottom: 20,
-  },
-  singleButton: {
-    width: "50%",
-    height: 40,
-    backgroundColor: "gray",
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  singleButtonText: {
-    color: "#FFFFFF",
-  },
-  passwordGroup: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  passwordInput: {
-    paddingRight: 50, // leave space for icon
-  },
-  iconContainer: {
-    alignItems: "flex-end",
-    marginTop: 5,
-    paddingRight: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: "bold",
-    color: "#67159C",
-  },
-  iconWrapper: {
-    position: "absolute",
-    right: 15,
-    top: "50%",
-    transform: [{ translateY: -22 }],
-  },
-});
 
 export default Login;

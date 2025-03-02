@@ -1,6 +1,23 @@
-# Welcome to your Expo app 👋
+# Projeto React Native - Barbearia
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Estrutura de Navegação e Autenticação
+
+Este projeto utiliza o arquivo `index.tsx` como ponto de entrada principal da aplicação, implementando:
+
+- **Persistência de autenticação**: Usando `onAuthStateChanged` do Firebase
+- **Feedback de carregamento**: Estado de loading durante verificação de autenticação
+- **Tipagem TypeScript**: Tipo `User` do Firebase para melhor segurança de tipos
+- **Gestão de sessão**: Logout e visualização de informações do usuário
+
+Qualquer implementação alternativa mais simples (como em arquivos App.tsx anteriores) foi descontinuada em favor desta abordagem mais robusta.
+
+## Fluxo de Autenticação
+
+1. Verificação automática do estado de autenticação ao iniciar o app
+2. Exibição de feedback de carregamento durante a verificação
+3. Redirecionamento para Login se não houver usuário autenticado
+4. Exibição da tela principal com informações do usuário quando autenticado
+5. Opção de logout que retorna para a tela de login
 
 ## Get started
 
