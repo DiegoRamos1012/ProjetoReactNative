@@ -120,7 +120,6 @@ export const globalStyles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 14,
-    color: colors.textLighter,
   },
   logoutButton: {
     padding: 10,
@@ -344,6 +343,76 @@ export const globalStyles = StyleSheet.create({
   backButtonText: {
     color: colors.white,
     marginLeft: 8,
+  },
+
+  // Estilos do perfil (Profile)
+  backButton: {
+    padding: 5,
+  },
+  profileContent: {
+    flex: 1,
+    padding: 20,
+  },
+  profileLoadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: colors.textLight,
+  },
+  profileAvatarContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  profileAvatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  formGroup: {
+    marginBottom: 20,
+  },
+  formLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: colors.textDark,
+  },
+  formInput: {
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    padding: 15,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#DDD",
+    color: colors.textDark,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  radioButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#DDD",
+  },
+  radioSelected: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
+  },
+  radioText: {
+    fontSize: 16,
+    color: colors.textDark,
+  },
+  radioTextSelected: {
+    color: "#FFF",
   },
 });
 

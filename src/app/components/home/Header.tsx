@@ -5,6 +5,9 @@ import { User } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../config/firebaseConfig";
 import globalStyles from "../globalStyle/styles";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigation/AppNavigator";
 
 interface HeaderProps {
   user: User;
@@ -12,6 +15,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -23,12 +29,20 @@ const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
     }
   };
 
+  const navigateToProfile = () => {
+    navigation.navigate("Profile");
+  };
+
   return (
     <View style={globalStyles.header}>
       <View style={globalStyles.userInfoContainer}>
-        <View style={globalStyles.userAvatarPlaceholder}>
+        <TouchableOpacity
+          onPress={navigateToProfile}
+          style={globalStyles.userAvatarPlaceholder}
+          activeOpacity={0.7}
+        >
           <MaterialIcons name="person" size={30} color="#FFF" />
-        </View>
+        </TouchableOpacity>
         <View>
           <Text style={globalStyles.userName}>
             Olá, {user.displayName || "Cliente"}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
 import { HomeProps, Servico } from "../types";
 import { useAppointments } from "../hooks/useAppointments";
@@ -11,7 +11,7 @@ import ServicesList from "../components/home/ServicesList";
 import AppointmentsList from "../components/home/AppointmentsList";
 import AppointmentModal from "../components/home/AppointmentModal";
 
-export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
+export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
     null
@@ -102,6 +102,18 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
         onConfirm={handleConfirmAppointment}
         loading={loading}
       />
+
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Home Screen</Text>
+        <Text>Bem-vindo, {user.displayName || user.email}</Text>
+
+        <Button
+          title="Ir para Perfil"
+          onPress={() => navigation.navigate("Profile")}
+        />
+
+        <Button title="Sair" onPress={() => setUser(null)} />
+      </View>
     </ScrollView>
   );
 };

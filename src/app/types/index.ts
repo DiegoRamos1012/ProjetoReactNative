@@ -1,15 +1,47 @@
 import { User } from "firebase/auth";
 import { Timestamp } from "firebase/firestore";
-import { ReactNode } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../navigation/AppNavigator";
+
+export type HomeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Home"
+>;
+export type ProfileScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile"
+>;
+export type LoginScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Login"
+>;
+
+export interface HomeProps extends HomeScreenProps {
+  user: User;
+  setUser: (user: User | null) => void;
+  setShowProfile: (show: boolean) => void;
+  navigation: any;
+  route: any;
+  password?: string;
+}
+
+export interface ProfileProps extends ProfileScreenProps {
+  user: User;
+  setUser: (user: User | null) => void;
+}
+
+export interface LoginProps extends Partial<LoginScreenProps> {
+  setUser: (user: User | null) => void;
+  password: string;
+  setPassword: (password: string) => void;
+}
 
 export interface Servico {
-  tempo: ReactNode;
   id: string;
   nome: string;
   preco: string;
+  tempo: string;
   iconName: string;
-  descricao: string;
-  duracao: number;
 }
 
 export interface Agendamento {
@@ -23,18 +55,4 @@ export interface Agendamento {
   status: string;
   criado_em: Timestamp;
   data_timestamp: Timestamp;
-}
-
-export interface HomeProps {
-  setUser: (user: User | null) => void;
-  user: User;
-  password: string;
-}
-
-export interface profileProps {
-  setUser: (user: User | null) => void;
-  user: User;
-  sexo: string,
-  dataNascimento: string,
-  telefone: string,
 }
