@@ -20,6 +20,7 @@ import globalStyles from "../components/globalStyle/styles";
 
 interface LoginProps {
   setUser: (user: User | null) => void;
+  setPassword: (password: string) => void;
 }
 
 // Define screen modes
