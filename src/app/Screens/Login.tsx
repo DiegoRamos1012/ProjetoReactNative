@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
+  Animated,
+  Dimensions,
+  Easing,
+  StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -16,7 +21,12 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../config/firebaseConfig";
-import globalStyles from "../components/globalStyle/styles";
+import globalStyles, { colors } from "../components/globalStyle/styles";
+import { welcomeStyles } from "../components/globalStyle/welcomeStyles";
+import AppStatusBar from "../components/AppStatusBar";
+
+// Get screen dimensions for animations
+const { width } = Dimensions.get("window");
 
 interface LoginProps {
   setUser: (user: User | null) => void;
@@ -32,15 +42,15 @@ interface WelcomeScreenProps {
   onRegisterPress: () => void;
 }
 
+// Original screen components - no animation wrapping
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onLoginPress,
   onRegisterPress,
 }) => (
   <View style={globalStyles.container}>
-    <Image
-      style={globalStyles.image}
-    />
-    <Text style={[globalStyles.singleButtonText, { marginBottom: 20 }]}>
+    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
+    <Image style={globalStyles.image} />
+    <Text style={[globalStyles.title, { marginBottom: 20 }]}>
       Bem-vindo à Barbearia
     </Text>
 
@@ -81,9 +91,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   isLoading,
 }) => (
   <View style={globalStyles.container}>
-    <Image
-      style={globalStyles.image}
-    />
+    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
+    <Image style={globalStyles.image} />
+    <Text style={[globalStyles.title, { marginBottom: 30 }]}>
+      Faça seu Login
+    </Text>
+
     <TextInput
       style={globalStyles.textInput}
       placeholder="Endereço de E-mail"
@@ -111,6 +124,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           name={showPassword ? "visibility" : "visibility-off"}
           size={25}
           color="#FFFFFF"
+          height={44}
         />
       </TouchableOpacity>
     </View>
@@ -169,9 +183,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   isLoading,
 }) => (
   <View style={globalStyles.container}>
-    <Image
-      style={globalStyles.image}
-    />
+    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
+    <Image style={globalStyles.image} />
+    <Text style={[globalStyles.title, { marginBottom: 30 }]}>Cadastre-se</Text>
     <TextInput
       style={globalStyles.textInput}
       placeholder="Nome"
@@ -238,21 +252,143 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
 export const Login: React.FC<LoginProps> = ({ setUser }) => {
   const [screenMode, setScreenMode] = useState<ScreenMode>("welcome");
+  const [nextScreenMode, setNextScreenMode] = useState<ScreenMode | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const toggleShowPassword = useCallback(() => {
-    setShowPassword((prev) => !prev);
-  }, []);
+  // Animation refs for each screen
+  const welcomePosition = useRef(new Animated.Value(0)).current;
+  const loginPosition = useRef(new Animated.Value(width)).current;
+  const registerPosition = useRef(new Animated.Value(width)).current;
+
+  // Track which screens are mounted to prevent flashes
+  const [isMounted, setIsMounted] = useState({
+    welcome: true,
+    login: false,
+    register: false,
+  });
+
+  // Improved transition method with custom directions
+  const transitionToScreen = useCallback(
+    (nextMode: ScreenMode) => {
+      if (screenMode === nextMode) return;
+
+      // Determine which positions to animate
+      const currentPosition =
+        screenMode === "welcome"
+          ? welcomePosition
+          : screenMode === "login"
+          ? loginPosition
+          : registerPosition;
+
+      const nextPosition =
+        nextMode === "welcome"
+          ? welcomePosition
+          : nextMode === "login"
+          ? loginPosition
+          : registerPosition;
+
+      // Direction of slide (positive = right, negative = left)
+      // Changed to have login go left and register go right
+      let direction = 1; // Default to right
+
+      // From welcome screen
+      if (screenMode === "welcome") {
+        if (nextMode === "login") {
+          direction = -1; // Login goes left from welcome
+        } else if (nextMode === "register") {
+          direction = 1; // Register goes right from welcome
+        }
+      }
+      // Back to welcome screen
+      else if (nextMode === "welcome") {
+        if (screenMode === "login") {
+          direction = 1; // From login back to welcome (opposite of login direction)
+        } else if (screenMode === "register") {
+          direction = -1; // From register back to welcome (opposite of register direction)
+        }
+      }
+      // Between login and register
+      else if (screenMode === "login" && nextMode === "register") {
+        direction = 1; // From login to register (go right)
+      } else if (screenMode === "register" && nextMode === "login") {
+        direction = -1; // From register to login (go left)
+      }
+
+      // First ensure both screens are mounted
+      setIsMounted((prev) => ({
+        ...prev,
+        [nextMode]: true,
+      }));
+
+      // Position the next screen off-screen (will slide in)
+      nextPosition.setValue(direction * width);
+
+      // Setup parallel animations: current screen out, next screen in
+      Animated.parallel([
+        // Current screen slides off
+        Animated.timing(currentPosition, {
+          toValue: -direction * width,
+          duration: 500,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.ease),
+        }),
+        // Next screen slides in
+        Animated.timing(nextPosition, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.ease),
+        }),
+      ]).start(() => {
+        // Update state after animation completes
+        setScreenMode(nextMode);
+
+        // Clear inputs when going back to welcome
+        if (nextMode === "welcome") {
+          setName("");
+          setEmail("");
+          setPassword("");
+        }
+
+        // After a delay, unmount screens we don't need
+        setTimeout(() => {
+          setIsMounted((prev) => ({
+            welcome:
+              prev.welcome &&
+              (nextMode === "welcome" || screenMode === "welcome"),
+            login:
+              prev.login && (nextMode === "login" || screenMode === "login"),
+            register:
+              prev.register &&
+              (nextMode === "register" || screenMode === "register"),
+          }));
+        }, 100);
+      });
+    },
+    [screenMode, welcomePosition, loginPosition, registerPosition]
+  );
+
+  const goToLogin = useCallback(() => {
+    transitionToScreen("login");
+  }, [transitionToScreen]);
+
+  const goToRegister = useCallback(() => {
+    transitionToScreen("register");
+  }, [transitionToScreen]);
 
   const goToWelcome = useCallback(() => {
+    transitionToScreen("welcome");
     setName("");
     setEmail("");
     setPassword("");
-    setScreenMode("welcome");
+  }, [transitionToScreen]);
+
+  const toggleShowPassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
   }, []);
 
   const handleRegister = useCallback(async () => {
@@ -347,48 +483,73 @@ export const Login: React.FC<LoginProps> = ({ setUser }) => {
     }
   }, [email, password, setUser]);
 
-  // Renderização condicional otimizada
-  switch (screenMode) {
-    case "welcome":
-      return (
-        <WelcomeScreen
-          onLoginPress={() => setScreenMode("login")}
-          onRegisterPress={() => setScreenMode("register")}
-        />
-      );
-    case "login":
-      return (
-        <LoginScreen
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          showPassword={showPassword}
-          toggleShowPassword={toggleShowPassword}
-          handleLogin={handleLogin}
-          goToWelcome={goToWelcome}
-          isLoading={isLoading}
-        />
-      );
-    case "register":
-      return (
-        <RegisterScreen
-          name={name}
-          setName={setName}
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          showPassword={showPassword}
-          toggleShowPassword={toggleShowPassword}
-          handleRegister={handleRegister}
-          goToWelcome={goToWelcome}
-          isLoading={isLoading}
-        />
-      );
-    default:
-      return null;
-  }
+  // Get screen styles
+  const welcomeStyle = { transform: [{ translateX: welcomePosition }] };
+  const loginStyle = { transform: [{ translateX: loginPosition }] };
+  const registerStyle = { transform: [{ translateX: registerPosition }] };
+
+  // Render all screens with absolute positioning
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
+
+      {isMounted.welcome && (
+        <Animated.View style={[styles.screenContainer, welcomeStyle]}>
+          <WelcomeScreen
+            onLoginPress={() => transitionToScreen("login")}
+            onRegisterPress={() => transitionToScreen("register")}
+          />
+        </Animated.View>
+      )}
+
+      {isMounted.login && (
+        <Animated.View style={[styles.screenContainer, loginStyle]}>
+          <LoginScreen
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            showPassword={showPassword}
+            toggleShowPassword={toggleShowPassword}
+            handleLogin={handleLogin}
+            goToWelcome={goToWelcome}
+            isLoading={isLoading}
+          />
+        </Animated.View>
+      )}
+
+      {isMounted.register && (
+        <Animated.View style={[styles.screenContainer, registerStyle]}>
+          <RegisterScreen
+            name={name}
+            setName={setName}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            showPassword={showPassword}
+            toggleShowPassword={toggleShowPassword}
+            handleRegister={handleRegister}
+            goToWelcome={goToWelcome}
+            isLoading={isLoading}
+          />
+        </Animated.View>
+      )}
+    </View>
+  );
 };
+
+// Additional styles for screen management
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background, // Keep this for content transitions
+  },
+  screenContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+});
 
 export default Login;

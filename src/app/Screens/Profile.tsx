@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ProfileProps } from "../types";
@@ -64,12 +65,24 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
         { merge: true }
       );
 
-      Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+      // Add a small timeout to ensure the alert shows after state updates
+      setTimeout(() => {
+        Alert.alert(
+          "Sucesso",
+          "Perfil atualizado com sucesso!",
+          [{ text: "OK" }],
+          { cancelable: false }
+        );
+      }, 100);
+
+      console.log("Perfil atualizado com sucesso");
     } catch (error) {
       console.error("Erro ao salvar dados do usuário:", error);
       Alert.alert(
         "Erro",
-        "Não foi possível atualizar o perfil. Tente novamente."
+        "Não foi possível atualizar o perfil. Tente novamente.",
+        [{ text: "OK" }],
+        { cancelable: false }
       );
     } finally {
       setSaving(false);
@@ -78,6 +91,8 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
 
   return (
     <View style={globalStyles.homeContainer}>
+      <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
+
       <View style={globalStyles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}

@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 
 // Estilos compartilhados entre componentes
 export const colors = {
-  primary: "#67159C",
-  secondary: "#2A4A73",
-  darkBlue: "#1E2F4D",
-  background: "#F7F7F8",
+  primary: "#FFFFFF", // Cor violeta
+  secondary: "#2A4A73", // Cor azul
+  darkBlue: "#1E2F4D", // Cor azul escuro
+  background: "#0EA1D8", // Cor de fundo
   input: "gray",
   white: "#FFFFFF",
   text: "#FFFFFF",
