@@ -7,15 +7,15 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-  StatusBar,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ProfileProps } from "../types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { formatPhoneNumber, formatBirthDate } from "../format";
 
-const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
+const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [nome, setNome] = useState(user.displayName || "");
@@ -65,34 +65,30 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
         { merge: true }
       );
 
-      // Add a small timeout to ensure the alert shows after state updates
-      setTimeout(() => {
-        Alert.alert(
-          "Sucesso",
-          "Perfil atualizado com sucesso!",
-          [{ text: "OK" }],
-          { cancelable: false }
-        );
-      }, 100);
-
-      console.log("Perfil atualizado com sucesso");
+      Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar dados do usuário:", error);
       Alert.alert(
         "Erro",
-        "Não foi possível atualizar o perfil. Tente novamente.",
-        [{ text: "OK" }],
-        { cancelable: false }
+        "Não foi possível atualizar o perfil. Tente novamente."
       );
     } finally {
       setSaving(false);
     }
   };
 
+  const handlePhoneChange = (text: string) => {
+    const formatted = formatPhoneNumber(text);
+    setTelefone(formatted);
+  };
+
+  const handleDateChange = (text: string) => {
+    const formatted = formatBirthDate(text);
+    setDataNascimento(formatted);
+  };
+
   return (
     <View style={globalStyles.homeContainer}>
-      <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
-
       <View style={globalStyles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -138,10 +134,11 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
             <TextInput
               style={globalStyles.formInput}
               value={telefone}
-              onChangeText={setTelefone}
+              onChangeText={handlePhoneChange}
               placeholder="(00) 00000-0000"
               keyboardType="phone-pad"
               placeholderTextColor="#999"
+              maxLength={15}
             />
           </View>
 
@@ -150,9 +147,11 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user, setUser }) => {
             <TextInput
               style={globalStyles.formInput}
               value={dataNascimento}
-              onChangeText={setDataNascimento}
+              onChangeText={handleDateChange}
               placeholder="DD/MM/AAAA"
               placeholderTextColor="#999"
+              keyboardType="numeric"
+              maxLength={10} // To account for the format DD/MM/YYYY
             />
           </View>
 
