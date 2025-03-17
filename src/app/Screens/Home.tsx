@@ -102,18 +102,6 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
         onConfirm={handleConfirmAppointment}
         loading={loading}
       />
-
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Home Screen</Text>
-        <Text>Bem-vindo, {user.displayName || user.email}</Text>
-
-        <Button
-          title="Ir para Perfil"
-          onPress={() => navigation.navigate("Profile")}
-        />
-
-        <Button title="Sair" onPress={() => setUser(null)} />
-      </View>
     </ScrollView>
   );
 };

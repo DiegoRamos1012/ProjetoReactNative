@@ -14,11 +14,14 @@ import globalStyles, { colors } from "../components/globalStyle/styles";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { formatPhoneNumber, formatBirthDate } from "../format";
+import { auth } from "../../config/firebaseConfig";
+import { updateProfile } from "firebase/auth";
 
 const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [nome, setNome] = useState(user.displayName || "");
+  const [nome, setNome] = useState("");
+  const [originalNome, setOriginalNome] = useState(""); // Added state for original name
   const [telefone, setTelefone] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [sexo, setSexo] = useState("");
@@ -33,6 +36,10 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
+          if (userData.nome) {
+            setNome(userData.nome);
+            setOriginalNome(userData.nome); // Store original name
+          }
           setTelefone(userData.telefone || "");
           setDataNascimento(userData.dataNascimento || "");
           setSexo(userData.sexo || "");
@@ -52,6 +59,21 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
 
     setSaving(true);
     try {
+      // Log para verificar se o nome foi alterado
+      if (nome !== originalNome) {
+        console.log(`Nome de usuário alterado: ${originalNome} -> ${nome}`);
+        
+        // Atualizar o displayName do usuário autenticado
+        if (auth.currentUser) {
+          await updateProfile(auth.currentUser, {
+            displayName: nome
+          });
+          console.log("DisplayName atualizado com sucesso:", nome);
+        }
+      } else {
+        console.log("Nome de usuário não foi alterado");
+      }
+
       await setDoc(
         doc(db, "users", user.uid),
         {
@@ -64,6 +86,9 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
         },
         { merge: true }
       );
+
+      // Atualiza o nome original após salvar com sucesso
+      setOriginalNome(nome);
 
       Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
     } catch (error) {
