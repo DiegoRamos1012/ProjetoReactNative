@@ -401,7 +401,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         <View style={globalStyles.adminHeader}>
           <Text style={globalStyles.adminTitle}>
             {" "}
-            Gerenciamento de Usuários
+             Gerenciamento de Usuários
           </Text>
         </View>
 
@@ -429,7 +429,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       <View style={[globalStyles.adminContainer, { marginTop: 15 }]}>
         {/* Cabeçalho da Nova Seção */}
         <View style={globalStyles.adminHeader}>
-          <Text style={globalStyles.adminTitle}>Título da Nova Seção</Text>
+          <Text style={globalStyles.adminTitle}>           Serviços e horários</Text>
         </View>
 
         {/* Corpo da Nova Seção */}
