@@ -9,8 +9,7 @@ import {
   StatusBar 
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import globalStyles, { colors } from "@/src/app/components/globalStyle/styles";
-
+import globalStyles, {colors} from "../../../app/components/globalStyle/styles";
 interface LoginScreenProps {
   email: string;
   setEmail: (email: string) => void;

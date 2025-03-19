@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
-import globalStyles, { colors } from "@/src/app/components/globalStyle/styles";
-
+import globalStyles, {
+  colors,
+} from "../../../app/components/globalStyle/styles";
 interface WelcomeScreenProps {
   onLoginPress: () => void;
   onRegisterPress: () => void;

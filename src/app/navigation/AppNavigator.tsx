@@ -28,6 +28,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        id={undefined}
         screenOptions={{
           headerShown: false,
           animation: "slide_from_right",
