@@ -8,22 +8,11 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import {
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  query,
-  limit,
-} from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { AdminToolsProps, UserData, UserRole } from "../types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
-import {
-  isUserAdmin,
-  changeUserRole,
-  migrateUsers,
-} from "../../services/authService";
+import { isUserAdmin, changeUserRole } from "../../services/authService";
 
 interface UserListItem extends UserData {
   id: string;
@@ -77,9 +66,24 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       });
 
       setUsers(usersList);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao buscar usuários:", error);
-      Alert.alert("Erro", "Não foi possível carregar a lista de usuários.");
+
+      if (
+        error.code === "permission-denied" ||
+        error.message?.includes("Missing or insufficient permissions")
+      ) {
+        Alert.alert(
+          "Erro de Permissão",
+          "Você não tem permissão para acessar a lista de usuários. É necessário atualizar as regras de segurança do Firestore para permitir que administradores acessem todos os usuários."
+        );
+      } else {
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar a lista de usuários: " +
+            (error.message || "Erro desconhecido")
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -129,62 +133,6 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     );
   };
 
-  const checkDatabaseConsistency = async () => {
-    try {
-      setLoading(true);
-
-      // Verificar coleção "users"
-      const usersRef = collection(db, "users");
-      const usersQuery = query(usersRef, limit(1));
-      const usersSnapshot = await getDocs(usersQuery);
-
-      // Verificar coleção "usuarios" (antiga, se existir)
-      const usuariosRef = collection(db, "usuarios");
-      const usuariosQuery = query(usuariosRef, limit(1));
-      const usuariosSnapshot = await getDocs(usuariosQuery);
-
-      const hasUsers = !usersSnapshot.empty;
-      const hasUsuarios = !usuariosSnapshot.empty;
-
-      if (hasUsuarios) {
-        Alert.alert(
-          "Verificação de Banco de Dados",
-          `Foi encontrada uma coleção antiga "usuarios". Deseja migrar esses dados para a coleção "users"?`,
-          [
-            {
-              text: "Não",
-              style: "cancel",
-            },
-            {
-              text: "Sim, migrar",
-              onPress: async () => {
-                try {
-                  await migrateUsers();
-                  Alert.alert("Sucesso", "Migração concluída com sucesso!");
-                  fetchUsers(); // Atualizar a lista
-                } catch (error) {
-                  Alert.alert("Erro", "Falha na migração dos dados.");
-                }
-              },
-            },
-          ]
-        );
-      } else {
-        Alert.alert(
-          "Verificação de Banco de Dados",
-          hasUsers
-            ? "Banco de dados consistente. Usando coleção 'users'."
-            : "Nenhuma coleção de usuários encontrada."
-        );
-      }
-    } catch (error) {
-      console.error("Erro na verificação do banco:", error);
-      Alert.alert("Erro", "Não foi possível verificar o banco de dados.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={styles.userCard}>
       <View style={styles.userInfo}>
@@ -228,17 +176,9 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Gerenciamento de Usuários</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity
-            style={[styles.refreshButton, { marginRight: 8 }]}
-            onPress={checkDatabaseConsistency}
-          >
-            <Text style={styles.refreshButtonText}>Verificar BD</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.refreshButton} onPress={fetchUsers}>
-            <Text style={styles.refreshButtonText}>Atualizar</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.refreshButton} onPress={fetchUsers}>
+          <Text style={styles.refreshButtonText}>Atualizar</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -270,9 +210,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: colors.primary,
-  },
-  headerButtons: {
-    flexDirection: "row",
   },
   refreshButton: {
     backgroundColor: colors.primary,

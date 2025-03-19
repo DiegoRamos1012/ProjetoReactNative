@@ -1,18 +1,27 @@
 // Regras de segurança do Firestore para coleção de agendamentos
-// Copie estas regras para o console do Firebase > Firestore > Regras
+// Copie estas regras para o console do Firebase > Firestore > Regras, a mudança entrará em vigor rapidamente
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Permitir acesso à coleção de usuários, apenas ao próprio usuário
+    // Function to check if user is an admin
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "administrador";
+    }
+    
+    // Permitir acesso à coleção de usuários
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Permitir leitura do próprio documento ou para administradores
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // Permitir escrita apenas ao próprio usuário
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Regras para a coleção de agendamentos
     match /agendamentos/{agendamentoId} {
-      // Permitir leitura se o usuário estiver autenticado e for o dono do agendamento
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Permitir leitura se o usuário for o dono do agendamento ou se for admin
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
       
       // Permitir criação se o usuário estiver autenticado e definir userId corretamente
       allow create: if request.auth != null && 

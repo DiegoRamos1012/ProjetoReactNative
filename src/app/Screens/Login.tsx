@@ -75,7 +75,6 @@ export const Login: React.FC<LoginProps> = ({
       const user = await registerUser(name, email, password);
       setUser(user);
       setGlobalPassword(password); // Update global password if needed
-      alert("Usuário cadastrado com sucesso!");
     } catch (error: any) {
       alert(error.message);
     } finally {

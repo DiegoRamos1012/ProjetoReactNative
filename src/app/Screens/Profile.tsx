@@ -16,7 +16,7 @@ import { db } from "../../config/firebaseConfig";
 import { formatPhoneNumber, formatBirthDate } from "../format";
 import { auth } from "../../config/firebaseConfig";
 import { updateProfile } from "firebase/auth";
-import { isUserAdmin } from "../../services/authService";
+import { useAppointments } from "../hooks/useAppointments";
 
 const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(false);
@@ -27,6 +27,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [dataNascimento, setDataNascimento] = useState("");
   const [sexo, setSexo] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const { updateUserNameInAppointments } = useAppointments(user);
 
   // Buscar dados do usuário no Firestore
   useEffect(() => {
@@ -74,6 +75,9 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
             displayName: nome,
           });
           console.log("DisplayName atualizado com sucesso:", nome);
+
+          // Atualizar nome em todos os agendamentos existentes
+          await updateUserNameInAppointments(nome);
         }
       } else {
         console.log("Nome de usuário não foi alterado");
@@ -129,7 +133,19 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
         <Text style={[globalStyles.bannerTitle, { marginBottom: 0 }]}>
           Meu Perfil
         </Text>
-        <View style={{ width: 24 }} />
+        {isAdmin ? (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AdminTools")}
+            style={[
+              globalStyles.backButton,
+              { backgroundColor: colors.secondary },
+            ]}
+          >
+            <MaterialIcons name="admin-panel-settings" size={24} color="#FFF" />
+          </TouchableOpacity>
+        ) : (
+          <View style={{ width: 24 }} />
+        )}
       </View>
 
       {loading ? (
@@ -233,23 +249,6 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
               {saving ? "Salvando..." : "Salvar Alterações"}
             </Text>
           </TouchableOpacity>
-
-          {/* Botão de Ferramentas Admin - só aparece para administradores */}
-          {isAdmin && (
-            <View style={{ marginTop: 20 }}>
-              <TouchableOpacity
-                style={[
-                  globalStyles.button,
-                  { backgroundColor: colors.secondary },
-                ]}
-                onPress={() => navigation.navigate("AdminTools")}
-              >
-                <Text style={globalStyles.buttonText}>
-                  Ferramentas de Administrador
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </ScrollView>
       )}
     </View>

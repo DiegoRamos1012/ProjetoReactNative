@@ -4,14 +4,7 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  getDocs,
-  writeBatch,
-} from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebaseConfig";
 import { UserData, UserRole } from "../app/types";
 
@@ -154,45 +147,5 @@ export const changeUserRole = async (
   } catch (error) {
     console.error("Erro ao alterar papel do usuário:", error);
     throw new Error("Não foi possível alterar o papel do usuário.");
-  }
-};
-
-// Função auxiliar para migrar usuários da coleção antiga (se necessário)
-export const migrateUsers = async (): Promise<void> => {
-  try {
-    const usuariosRef = collection(db, "usuarios");
-    const snapshot = await getDocs(usuariosRef);
-
-    if (snapshot.empty) {
-      console.log("Não há usuários para migrar.");
-      return;
-    }
-
-    const batch = writeBatch(db);
-    let count = 0;
-
-    snapshot.forEach((docSnapshot) => {
-      const userData = docSnapshot.data();
-      // Cria ou atualiza o documento na coleção "users"
-      const userRef = doc(db, "users", docSnapshot.id);
-      batch.set(
-        userRef,
-        {
-          ...userData,
-          role: "cliente", // Define como cliente por padrão
-          updatedAt: new Date(),
-          migratedAt: new Date(),
-        },
-        { merge: true }
-      );
-
-      count++;
-    });
-
-    await batch.commit();
-    console.log(`${count} usuário(s) migrados com sucesso.`);
-  } catch (error) {
-    console.error("Erro ao migrar usuários:", error);
-    throw new Error("Falha ao migrar usuários da coleção antiga.");
   }
 };

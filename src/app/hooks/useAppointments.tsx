@@ -11,6 +11,7 @@ import {
   Timestamp,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Agendamento, Servico } from "../types";
@@ -120,6 +121,7 @@ export const useAppointments = (user: User) => {
 
         const novoAgendamento = {
           userId: user.uid,
+          userName: user.displayName,
           servico: servico.nome,
           preco: servico.preco,
           data: dataFormatada,
@@ -195,6 +197,52 @@ export const useAppointments = (user: User) => {
     }
   };
 
+  // Nova função para atualizar o nome do usuário em todos os agendamentos
+  const updateUserNameInAppointments = useCallback(
+    async (newUserName: string) => {
+      if (!user?.uid || !newUserName) return false;
+
+      try {
+        setLoading(true);
+
+        // Buscar todos os agendamentos do usuário
+        const agendamentosRef = collection(db, "agendamentos");
+        const q = query(agendamentosRef, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          console.log("Nenhum agendamento encontrado para atualizar o nome");
+          return true;
+        }
+
+        // Atualizar o nome em cada agendamento
+        const updatePromises = querySnapshot.docs.map(async (document) => {
+          const docRef = doc(db, "agendamentos", document.id);
+          return updateDoc(docRef, { userName: newUserName });
+        });
+
+        await Promise.all(updatePromises);
+        console.log(`Nome atualizado em ${querySnapshot.size} agendamentos`);
+
+        // Atualizar a lista local de agendamentos
+        setAgendamentos((prevAgendamentos) =>
+          prevAgendamentos.map((agendamento) => ({
+            ...agendamento,
+            userName: newUserName,
+          }))
+        );
+
+        return true;
+      } catch (error) {
+        console.error("Erro ao atualizar nome nos agendamentos:", error);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user]
+  );
+
   const getServiceIcon = (servicoNome: string) => {
     const servico = servicosBarbearia.find((s) => s.nome === servicoNome);
     return servico?.iconName || "content-cut";
@@ -209,6 +257,7 @@ export const useAppointments = (user: User) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
-    getServiceIcon, // Certifique-se que esta função está sendo exportada
+    getServiceIcon,
+    updateUserNameInAppointments, // Exportando a nova função
   };
 };
