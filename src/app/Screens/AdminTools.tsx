@@ -229,8 +229,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={globalStyles.userCard}>
       <View style={globalStyles.userInfo}>
-        <Text style={globalStyles.userName}>{item.nome || "Sem nome"}</Text>
-        <Text style={globalStyles.userEmail}>{item.email || "Sem email"}</Text>
+        <Text style={globalStyles.adminUserName}>{item.nome || "Sem nome"}</Text>
+        <Text style={globalStyles.adminUserEmail}>{item.email || "Sem email"}</Text>
 
         {/* Exibir role */}
         <Text

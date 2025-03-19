@@ -120,6 +120,7 @@ export const globalStyles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: "bold",
+    color: colors.white,
   },
   userEmail: {
     fontSize: 14,
