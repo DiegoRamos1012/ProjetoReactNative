@@ -245,7 +245,23 @@ export const useAppointments = (user: User) => {
 
   const getServiceIcon = (servicoNome: string) => {
     const servico = servicosBarbearia.find((s) => s.nome === servicoNome);
-    return servico?.iconName || "content-cut";
+    return servico?.iconName || "content-cut"; // Retorna "content-cut" como padrão
+  };
+
+  // Adicionando função para obter ícone de status
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "confirmado":
+        return "check-circle";
+      case "pendente":
+        return "pending";
+      case "cancelado":
+        return "cancel";
+      case "concluido":
+        return "task-alt";
+      default:
+        return "info";
+    }
   };
 
   return {
@@ -258,6 +274,9 @@ export const useAppointments = (user: User) => {
     createAppointment,
     deleteAppointment,
     getServiceIcon,
-    updateUserNameInAppointments, // Exportando a nova função
+    getStatusIcon, // Exportando a nova função
+    updateUserNameInAppointments,
   };
 };
+
+export default useAppointments;

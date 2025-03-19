@@ -56,6 +56,7 @@ export interface UserData {
   role: UserRole;
   updatedAt?: Date;
   cargo: string;
+  icone?: string; // Adicionando campo opcional para ícone
 }
 
 export interface Servico {
@@ -78,4 +79,6 @@ export interface Agendamento {
   status: string;
   criado_em: Timestamp;
   data_timestamp: Timestamp;
+  iconName?: string; // Adicionando campo opcional para ícone
 }
+

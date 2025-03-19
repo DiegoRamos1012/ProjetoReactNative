@@ -21,12 +21,7 @@ import {
   changeUserCargo,
 } from "../../services/authService";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  CARGOS,
-  getCargoById,
-  getCargoNome,
-  getCargoCor,
-} from "../constants/cargos";
+import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
 
 interface UserListItem extends UserData {
   id: string;
@@ -41,6 +36,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
+  // Novo estado para rastrear o ID do usuário sendo atualizado
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -127,8 +124,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       currentRole === "administrador" ? "cliente" : "administrador";
 
     Alert.alert(
-      "Alterar Papel",
-      `Deseja alterar o papel deste usuário para ${newRole}?`,
+      "Alterar função",
+      `Deseja alterar o função deste usuário para ${newRole}?`,
       [
         {
           text: "Cancelar",
@@ -138,7 +135,9 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           text: "Confirmar",
           onPress: async () => {
             try {
-              setLoading(true);
+              // Definir o ID do usuário sendo atualizado em vez de loading global
+              setUpdatingUserId(userId);
+
               await changeUserRole(userId, newRole);
 
               // Atualizar a lista de usuários
@@ -158,16 +157,14 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                 "Não foi possível alterar o papel do usuário."
               );
             } finally {
-              setLoading(false);
+              // Limpar o ID do usuário sendo atualizado
+              setUpdatingUserId(null);
             }
           },
         },
       ]
     );
   };
-
-  // Função auxiliar para capitalizar a primeira letra
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   // Função para abrir o modal de seleção de cargo
   const handleOpenCargoModal = (userId: string, userName: string) => {
@@ -188,7 +185,10 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     }
 
     try {
-      setLoading(true);
+      // Definir o ID do usuário sendo atualizado em vez de loading global
+      setUpdatingUserId(userId);
+      setModalVisible(false);
+
       await changeUserCargo(userId, newCargo);
 
       // Atualizar a lista de usuários
@@ -206,8 +206,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       console.error("Erro ao alterar cargo:", error);
       Alert.alert("Erro", "Não foi possível alterar o cargo do usuário.");
     } finally {
-      setLoading(false);
-      setModalVisible(false);
+      // Limpar o ID do usuário sendo atualizado
+      setUpdatingUserId(null);
     }
   };
 
@@ -225,13 +225,27 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
 
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={globalStyles.userCard}>
-      <View style={globalStyles.userInfo}>
+      {/* Mostrar loading spinner quando este usuário específico estiver sendo atualizado */}
+      {updatingUserId === item.id && (
+        <View style={globalStyles.userCardLoadingOverlay}>
+          <ActivityIndicator size="large" color={colors.secondary} />
+          <Text style={globalStyles.userCardLoadingText}>Atualizando...</Text>
+        </View>
+      )}
+
+      <View
+        style={[
+          globalStyles.userInfo,
+          updatingUserId === item.id && { opacity: 0.6 }, // Diminuir opacidade quando carregando
+        ]}
+      >
         <Text style={globalStyles.adminUserName}>
           {item.nome || "Sem nome"}
         </Text>
         <Text style={globalStyles.adminUserEmail}>
-          {item.email || "Sem email"}
+          Número de telefone: {item.telefone || "Sem número cadastrado"}
         </Text>
+        <View style={globalStyles.horizontalLine} />
 
         {/* Exibir role */}
         <Text
@@ -242,7 +256,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               : globalStyles.clientRoleText,
           ]}
         >
-          Papel: {item.role === "administrador" ? "Administrador" : "Cliente"}
+          Tipo: {item.role === "administrador" ? "Administrador" : "Cliente"}
         </Text>
 
         {/* Exibir cargo usando o nome e cor definidos nas constantes */}
@@ -254,32 +268,42 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         >
           Cargo: {getCargoNome(item.cargo || "cliente")}
         </Text>
-      </View>
-      <View style={globalStyles.actionButtonsContainer}>
-        {/* Botão de alterar papel (só visível para admins) */}
-        {isAdmin && (
-          <TouchableOpacity
-            style={[globalStyles.roleActionButton, { marginBottom: 8 }]}
-            onPress={() => handleChangeRole(item.id, item.role)}
-          >
-            <Text style={globalStyles.roleActionButtonText}>
-              {item.role === "administrador" ? "Remover Admin" : "Tornar Admin"}
-            </Text>
-          </TouchableOpacity>
-        )}
 
-        {/* Novo botão de atribuir cargo (substitui o botão anterior) */}
+        {/* Botões lado a lado */}
         {isAdmin && (
-          <TouchableOpacity
-            style={globalStyles.cargoActionButton}
-            onPress={() =>
-              handleOpenCargoModal(item.id, item.nome || "Usuário")
-            }
-          >
-            <Text style={globalStyles.cargoActionButtonText}>
-              Atribuir Cargo
-            </Text>
-          </TouchableOpacity>
+          <View style={globalStyles.horizontalButtonsContainer}>
+            <TouchableOpacity
+              style={[
+                globalStyles.roleActionButton,
+                { flex: 1, marginRight: 5 },
+                updatingUserId === item.id && globalStyles.disabledButton, // Desabilitar visualmente durante o carregamento
+              ]}
+              onPress={() => handleChangeRole(item.id, item.role)}
+              disabled={updatingUserId !== null} // Desabilitar todos os botões durante qualquer atualização
+            >
+              <Text style={globalStyles.roleActionButtonText}>
+                {item.role === "administrador"
+                  ? "Remover Admin"
+                  : "Tornar Admin"}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                globalStyles.cargoActionButton,
+                { flex: 1, marginLeft: 5 },
+                updatingUserId === item.id && globalStyles.disabledButton, // Desabilitar visualmente durante o carregamento
+              ]}
+              onPress={() =>
+                handleOpenCargoModal(item.id, item.nome || "Usuário")
+              }
+              disabled={updatingUserId !== null} // Desabilitar todos os botões durante qualquer atualização
+            >
+              <Text style={globalStyles.cargoActionButtonText}>
+                Atribuir Cargo
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </View>
@@ -375,7 +399,10 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
 
       <View style={globalStyles.adminContainer}>
         <View style={globalStyles.adminHeader}>
-          <Text style={globalStyles.adminTitle}>Gerenciamento de Usuários</Text>
+          <Text style={globalStyles.adminTitle}>
+            {" "}
+            Gerenciamento de Usuários
+          </Text>
         </View>
 
         <FlatList
@@ -397,6 +424,19 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
             />
           }
         />
+      </View>
+
+      <View style={[globalStyles.adminContainer, { marginTop: 15 }]}>
+        {/* Cabeçalho da Nova Seção */}
+        <View style={globalStyles.adminHeader}>
+          <Text style={globalStyles.adminTitle}>Título da Nova Seção</Text>
+        </View>
+
+        {/* Corpo da Nova Seção */}
+        <View style={globalStyles.adminSectionContent}>
+          {/* Conteúdo específico da nova seção */}
+          {/* Pode ser outro FlatList, formulários, ou outros componentes */}
+        </View>
       </View>
 
       {renderCargoSelectionModal()}

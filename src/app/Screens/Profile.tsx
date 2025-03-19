@@ -207,14 +207,14 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
               <TouchableOpacity
                 style={[
                   globalStyles.radioButton,
-                  sexo === "M" && globalStyles.radioSelected,
+                  sexo === "Masculino" && globalStyles.radioSelected,
                 ]}
-                onPress={() => setSexo("M")}
+                onPress={() => setSexo("Masculino")}
               >
                 <Text
                   style={[
                     globalStyles.radioText,
-                    sexo === "M" && globalStyles.radioTextSelected,
+                    sexo === "Masculino" && globalStyles.radioTextSelected,
                   ]}
                 >
                   Masculino
@@ -224,14 +224,14 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
               <TouchableOpacity
                 style={[
                   globalStyles.radioButton,
-                  sexo === "F" && globalStyles.radioSelected,
+                  sexo === "Feminino" && globalStyles.radioSelected,
                 ]}
-                onPress={() => setSexo("F")}
+                onPress={() => setSexo("Feminino")}
               >
                 <Text
                   style={[
                     globalStyles.radioText,
-                    sexo === "F" && globalStyles.radioTextSelected,
+                    sexo === "Feminino" && globalStyles.radioTextSelected,
                   ]}
                 >
                   Feminino

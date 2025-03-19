@@ -36,3 +36,5 @@ export const formatBirthDate = (value: string) => {
     4
   )}/${limitedValue.slice(4)}`;
 };
+
+export default { formatPhoneNumber, formatBirthDate };

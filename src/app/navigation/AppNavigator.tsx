@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 
@@ -26,48 +25,46 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
   const [password, setPassword] = useState<string>("");
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        id={undefined}
-        screenOptions={{
-          headerShown: false,
-          animation: "slide_from_right",
-        }}
-      >
-        {!user ? (
-          <Stack.Screen name="Login">
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+      }}
+    >
+      {!user ? (
+        <Stack.Screen name="Login">
+          {(props) => (
+            <Login {...props} setUser={setUser} setPassword={setPassword} />
+          )}
+        </Stack.Screen>
+      ) : (
+        <>
+          <Stack.Screen name="Home">
             {(props) => (
-              <Login {...props} setUser={setUser} setPassword={setPassword} />
+              <Home
+                {...props}
+                user={user}
+                setUser={setUser}
+                password={password}
+                setShowProfile={() => {}}
+              />
             )}
           </Stack.Screen>
-        ) : (
-          <>
-            <Stack.Screen name="Home">
-              {(props) => (
-                <Home
-                  {...props}
-                  user={user}
-                  setUser={setUser}
-                  password={password}
-                  setShowProfile={() => {}}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="Profile">
-              {(props) => <Profile {...props} user={user} setUser={setUser} />}
-            </Stack.Screen>
-            <Stack.Screen
-              name="AdminTools"
-              options={{
-                title: "Ferramentas de Admin",
-              }}
-            >
-              {(props) => <AdminTools {...props} user={user} />}
-            </Stack.Screen>
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen name="Profile">
+            {(props) => <Profile {...props} user={user} setUser={setUser} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="AdminTools"
+            options={{
+              title: "Ferramentas de Admin",
+            }}
+          >
+            {(props) => <AdminTools {...props} user={user} />}
+          </Stack.Screen>
+        </>
+      )}
+    </Stack.Navigator>
   );
 };
 

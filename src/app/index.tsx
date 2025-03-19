@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
@@ -8,6 +8,11 @@ import globalStyles from "./components/globalStyle/styles";
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Função callback memoizada para atualizar o usuário
+  const handleSetUser = useCallback((newUser: User | null) => {
+    setUser(newUser);
+  }, []);
 
   // Monitorar estado de autenticação
   useEffect(() => {
@@ -20,6 +25,11 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Memoizar o AppNavigator para evitar re-renders desnecessários
+  const memoizedNavigator = useMemo(() => {
+    return <AppNavigator user={user} setUser={handleSetUser} />;
+  }, [user, handleSetUser]);
+
   // Exibir tela de carregamento
   if (loading) {
     return (
@@ -29,5 +39,5 @@ export default function App() {
     );
   }
 
-  return <AppNavigator user={user} setUser={setUser} />;
+  return memoizedNavigator;
 }

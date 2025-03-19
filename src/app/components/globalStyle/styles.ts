@@ -357,6 +357,11 @@ export const globalStyles = StyleSheet.create({
     color: colors.white,
     marginLeft: 8,
   },
+  horizontalLine: {
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 10,
+  },
 
   // Estilos do perfil (Profile)
   backButton: {
@@ -495,6 +500,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     color: colors.white,
+    textAlign: "center",
   },
   adminRefreshButton: {
     backgroundColor: colors.secondary,
@@ -592,7 +598,12 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.textLight,
   },
-
+  horizontalButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 10,
+    width: "100%",
+  },
   // Novos estilos para seleção de cargo
   cargoSelectionContainer: {
     marginTop: 10,
@@ -661,6 +672,28 @@ export const globalStyles = StyleSheet.create({
   cargoModalClose: {
     marginTop: 15,
     alignSelf: "center",
+  },
+  userCardLoadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    zIndex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  userCardLoadingText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: colors.secondary,
+    fontWeight: "bold",
+  },
+  disabledButton: {
+    opacity: 0.6,
+    backgroundColor: "#aaaaaa",
   },
 });
 

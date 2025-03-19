@@ -7,7 +7,7 @@ export const servicosBarbearia: Servico[] = [
     descricao: "Corte tradicional ou moderno",
     preco: "R$35,00",
     iconName: "content-cut",
-    tempo: "30 minutos"
+    tempo: "30 minutos",
   },
   {
     id: "2",
@@ -15,7 +15,7 @@ export const servicosBarbearia: Servico[] = [
     descricao: "Aparar e modelar a barba",
     preco: "R$25,00",
     iconName: "face",
-    tempo: "20 minutos"
+    tempo: "20 minutos",
   },
   {
     id: "3",
@@ -23,6 +23,8 @@ export const servicosBarbearia: Servico[] = [
     descricao: "Combinação de corte e barba",
     preco: "R$55,00",
     iconName: "spa",
-    tempo: "50 minutos"
+    tempo: "50 minutos",
   },
 ];
+
+export default { servicosBarbearia };

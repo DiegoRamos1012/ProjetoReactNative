@@ -38,3 +38,10 @@ export const getCargoCor = (id: string) => {
   const cargo = getCargoById(id);
   return cargo.cor;
 };
+
+export default {
+  CARGOS,
+  getCargoById,
+  getCargoNome,
+  getCargoCor,
+};

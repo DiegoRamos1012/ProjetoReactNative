@@ -20,9 +20,12 @@ export interface Agendamento {
   status: string;
   criado_em: Timestamp;
   data_timestamp: Timestamp;
+  iconName?: string; // Adicionando campo opcional para ícone
 }
 
 export interface InicioProps {
   setUser: (user: User | null) => void;
   user: User;
 }
+
+export default Servico;
