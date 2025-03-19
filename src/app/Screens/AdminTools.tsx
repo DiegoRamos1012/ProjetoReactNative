@@ -7,6 +7,8 @@ import {
   Alert,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
@@ -19,6 +21,12 @@ import {
   changeUserCargo,
 } from "../../services/authService";
 import { MaterialIcons } from "@expo/vector-icons";
+import {
+  CARGOS,
+  getCargoById,
+  getCargoNome,
+  getCargoCor,
+} from "../constants/cargos";
 
 interface UserListItem extends UserData {
   id: string;
@@ -30,6 +38,9 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [canAccessTools, setCanAccessTools] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUserName, setSelectedUserName] = useState("");
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -158,8 +169,15 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   // Função auxiliar para capitalizar a primeira letra
   const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-  // Nova função para alterar cargo do usuário com alerta com primeira letra maiúscula
-  const handleChangeCargo = async (userId: string, currentCargo: string) => {
+  // Função para abrir o modal de seleção de cargo
+  const handleOpenCargoModal = (userId: string, userName: string) => {
+    setSelectedUserId(userId);
+    setSelectedUserName(userName);
+    setModalVisible(true);
+  };
+
+  // Função para alterar o cargo de um usuário
+  const handleChangeCargo = async (userId: string, newCargo: string) => {
     // Verificar se o usuário atual é administrador
     if (!isAdmin) {
       Alert.alert(
@@ -169,52 +187,28 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       return;
     }
 
-    // Determinar o próximo cargo na rotação
-    let newCargo = "cliente";
-    if (currentCargo === "cliente") {
-      newCargo = "funcionário";
-    } else if (currentCargo === "funcionário") {
-      newCargo = "cliente";
+    try {
+      setLoading(true);
+      await changeUserCargo(userId, newCargo);
+
+      // Atualizar a lista de usuários
+      setUsers(
+        users.map((u) => {
+          if (u.id === userId) {
+            return { ...u, cargo: newCargo };
+          }
+          return u;
+        })
+      );
+
+      Alert.alert("Sucesso", `Cargo alterado para ${getCargoNome(newCargo)}`);
+    } catch (error) {
+      console.error("Erro ao alterar cargo:", error);
+      Alert.alert("Erro", "Não foi possível alterar o cargo do usuário.");
+    } finally {
+      setLoading(false);
+      setModalVisible(false);
     }
-
-    Alert.alert(
-      "Alterar Cargo",
-      `Deseja alterar o cargo deste usuário para ${capitalize(newCargo)}?`,
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Confirmar",
-          onPress: async () => {
-            try {
-              setLoading(true);
-              await changeUserCargo(userId, newCargo);
-
-              // Atualizar a lista de usuários
-              setUsers(
-                users.map((u) => {
-                  if (u.id === userId) {
-                    return { ...u, cargo: newCargo };
-                  }
-                  return u;
-                })
-              );
-              Alert.alert("Sucesso", "Cargo do usuário alterado com sucesso!");
-            } catch (error) {
-              console.error("Erro ao alterar cargo:", error);
-              Alert.alert(
-                "Erro",
-                "Não foi possível alterar o cargo do usuário."
-              );
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
   };
 
   // Handle refresh - pull down to refresh functionality
@@ -251,16 +245,14 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           Papel: {item.role === "administrador" ? "Administrador" : "Cliente"}
         </Text>
 
-        {/* Exibir cargo com primeira letra maiúscula */}
+        {/* Exibir cargo usando o nome e cor definidos nas constantes */}
         <Text
           style={[
             globalStyles.userCargo,
-            item.cargo === "funcionário"
-              ? globalStyles.funcionarioCargo
-              : globalStyles.clienteCargo,
+            { color: getCargoCor(item.cargo || "cliente") },
           ]}
         >
-          Cargo: {capitalize(item.cargo || "cliente")}
+          Cargo: {getCargoNome(item.cargo || "cliente")}
         </Text>
       </View>
       <View style={globalStyles.actionButtonsContainer}>
@@ -276,21 +268,78 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           </TouchableOpacity>
         )}
 
-        {/* Botão de alterar cargo (só visível para admins) */}
+        {/* Novo botão de atribuir cargo (substitui o botão anterior) */}
         {isAdmin && (
           <TouchableOpacity
             style={globalStyles.cargoActionButton}
-            onPress={() => handleChangeCargo(item.id, item.cargo || "cliente")}
+            onPress={() =>
+              handleOpenCargoModal(item.id, item.nome || "Usuário")
+            }
           >
             <Text style={globalStyles.cargoActionButtonText}>
-              {item.cargo === "funcionário"
-                ? "Remover Funcionário"
-                : "Tornar Funcionário"}
+              Atribuir Cargo
             </Text>
           </TouchableOpacity>
         )}
       </View>
     </View>
+  );
+
+  // Modal de seleção de cargo
+  const renderCargoSelectionModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <View style={globalStyles.centeredView}>
+        <View style={globalStyles.cargoModal}>
+          <Text style={globalStyles.cargoModalTitle}>
+            Selecione o Cargo para {selectedUserName}
+          </Text>
+
+          <ScrollView style={globalStyles.cargoOptionsList}>
+            {CARGOS.map((cargo) => (
+              <TouchableOpacity
+                key={cargo.id}
+                style={[
+                  globalStyles.cargoOption,
+                  users.find((u) => u.id === selectedUserId)?.cargo ===
+                    cargo.id && globalStyles.cargoOptionSelected,
+                ]}
+                onPress={() => handleChangeCargo(selectedUserId, cargo.id)}
+              >
+                <View style={globalStyles.cargoRadioOuter}>
+                  {users.find((u) => u.id === selectedUserId)?.cargo ===
+                    cargo.id && <View style={globalStyles.cargoRadioInner} />}
+                </View>
+                <View>
+                  <Text
+                    style={[
+                      globalStyles.cargoText,
+                      { fontWeight: "bold", color: cargo.cor },
+                    ]}
+                  >
+                    {cargo.nome}
+                  </Text>
+                  <Text style={globalStyles.cargoText}>{cargo.descricao}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          <TouchableOpacity
+            style={globalStyles.cargoModalClose}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+              FECHAR
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   );
 
   if (loading) {
@@ -349,6 +398,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           }
         />
       </View>
+
+      {renderCargoSelectionModal()}
     </View>
   );
 };

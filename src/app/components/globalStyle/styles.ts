@@ -18,6 +18,8 @@ export const colors = {
   clientRole: "#0891b2", // Nova cor para papel de cliente
   funcionarioCargo: "#047857", // Nova cor para cargo de funcionário
   clienteCargo: "#4b5563", // Nova cor para cargo de cliente normal
+  barbeiroCargo: "#0891b2",
+  gerenteCargo: "#9333ea",
 };
 
 export const globalStyles = StyleSheet.create({
@@ -589,6 +591,76 @@ export const globalStyles = StyleSheet.create({
     marginTop: 40,
     fontSize: 16,
     color: colors.textLight,
+  },
+
+  // Novos estilos para seleção de cargo
+  cargoSelectionContainer: {
+    marginTop: 10,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    padding: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cargoSelectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: colors.textDark,
+  },
+  cargoOptionsList: {
+    flexDirection: "column",
+  },
+  cargoOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
+  cargoOptionSelected: {
+    backgroundColor: "#f5f5f5",
+  },
+  cargoRadioOuter: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.secondary,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  cargoRadioInner: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: colors.secondary,
+  },
+  cargoText: {
+    fontSize: 14,
+    flexShrink: 1,
+  },
+  cargoModal: {
+    width: "90%",
+    maxHeight: "80%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignSelf: "center",
+  },
+  cargoModalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  cargoModalClose: {
+    marginTop: 15,
+    alignSelf: "center",
   },
 });
 
