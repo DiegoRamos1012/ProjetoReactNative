@@ -155,7 +155,10 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     );
   };
 
-  // Nova função para alterar cargo do usuário
+  // Função auxiliar para capitalizar a primeira letra
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  // Nova função para alterar cargo do usuário com alerta com primeira letra maiúscula
   const handleChangeCargo = async (userId: string, currentCargo: string) => {
     // Verificar se o usuário atual é administrador
     if (!isAdmin) {
@@ -176,7 +179,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
 
     Alert.alert(
       "Alterar Cargo",
-      `Deseja alterar o cargo deste usuário para ${newCargo}?`,
+      `Deseja alterar o cargo deste usuário para ${capitalize(newCargo)}?`,
       [
         {
           text: "Cancelar",
@@ -229,8 +232,12 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={globalStyles.userCard}>
       <View style={globalStyles.userInfo}>
-        <Text style={globalStyles.adminUserName}>{item.nome || "Sem nome"}</Text>
-        <Text style={globalStyles.adminUserEmail}>{item.email || "Sem email"}</Text>
+        <Text style={globalStyles.adminUserName}>
+          {item.nome || "Sem nome"}
+        </Text>
+        <Text style={globalStyles.adminUserEmail}>
+          {item.email || "Sem email"}
+        </Text>
 
         {/* Exibir role */}
         <Text
@@ -244,7 +251,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           Papel: {item.role === "administrador" ? "Administrador" : "Cliente"}
         </Text>
 
-        {/* Exibir cargo */}
+        {/* Exibir cargo com primeira letra maiúscula */}
         <Text
           style={[
             globalStyles.userCargo,
@@ -253,7 +260,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               : globalStyles.clienteCargo,
           ]}
         >
-          Cargo: {item.cargo || "Cliente"}
+          Cargo: {capitalize(item.cargo || "cliente")}
         </Text>
       </View>
       <View style={globalStyles.actionButtonsContainer}>
