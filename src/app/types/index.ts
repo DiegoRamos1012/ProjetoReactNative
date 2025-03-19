@@ -55,6 +55,7 @@ export interface UserData {
   dataCadastro?: Date;
   role: UserRole;
   updatedAt?: Date;
+  cargo: string;
 }
 
 export interface Servico {

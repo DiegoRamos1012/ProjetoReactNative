@@ -4,15 +4,21 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
   Alert,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { AdminToolsProps, UserData, UserRole } from "../types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
-import { isUserAdmin, changeUserRole } from "../../services/authService";
+import {
+  isUserAdmin,
+  changeUserRole,
+  canAccessAdminTools,
+  changeUserCargo,
+} from "../../services/authService";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface UserListItem extends UserData {
   id: string;
@@ -22,14 +28,21 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [canAccessTools, setCanAccessTools] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
+    const checkPermissions = async () => {
       if (user && user.uid) {
+        // Verificar se é administrador (para controle de alteração de cargos)
         const admin = await isUserAdmin(user.uid);
         setIsAdmin(admin);
 
-        if (admin) {
+        // Verificar se pode acessar ferramentas de administração (admin OU funcionário)
+        const hasAccess = await canAccessAdminTools(user.uid);
+        setCanAccessTools(hasAccess);
+
+        if (hasAccess) {
           fetchUsers();
         } else {
           setLoading(false);
@@ -47,7 +60,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       }
     };
 
-    checkAdminStatus();
+    checkPermissions();
   }, [user]);
 
   const fetchUsers = async () => {
@@ -90,6 +103,15 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   };
 
   const handleChangeRole = async (userId: string, currentRole: UserRole) => {
+    // Verificar se o usuário atual é administrador
+    if (!isAdmin) {
+      Alert.alert(
+        "Permissão Negada",
+        "Apenas administradores podem alterar papéis de usuários."
+      );
+      return;
+    }
+
     const newRole =
       currentRole === "administrador" ? "cliente" : "administrador";
 
@@ -133,150 +155,195 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     );
   };
 
+  // Nova função para alterar cargo do usuário
+  const handleChangeCargo = async (userId: string, currentCargo: string) => {
+    // Verificar se o usuário atual é administrador
+    if (!isAdmin) {
+      Alert.alert(
+        "Permissão Negada",
+        "Apenas administradores podem alterar cargos de usuários."
+      );
+      return;
+    }
+
+    // Determinar o próximo cargo na rotação
+    let newCargo = "cliente";
+    if (currentCargo === "cliente") {
+      newCargo = "funcionário";
+    } else if (currentCargo === "funcionário") {
+      newCargo = "cliente";
+    }
+
+    Alert.alert(
+      "Alterar Cargo",
+      `Deseja alterar o cargo deste usuário para ${newCargo}?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            try {
+              setLoading(true);
+              await changeUserCargo(userId, newCargo);
+
+              // Atualizar a lista de usuários
+              setUsers(
+                users.map((u) => {
+                  if (u.id === userId) {
+                    return { ...u, cargo: newCargo };
+                  }
+                  return u;
+                })
+              );
+              Alert.alert("Sucesso", "Cargo do usuário alterado com sucesso!");
+            } catch (error) {
+              console.error("Erro ao alterar cargo:", error);
+              Alert.alert(
+                "Erro",
+                "Não foi possível alterar o cargo do usuário."
+              );
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Handle refresh - pull down to refresh functionality
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchUsers();
+    } catch (error) {
+      console.error("Erro ao atualizar lista de usuários:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const renderUserItem = ({ item }: { item: UserListItem }) => (
-    <View style={styles.userCard}>
-      <View style={styles.userInfo}>
-        <Text style={styles.userName}>{item.nome || "Sem nome"}</Text>
-        <Text style={styles.userEmail}>{item.email || "Sem email"}</Text>
+    <View style={globalStyles.userCard}>
+      <View style={globalStyles.userInfo}>
+        <Text style={globalStyles.userName}>{item.nome || "Sem nome"}</Text>
+        <Text style={globalStyles.userEmail}>{item.email || "Sem email"}</Text>
+
+        {/* Exibir role */}
         <Text
           style={[
-            styles.userRole,
+            globalStyles.userRole,
             item.role === "administrador"
-              ? styles.adminRole
-              : styles.clientRole,
+              ? globalStyles.adminRoleText
+              : globalStyles.clientRoleText,
           ]}
         >
-          {item.role === "administrador" ? "Administrador" : "Cliente"}
+          Papel: {item.role === "administrador" ? "Administrador" : "Cliente"}
+        </Text>
+
+        {/* Exibir cargo */}
+        <Text
+          style={[
+            globalStyles.userCargo,
+            item.cargo === "funcionário"
+              ? globalStyles.funcionarioCargo
+              : globalStyles.clienteCargo,
+          ]}
+        >
+          Cargo: {item.cargo || "Cliente"}
         </Text>
       </View>
-      <TouchableOpacity
-        style={styles.actionButton}
-        onPress={() => handleChangeRole(item.id, item.role)}
-      >
-        <Text style={styles.actionButtonText}>
-          {item.role === "administrador" ? "Tornar Cliente" : "Tornar Admin"}
-        </Text>
-      </TouchableOpacity>
+      <View style={globalStyles.actionButtonsContainer}>
+        {/* Botão de alterar papel (só visível para admins) */}
+        {isAdmin && (
+          <TouchableOpacity
+            style={[globalStyles.roleActionButton, { marginBottom: 8 }]}
+            onPress={() => handleChangeRole(item.id, item.role)}
+          >
+            <Text style={globalStyles.roleActionButtonText}>
+              {item.role === "administrador" ? "Remover Admin" : "Tornar Admin"}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Botão de alterar cargo (só visível para admins) */}
+        {isAdmin && (
+          <TouchableOpacity
+            style={globalStyles.cargoActionButton}
+            onPress={() => handleChangeCargo(item.id, item.cargo || "cliente")}
+          >
+            <Text style={globalStyles.cargoActionButtonText}>
+              {item.cargo === "funcionário"
+                ? "Remover Funcionário"
+                : "Tornar Funcionário"}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 
   if (loading) {
     return (
       <View style={globalStyles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={colors.secondary} />
+        <Text style={globalStyles.profileLoadingText}>
+          Carregando usuários...
+        </Text>
       </View>
     );
   }
 
-  if (!isAdmin) {
-    return null; // Não renderiza nada se não for admin
+  if (!canAccessTools) {
+    return null;
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Gerenciamento de Usuários</Text>
-        <TouchableOpacity style={styles.refreshButton} onPress={fetchUsers}>
-          <Text style={styles.refreshButtonText}>Atualizar</Text>
+    <View style={globalStyles.homeContainer}>
+      {/* Header com botão de voltar */}
+      <View style={globalStyles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={globalStyles.backButton}
+        >
+          <MaterialIcons name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
+        <Text style={[globalStyles.bannerTitle, { marginBottom: 0 }]}>
+          Administração
+        </Text>
+        <View style={{ width: 24 }} />
       </View>
 
-      <FlatList
-        data={users}
-        renderItem={renderUserItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.userList}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Nenhum usuário encontrado</Text>
-        }
-      />
+      <View style={globalStyles.adminContainer}>
+        <View style={globalStyles.adminHeader}>
+          <Text style={globalStyles.adminTitle}>Gerenciamento de Usuários</Text>
+        </View>
+
+        <FlatList
+          data={users}
+          renderItem={renderUserItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={globalStyles.userList}
+          ListEmptyComponent={
+            <Text style={globalStyles.emptyListText}>
+              Nenhum usuário encontrado
+            </Text>
+          }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[colors.secondary]}
+              tintColor={colors.secondary}
+            />
+          }
+        />
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 16,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.primary,
-  },
-  refreshButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  refreshButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  userList: {
-    paddingBottom: 20,
-  },
-  userCard: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  userEmail: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 4,
-  },
-  userRole: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  adminRole: {
-    color: "#c2410c",
-  },
-  clientRole: {
-    color: "#0891b2",
-  },
-  actionButton: {
-    backgroundColor: colors.secondary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  actionButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  emptyText: {
-    textAlign: "center",
-    marginTop: 40,
-    fontSize: 16,
-    color: "#666",
-  },
-});
 
 export default AdminTools;

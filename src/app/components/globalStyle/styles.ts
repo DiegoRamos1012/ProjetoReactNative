@@ -14,6 +14,10 @@ export const colors = {
   textLighter: "#dddddd",
   error: "#FF375B",
   disabled: "#cccccc",
+  adminRole: "#c2410c", // Nova cor para papel de administrador
+  clientRole: "#0891b2", // Nova cor para papel de cliente
+  funcionarioCargo: "#047857", // Nova cor para cargo de funcionário
+  clienteCargo: "#4b5563", // Nova cor para cargo de cliente normal
 };
 
 export const globalStyles = StyleSheet.create({
@@ -116,7 +120,6 @@ export const globalStyles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colors.white,
   },
   userEmail: {
     fontSize: 14,
@@ -468,6 +471,123 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "uppercase",
     letterSpacing: 1,
+  },
+
+  // Estilos para AdminTools
+  adminContainer: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 16,
+  },
+  adminHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    backgroundColor: colors.darkBlue,
+    borderRadius: 8,
+    padding: 16,
+  },
+  adminTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  adminRefreshButton: {
+    backgroundColor: colors.secondary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  adminRefreshButtonText: {
+    color: colors.white,
+    fontWeight: "bold",
+  },
+  userList: {
+    paddingBottom: 20,
+  },
+  userCard: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  actionButtonsContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "stretch",
+    minWidth: 150,
+  },
+  adminUserName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: colors.textDark,
+  },
+  adminUserEmail: {
+    fontSize: 14,
+    color: colors.textLight,
+    marginBottom: 4,
+  },
+  userRole: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  userCargo: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  adminRoleText: {
+    color: colors.adminRole,
+  },
+  clientRoleText: {
+    color: colors.clientRole,
+  },
+  funcionarioCargo: {
+    color: colors.funcionarioCargo,
+  },
+  clienteCargo: {
+    color: colors.clienteCargo,
+  },
+  roleActionButton: {
+    backgroundColor: colors.secondary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  roleActionButtonText: {
+    color: colors.white,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  cargoActionButton: {
+    backgroundColor: colors.funcionarioCargo,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  cargoActionButtonText: {
+    color: colors.white,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  emptyListText: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+    color: colors.textLight,
   },
 });
 

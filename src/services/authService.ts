@@ -99,6 +99,7 @@ export const registerUser = async (
       email: email,
       dataCadastro: new Date(),
       role: "cliente", // Default role
+      cargo: "cliente", // Default cargo
     });
 
     return user;
@@ -147,5 +148,39 @@ export const changeUserRole = async (
   } catch (error) {
     console.error("Erro ao alterar papel do usuário:", error);
     throw new Error("Não foi possível alterar o papel do usuário.");
+  }
+};
+
+// Nova função para verificar se um usuário pode acessar ferramentas de administração
+export const canAccessAdminTools = async (userId: string): Promise<boolean> => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (userDoc.exists()) {
+      const userData = userDoc.data() as UserData;
+      return (
+        userData.role === "administrador" || userData.cargo === "funcionário"
+      );
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao verificar permissões do usuário:", error);
+    return false;
+  }
+};
+
+// Nova função para alterar o cargo de um usuário
+export const changeUserCargo = async (
+  userId: string,
+  newCargo: string
+): Promise<void> => {
+  try {
+    await setDoc(
+      doc(db, "users", userId),
+      { cargo: newCargo, updatedAt: new Date() },
+      { merge: true }
+    );
+  } catch (error) {
+    console.error("Erro ao alterar cargo do usuário:", error);
+    throw new Error("Não foi possível alterar o cargo do usuário.");
   }
 };
