@@ -9,9 +9,12 @@ import {
   orderBy,
   addDoc,
   Timestamp,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Agendamento, Servico } from "../types";
+import { servicosBarbearia } from "../data/services";
 
 export const useAppointments = (user: User) => {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
@@ -28,8 +31,6 @@ export const useAppointments = (user: User) => {
     }
 
     try {
-      console.log("Iniciando busca de agendamentos para o usuário:", user.uid);
-
       const agendamentosRef = collection(db, "agendamentos");
       const q = query(
         agendamentosRef,
@@ -166,6 +167,39 @@ export const useAppointments = (user: User) => {
     [user, fetchAppointments]
   );
 
+  const deleteAppointment = async (appointmentId: any) => {
+    if (!user?.uid) return false;
+
+    try {
+      setLoading(true);
+
+      // Deletar o documento do Firestore
+      await deleteDoc(doc(db, "agendamentos", appointmentId));
+
+      // Atualizar a lista de agendamentos removendo o item excluído
+      setAgendamentos((prevAgendamentos) =>
+        prevAgendamentos.filter(
+          (agendamento) => agendamento.id !== appointmentId
+        )
+      );
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao excluir agendamento:", error);
+      setErrorMessage(
+        "Não foi possível excluir o agendamento. Tente novamente."
+      );
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getServiceIcon = (servicoNome: string) => {
+    const servico = servicosBarbearia.find((s) => s.nome === servicoNome);
+    return servico?.iconName || "content-cut";
+  };
+
   return {
     agendamentos,
     loading,
@@ -174,5 +208,7 @@ export const useAppointments = (user: User) => {
     fetchAppointments,
     refreshAppointments,
     createAppointment,
+    deleteAppointment,
+    getServiceIcon, // Certifique-se que esta função está sendo exportada
   };
 };

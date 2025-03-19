@@ -26,6 +26,8 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
     fetchAppointments,
     refreshAppointments,
     createAppointment,
+    deleteAppointment,
+    getServiceIcon, // Certifique-se de extrair essa função do hook
   } = useAppointments(user);
 
   // Carregar agendamentos quando o componente montar
@@ -92,6 +94,8 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
         loading={loading}
         refreshing={refreshing}
         errorMessage={errorMessage}
+        onDeleteAppointment={deleteAppointment}
+        getServiceIcon={getServiceIcon} // Passar a função aqui
       />
 
       {/* Modal de agendamento */}

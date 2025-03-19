@@ -4,8 +4,16 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  getDocs,
+  writeBatch,
+} from "firebase/firestore";
 import { auth, db } from "../config/firebaseConfig";
+import { UserData, UserRole } from "../app/types";
 
 export const loginUser = async (
   email: string,
@@ -23,9 +31,20 @@ export const loginUser = async (
       email,
       password
     );
-    return userCredential.user;
+    const user = userCredential.user;
+
+    // Check if user exists in Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists()) {
+      // Option 1: Block login
+      await auth.signOut();
+      throw new Error(
+        "Sua conta foi excluída. Entre em contato com o suporte."
+      );
+    }
+
+    return user;
   } catch (error: any) {
-    // Map Firebase errors to user-friendly messages
     if (error.code === "auth/invalid-credential") {
       throw new Error(
         "E-mail ou senha incorretos. Por favor, tente novamente."
@@ -81,11 +100,12 @@ export const registerUser = async (
     // Update profile with display name
     await updateProfile(user, { displayName: name });
 
-    // Create user document in Firestore
-    await setDoc(doc(db, "usuarios", user.uid), {
+    // Create user document in Firestore with role defaulting to "cliente"
+    await setDoc(doc(db, "users", user.uid), {
       nome: name,
       email: email,
       dataCadastro: new Date(),
+      role: "cliente", // Default role
     });
 
     return user;
@@ -102,5 +122,77 @@ export const registerUser = async (
     } else {
       throw new Error(`Erro ao cadastrar: ${error.message}`);
     }
+  }
+};
+
+// Nova função para verificar se um usuário é administrador
+export const isUserAdmin = async (userId: string): Promise<boolean> => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (userDoc.exists()) {
+      const userData = userDoc.data() as UserData;
+      return userData.role === "administrador";
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao verificar papel do usuário:", error);
+    return false;
+  }
+};
+
+// Nova função para alterar o papel de um usuário
+export const changeUserRole = async (
+  userId: string,
+  newRole: UserRole
+): Promise<void> => {
+  try {
+    await setDoc(
+      doc(db, "users", userId),
+      { role: newRole, updatedAt: new Date() },
+      { merge: true }
+    );
+  } catch (error) {
+    console.error("Erro ao alterar papel do usuário:", error);
+    throw new Error("Não foi possível alterar o papel do usuário.");
+  }
+};
+
+// Função auxiliar para migrar usuários da coleção antiga (se necessário)
+export const migrateUsers = async (): Promise<void> => {
+  try {
+    const usuariosRef = collection(db, "usuarios");
+    const snapshot = await getDocs(usuariosRef);
+
+    if (snapshot.empty) {
+      console.log("Não há usuários para migrar.");
+      return;
+    }
+
+    const batch = writeBatch(db);
+    let count = 0;
+
+    snapshot.forEach((docSnapshot) => {
+      const userData = docSnapshot.data();
+      // Cria ou atualiza o documento na coleção "users"
+      const userRef = doc(db, "users", docSnapshot.id);
+      batch.set(
+        userRef,
+        {
+          ...userData,
+          role: "cliente", // Define como cliente por padrão
+          updatedAt: new Date(),
+          migratedAt: new Date(),
+        },
+        { merge: true }
+      );
+
+      count++;
+    });
+
+    await batch.commit();
+    console.log(`${count} usuário(s) migrados com sucesso.`);
+  } catch (error) {
+    console.error("Erro ao migrar usuários:", error);
+    throw new Error("Falha ao migrar usuários da coleção antiga.");
   }
 };

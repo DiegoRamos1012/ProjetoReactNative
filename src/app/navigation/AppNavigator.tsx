@@ -6,11 +6,13 @@ import { User } from "firebase/auth";
 import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
 import Login from "../Screens/Login";
+import AdminTools from "../Screens/AdminTools";
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Profile: undefined;
+  AdminTools: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,6 +54,14 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
             </Stack.Screen>
             <Stack.Screen name="Profile">
               {(props) => <Profile {...props} user={user} setUser={setUser} />}
+            </Stack.Screen>
+            <Stack.Screen
+              name="AdminTools"
+              options={{
+                title: "Ferramentas de Admin",
+              }}
+            >
+              {(props) => <AdminTools {...props} user={user} />}
             </Stack.Screen>
           </>
         )}

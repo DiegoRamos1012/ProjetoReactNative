@@ -212,8 +212,15 @@ export const globalStyles = StyleSheet.create({
   agendamentoInfo: {
     flex: 1,
   },
+  agendamentoTitulo: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
   agendamentoServico: {
     fontSize: 16,
+    textAlign: "left",
     fontWeight: "bold",
     marginBottom: 5,
   },
@@ -413,6 +420,54 @@ export const globalStyles = StyleSheet.create({
   },
   radioTextSelected: {
     color: "#FFF",
+  },
+
+  // Estilos dos agendamentos (Appointments)
+  appointmentCard: {
+    flexDirection: "row",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  appointmentInfo: {
+    flex: 1,
+  },
+  deleteButton: {
+    padding: 8,
+  },
+  modalDescricao: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    letterSpacing: 1,
   },
 });
 

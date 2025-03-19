@@ -16,6 +16,7 @@ import { db } from "../../config/firebaseConfig";
 import { formatPhoneNumber, formatBirthDate } from "../format";
 import { auth } from "../../config/firebaseConfig";
 import { updateProfile } from "firebase/auth";
+import { isUserAdmin } from "../../services/authService";
 
 const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [telefone, setTelefone] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [sexo, setSexo] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Buscar dados do usuário no Firestore
   useEffect(() => {
@@ -43,6 +45,9 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
           setTelefone(userData.telefone || "");
           setDataNascimento(userData.dataNascimento || "");
           setSexo(userData.sexo || "");
+
+          // Verificar se o usuário é admin
+          setIsAdmin(userData.role === "administrador");
         }
       } catch (error) {
         console.error("Erro ao buscar dados do usuário:", error);
@@ -62,11 +67,11 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
       // Log para verificar se o nome foi alterado
       if (nome !== originalNome) {
         console.log(`Nome de usuário alterado: ${originalNome} -> ${nome}`);
-        
+
         // Atualizar o displayName do usuário autenticado
         if (auth.currentUser) {
           await updateProfile(auth.currentUser, {
-            displayName: nome
+            displayName: nome,
           });
           console.log("DisplayName atualizado com sucesso:", nome);
         }
@@ -228,6 +233,23 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
               {saving ? "Salvando..." : "Salvar Alterações"}
             </Text>
           </TouchableOpacity>
+
+          {/* Botão de Ferramentas Admin - só aparece para administradores */}
+          {isAdmin && (
+            <View style={{ marginTop: 20 }}>
+              <TouchableOpacity
+                style={[
+                  globalStyles.button,
+                  { backgroundColor: colors.secondary },
+                ]}
+                onPress={() => navigation.navigate("AdminTools")}
+              >
+                <Text style={globalStyles.buttonText}>
+                  Ferramentas de Administrador
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       )}
     </View>

@@ -57,6 +57,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           <Text style={globalStyles.modalPreco}>
             {servico.preco} • {servico.tempo}
           </Text>
+          <Text style={globalStyles.modalDescricao}>{servico.descricao}</Text>
 
           <View style={globalStyles.horarioContainer}>
             <Text style={globalStyles.horarioTitle}>

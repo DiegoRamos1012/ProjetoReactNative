@@ -15,6 +15,10 @@ export type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "Login"
 >;
+export type AdminToolsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "AdminTools"
+>;
 
 export interface HomeProps extends HomeScreenProps {
   user: User;
@@ -36,9 +40,27 @@ export interface LoginProps extends Partial<LoginScreenProps> {
   setPassword: (password: string) => void;
 }
 
+export interface AdminToolsProps extends AdminToolsScreenProps {
+  user: User;
+}
+
+export type UserRole = "administrador" | "cliente";
+
+export interface UserData {
+  nome?: string;
+  email?: string;
+  telefone?: string;
+  dataNascimento?: string;
+  sexo?: string;
+  dataCadastro?: Date;
+  role: UserRole;
+  updatedAt?: Date;
+}
+
 export interface Servico {
   id: string;
   nome: string;
+  descricao: string;
   preco: string;
   tempo: string;
   iconName: string;
