@@ -695,6 +695,224 @@ export const globalStyles = StyleSheet.create({
     opacity: 0.6,
     backgroundColor: "#aaaaaa",
   },
-});
+  // Novos estilos para a seção "Serviços e horários"
+  adminAddButton: {
+    flexDirection: "row",
+    backgroundColor: colors.secondary, // alterado para colors.secondary para não ser branco
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  adminAddButtonText: {
+    color: colors.white,
+    marginLeft: 5,
+    fontWeight: "bold",
+  },
+  adminSectionContent: {
+    paddingVertical: 10,
+    flex: 1, // Para garantir que o conteúdo possa crescer
+  },
+  adminSectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  adminSectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: colors.darkBlue, // utilizando uma cor mais escura para o título
+  },
+  // Estilos para o TimeSlotManager definidos abaixo
+  timeSlotCustomContainer: {
+    marginBottom: 16,
+  },
+  timeSlotAddContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  timeSlotCustomInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    marginRight: 8,
+  },
+  timeSlotAddButton: {
+    backgroundColor: colors.primary,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  timeSlotSelectedContainer: {
+    marginBottom: 16,
+  },
+  timeSlotChipContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  timeSlotChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    margin: 4,
+  },
+  timeSlotChipText: {
+    fontSize: 14,
+    marginRight: 4,
+  },
 
+  // Estilos para o ServiceForm
+  serviceFormContainer: {
+    flex: 1,
+    backgroundColor: "#f8f8f8", // Fundo claro para o formulário
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    minHeight: 500, // Adicionando uma altura mínima
+    marginBottom: 20, // Espaço extra na parte inferior
+  },
+  serviceFormTitle: {
+    fontSize: 22, // Aumentar tamanho da fonte
+    fontWeight: "bold",
+    color: colors.darkBlue, // Alterado para usar cor escura
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  serviceFormGroup: {
+    marginBottom: 20, // Mais espaço entre os grupos
+    backgroundColor: "#fff", // Fundo branco para cada grupo
+    padding: 16, // Aumento do padding
+    borderRadius: 8, // Bordas mais arredondadas
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  serviceFormLabel: {
+    fontSize: 16, // Aumentar tamanho da fonte
+    fontWeight: "bold",
+    color: colors.darkBlue, // Alterado para cor escura para contraste
+    marginBottom: 10, // Mais espaço
+  },
+  serviceFormInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    padding: 12, // Mais padding para facilitar a digitação
+    fontSize: 16,
+    color: colors.textDark, // Alterado para cor escura para contraste
+    backgroundColor: "#fff", // Fundo branco para input
+    height: 45, // Altura fixa para melhor uniformidade
+  },
+  serviceFormTextArea: {
+    height: 100, // Maior área para texto
+    textAlignVertical: "top",
+    paddingTop: 12, // Para melhor alinhamento
+  },
+  serviceFormButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 24,
+    marginBottom: 40,
+  },
+  serviceFormSaveButton: {
+    backgroundColor: colors.secondary, // Alterado para secondary
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 8,
+    alignItems: "center",
+  },
+  serviceFormSaveButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  serviceFormCancelButton: {
+    backgroundColor: "#e0e0e0",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 8,
+    alignItems: "center",
+  },
+  serviceFormCancelButtonText: {
+    color: colors.textDark, // Alterado para cor escura
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  // Também vamos melhorar os estilos do TimeSlotManager
+  timeSlotContainer: {
+    marginBottom: 20, // Mais espaço
+    backgroundColor: "#fff", // Fundo branco
+    padding: 16, // Mais padding
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  timeSlotTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.darkBlue, // Alterado para cor escura
+    marginBottom: 12,
+  },
+  timeSlotSubtitle: {
+    fontSize: 14,
+    color: colors.textDark, // Alterado para cor escura
+    marginBottom: 8,
+  },
+  timeSlotPredefinedContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 16,
+  },
+  timeSlotButton: {
+    borderWidth: 1,
+    borderColor: colors.secondary, // Alterado para secondary
+    borderRadius: 5,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    margin: 4,
+    backgroundColor: "#fff", // Fundo branco
+  },
+  timeSlotButtonSelected: {
+    backgroundColor: colors.secondary, // Alterado para secondary
+  },
+  timeSlotText: {
+    color: colors.textDark, // Alterado para cor escura
+    fontSize: 14,
+  },
+  timeSlotTextSelected: {
+    color: colors.white,
+  },
+  iconButton: {
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  selectedIconButton: {
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    backgroundColor: colors.primary,
+  },
+});
 export default globalStyles;

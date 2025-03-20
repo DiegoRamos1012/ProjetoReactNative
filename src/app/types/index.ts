@@ -65,6 +65,7 @@ export interface Servico {
   descricao: string;
   preco: string;
   tempo: string;
+  horarios?: string[];
   iconName: string;
 }
 
