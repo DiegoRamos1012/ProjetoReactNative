@@ -10,15 +10,9 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
-import {
-  collection,
-  getDocs,
-  setDoc,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { AdminToolsProps, UserData, UserRole, Servico } from "../types";
+import { AdminToolsProps, UserData, UserRole } from "../types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import {
   isUserAdmin,
@@ -53,23 +47,32 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   useEffect(() => {
     const checkPermissions = async () => {
       if (user && user.uid) {
+        // Verificar se é administrador (para controle de alteração de cargos)
         const admin = await isUserAdmin(user.uid);
         setIsAdmin(admin);
+
+        // Verificar se pode acessar ferramentas de administração (admin OU funcionário)
         const hasAccess = await canAccessAdminTools(user.uid);
         setCanAccessTools(hasAccess);
+
         if (hasAccess) {
           fetchUsers();
-          fetchServices();
         } else {
           setLoading(false);
           Alert.alert(
             "Acesso Restrito",
             "Você não tem permissão para acessar esta área.",
-            [{ text: "OK", onPress: () => navigation.goBack() }]
+            [
+              {
+                text: "OK",
+                onPress: () => navigation.goBack(),
+              },
+            ]
           );
         }
       }
     };
+
     checkPermissions();
   }, [user]);
 
@@ -78,15 +81,35 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     try {
       const usersRef = collection(db, "users");
       const usersSnapshot = await getDocs(usersRef);
+
       const usersList: UserListItem[] = [];
       usersSnapshot.forEach((doc) => {
         const userData = doc.data() as UserData;
-        usersList.push({ id: doc.id, ...userData });
+        usersList.push({
+          id: doc.id,
+          ...userData,
+        });
       });
+
       setUsers(usersList);
     } catch (error: any) {
       console.error("Erro ao buscar usuários:", error);
-      Alert.alert("Erro", "Não foi possível carregar a lista de usuários.");
+
+      if (
+        error.code === "permission-denied" ||
+        error.message?.includes("Missing or insufficient permissions")
+      ) {
+        Alert.alert(
+          "Erro de Permissão",
+          "Você não tem permissão para acessar a lista de usuários. É necessário atualizar as regras de segurança do Firestore para permitir que administradores acessem todos os usuários."
+        );
+      } else {
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar a lista de usuários: " +
+            (error.message || "Erro desconhecido")
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -193,6 +216,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     }
   };
 
+  // Handle refresh - pull down to refresh functionality
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
@@ -224,16 +248,18 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
 
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={globalStyles.userCard}>
+      {/* Mostrar loading spinner quando este usuário específico estiver sendo atualizado */}
       {updatingUserId === item.id && (
         <View style={globalStyles.userCardLoadingOverlay}>
           <ActivityIndicator size="large" color={colors.secondary} />
           <Text style={globalStyles.userCardLoadingText}>Atualizando...</Text>
         </View>
       )}
+
       <View
         style={[
           globalStyles.userInfo,
-          updatingUserId === item.id && { opacity: 0.6 },
+          updatingUserId === item.id && { opacity: 0.6 }, // Diminuir opacidade quando carregando
         ]}
       >
         <Text style={globalStyles.adminUserName}>
@@ -243,6 +269,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
           Número de telefone: {item.telefone || "Sem número cadastrado"}
         </Text>
         <View style={globalStyles.horizontalLine} />
+
+        {/* Exibir role */}
         <Text
           style={[
             globalStyles.userRole,
@@ -253,6 +281,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         >
           Tipo: {item.role === "administrador" ? "Administrador" : "Cliente"}
         </Text>
+
+        {/* Exibir cargo usando o nome e cor definidos nas constantes */}
         <Text
           style={[
             globalStyles.userCargo,
@@ -261,16 +291,18 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         >
           Cargo: {getCargoNome(item.cargo || "cliente")}
         </Text>
+
+        {/* Botões lado a lado */}
         {isAdmin && (
           <View style={globalStyles.horizontalButtonsContainer}>
             <TouchableOpacity
               style={[
                 globalStyles.roleActionButton,
                 { flex: 1, marginRight: 5 },
-                updatingUserId === item.id && globalStyles.disabledButton,
+                updatingUserId === item.id && globalStyles.disabledButton, // Desabilitar visualmente durante o carregamento
               ]}
               onPress={() => handleChangeRole(item.id, item.role)}
-              disabled={updatingUserId !== null}
+              disabled={updatingUserId !== null} // Desabilitar todos os botões durante qualquer atualização
             >
               <Text style={globalStyles.roleActionButtonText}>
                 {item.role === "administrador"
@@ -278,16 +310,17 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                   : "Tornar Admin"}
               </Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={[
                 globalStyles.cargoActionButton,
                 { flex: 1, marginLeft: 5 },
-                updatingUserId === item.id && globalStyles.disabledButton,
+                updatingUserId === item.id && globalStyles.disabledButton, // Desabilitar visualmente durante o carregamento
               ]}
               onPress={() =>
                 handleOpenCargoModal(item.id, item.nome || "Usuário")
               }
-              disabled={updatingUserId !== null}
+              disabled={updatingUserId !== null} // Desabilitar todos os botões durante qualquer atualização
             >
               <Text style={globalStyles.cargoActionButtonText}>
                 Atribuir Cargo
@@ -355,105 +388,6 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
       </View>
     </Modal>
   );
-
-  // ----------------- FUNÇÕES PARA GERENCIAR SERVIÇOS -----------------
-  const fetchServices = async () => {
-    setServicesLoading(true);
-    try {
-      const servicosRef = collection(db, "servicos");
-      const snapshot = await getDocs(servicosRef);
-      if (snapshot.empty) {
-        setServices(servicosBarbearia);
-      } else {
-        const servicosData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Servico[];
-        setServices(servicosData);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar serviços:", error);
-      Alert.alert("Erro", "Não foi possível carregar os serviços.");
-      setServices(servicosBarbearia);
-    } finally {
-      setServicesLoading(false);
-      setServicesRefreshing(false);
-    }
-  };
-
-  const saveService = async (servico: Servico) => {
-    try {
-      await setDoc(doc(db, "servicos", servico.id), servico);
-      return true;
-    } catch (error) {
-      console.error("Erro ao salvar serviço:", error);
-      Alert.alert("Erro", "Não foi possível salvar o serviço.");
-      return false;
-    }
-  };
-
-  const deleteService = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, "servicos", id));
-      return true;
-    } catch (error) {
-      console.error("Erro ao excluir serviço:", error);
-      Alert.alert("Erro", "Não foi possível excluir o serviço.");
-      return false;
-    }
-  };
-
-  const handleAddService = () => {
-    setSelectedService(null);
-    setShowServiceForm(true);
-  };
-
-  const handleEditService = (servico: Servico) => {
-    setSelectedService(servico);
-    setShowServiceForm(true);
-  };
-
-  const handleDeleteService = (servico: Servico) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Deseja realmente excluir o serviço "${servico.nome}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            const success = await deleteService(servico.id);
-            if (success) {
-              setServices(removerServico(services, servico.id));
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const handleSaveService = async (servico: Servico) => {
-    const isEditing = !!selectedService;
-    if (!isEditing) {
-      servico.id = Date.now().toString();
-    }
-    const success = await saveService(servico);
-    if (success) {
-      if (isEditing) {
-        setServices(editarServico(services, servico));
-      } else {
-        setServices(adicionarServico(services, servico));
-      }
-      setShowServiceForm(false);
-    }
-  };
-
-  const onServicesRefresh = () => {
-    setServicesRefreshing(true);
-    fetchServices();
-  };
-  // ------------------------------------------------------------------
 
   if (loading) {
     return (
