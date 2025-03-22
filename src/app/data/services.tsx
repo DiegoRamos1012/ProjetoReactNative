@@ -1,30 +1,43 @@
+import { useEffect, useState, useCallback } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 import { Servico } from "../types";
 
-export const servicosBarbearia: Servico[] = [
-  {
-    id: "1",
-    nome: "Corte de Cabelo",
-    descricao: "Corte tradicional ou moderno",
-    preco: "R$35,00",
-    iconName: "content-cut",
-    tempo: "30 minutos",
-  },
-  {
-    id: "2",
-    nome: "Barba",
-    descricao: "Aparar e modelar a barba",
-    preco: "R$25,00",
-    iconName: "face",
-    tempo: "20 minutos",
-  },
-  {
-    id: "3",
-    nome: "Corte + Barba",
-    descricao: "Combinação de corte e barba",
-    preco: "R$55,00",
-    iconName: "spa",
-    tempo: "50 minutos",
-  },
-];
+// Hook para buscar serviços do Firebase
+export const useServicos = () => {
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default { servicosBarbearia };
+  const fetchServicos = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const servicosRef = collection(db, "servicos");
+      const snapshot = await getDocs(servicosRef);
+
+      const servicosList: Servico[] = [];
+      snapshot.forEach((doc) => {
+        servicosList.push({ id: doc.id, ...doc.data() } as Servico);
+      });
+
+      setServicos(servicosList);
+    } catch (err: any) {
+      console.error("Erro ao buscar serviços:", err);
+      setError(err.message || "Erro ao carregar serviços");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Add a refresh function that can be called externally
+  const refreshServicos = useCallback(() => {
+    fetchServicos();
+  }, [fetchServicos]);
+
+  useEffect(() => {
+    fetchServicos();
+  }, [fetchServicos]);
+
+  return { servicos, loading, error, refreshServicos };
+};

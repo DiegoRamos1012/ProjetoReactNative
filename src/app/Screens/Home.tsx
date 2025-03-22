@@ -3,13 +3,14 @@ import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
 import { HomeProps, Servico } from "../types";
 import { useAppointments } from "../hooks/useAppointments";
-import { servicosBarbearia } from "../data/services";
+import { useServicos } from "../data/services";
 // Componentes modulares
 import Header from "../components/home/Header";
 import Banner from "../components/home/Banner";
 import ServicesList from "../components/home/ServicesList";
 import AppointmentsList from "../components/home/AppointmentsList";
 import AppointmentModal from "../components/home/AppointmentModal";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,14 +28,26 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
-    getServiceIcon, // Certifique-se de extrair essa função do hook
   } = useAppointments(user);
+
+  const { servicos, loading: loadingServicos, refreshServicos } = useServicos();
 
   // Carregar agendamentos quando o componente montar
   useEffect(() => {
     console.log("Componente montado, carregando agendamentos iniciais");
     fetchAppointments();
   }, [fetchAppointments]);
+
+  // Atualizar serviços quando a tela entrar em foco
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("Home screen em foco, atualizando serviços");
+      refreshServicos();
+      return () => {
+        // Cleanup opcional
+      };
+    }, [refreshServicos])
+  );
 
   // Log do usuário autenticado
   useEffect(() => {
@@ -52,9 +65,16 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
     setServicoSelecionado(null);
   };
 
-  const handleConfirmAppointment = async (hora: string) => {
+  const handleConfirmAppointment = async (
+    hora: string,
+    observacao?: string
+  ) => {
     if (servicoSelecionado) {
-      const success = await createAppointment(servicoSelecionado, hora);
+      const success = await createAppointment(
+        servicoSelecionado,
+        hora,
+        observacao
+      );
       if (success) {
         handleCloseModal();
       }
@@ -82,20 +102,22 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
         subtitle="Qualidade e estilo para você"
       />
 
-      {/* Lista de serviços */}
+      {/* Lista de serviços - Usando serviços do Firebase */}
       <ServicesList
-        servicos={servicosBarbearia}
+        servicos={servicos}
         onServicoPress={handleOpenModal}
+        loading={loadingServicos}
       />
 
       {/* Lista de agendamentos */}
       <AppointmentsList
         agendamentos={agendamentos}
+        servicos={servicos}
         loading={loading}
         refreshing={refreshing}
+        isLoading={loading || loadingServicos}
         errorMessage={errorMessage}
         onDeleteAppointment={deleteAppointment}
-        getServiceIcon={getServiceIcon} // Passar a função aqui
       />
 
       {/* Modal de agendamento */}
