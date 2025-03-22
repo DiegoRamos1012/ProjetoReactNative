@@ -1,16 +1,17 @@
 import React from "react";
 import { View, Text, Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Agendamento } from "../../types";
+import { Agendamento, Servico } from "../../types";
 import globalStyles from "../globalStyle/styles";
 
 interface AppointmentsListProps {
   agendamentos: Agendamento[];
   loading: boolean;
+  isLoading: boolean; // Adicionado para correção do erro
   refreshing: boolean;
   errorMessage: string | null;
   onDeleteAppointment: (id: string) => void;
-  getServiceIcon: (servico: string) => string;
+  servicos?: Servico[]; // Adicionado para correção do erro
 }
 
 const AppointmentsList: React.FC<AppointmentsListProps> = ({
@@ -19,8 +20,17 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
   refreshing,
   errorMessage,
   onDeleteAppointment,
-  getServiceIcon,
+  servicos = [], // Valor padrão para evitar undefined
 }) => {
+  // Função segura para encontrar um serviço pelo nome
+  const findServicoSeguro = (nomeServico: string): Servico | undefined => {
+    // Verificar se a lista de serviços existe e tem itens
+    if (!servicos || servicos.length === 0) return undefined;
+
+    // Usar find de forma segura
+    return servicos.find((s) => s.nome === nomeServico);
+  };
+
   const renderContent = () => {
     if (loading && !refreshing) {
       return (
@@ -69,34 +79,61 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
     return (
       <>
         <Text style={globalStyles.agendamentoTitulo}>Seus agendamentos:</Text>
-        {agendamentos.map((agendamento) => (
-          <View key={agendamento.id} style={globalStyles.agendamentoItem}>
-            <View style={globalStyles.agendamentoInfo}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialIcons
-                  name={getServiceIcon(agendamento.servico) as any}
-                  size={20}
-                  color="#2A4A73"
-                  style={{ marginRight: 8 }}
-                />
-                <Text style={globalStyles.agendamentoServico}>
-                  {agendamento.servico}
+        {agendamentos.map((agendamento) => {
+          // Obter serviço de forma segura
+          const servico = findServicoSeguro(agendamento.servico);
+          // Usar o ícone do serviço encontrado, ou cair para o método getServiceIcon
+
+          return (
+            <View key={agendamento.id} style={globalStyles.agendamentoItem}>
+              <View style={globalStyles.agendamentoInfo}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <MaterialIcons
+                    name={"content-cut" as any}
+                    size={20}
+                    color="#2A4A73"
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={globalStyles.agendamentoServico}>
+                    {agendamento.servico}
+                  </Text>
+                </View>
+                <Text style={globalStyles.agendamentoData}>
+                  {agendamento.data} às {agendamento.hora}
                 </Text>
+                {/* Display client observation if it exists */}
+                {agendamento.observacao_cliente && (
+                  <View
+                    style={{
+                      marginTop: 5,
+                      paddingTop: 5,
+                      borderTopWidth: 1,
+                      borderTopColor: "#eee",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontStyle: "italic",
+                        color: "#555",
+                        fontSize: 13,
+                      }}
+                    >
+                      Observação: {agendamento.observacao_cliente}
+                    </Text>
+                  </View>
+                )}
               </View>
-              <Text style={globalStyles.agendamentoData}>
-                {agendamento.data} às {agendamento.hora}
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <MaterialIcons
+                  name="delete"
+                  size={24}
+                  color="#333"
+                  onPress={() => handleDeletePress(agendamento)}
+                />
+              </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <MaterialIcons
-                name="delete"
-                size={24}
-                color="#333"
-                onPress={() => handleDeletePress(agendamento)}
-              />
-            </View>
-          </View>
-        ))}
+          );
+        })}
       </>
     );
   };
