@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
-import { HomeProps, Servico } from "../types";
+import { HomeProps, Servico } from "../types/index";
 import { useAppointments } from "../hooks/useAppointments";
 import { useServicos } from "../data/services";
 // Componentes modulares

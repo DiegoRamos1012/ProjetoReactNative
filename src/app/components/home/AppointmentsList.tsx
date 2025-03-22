@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Agendamento, Servico } from "../../types";
+import { Agendamento, Servico } from "../../types/index";
 import globalStyles from "../globalStyle/styles";
 
 interface AppointmentsListProps {
