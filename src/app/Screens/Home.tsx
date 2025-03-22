@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
+import {
+  ScrollView,
+  RefreshControl,
+  View,
+  Text,
+  Button,
+  ActivityIndicator,
+} from "react-native";
 import globalStyles from "../components/globalStyle/styles";
 import { HomeProps, Servico } from "../types";
 import { useAppointments } from "../hooks/useAppointments";
@@ -17,6 +24,9 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
     null
   );
+  // Novo estado para armazenar serviços do Firestore
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [servicosLoading, setServicosLoading] = useState(true);
 
   // Usar o hook personalizado para gerenciar agendamentos
   const {
@@ -28,14 +38,44 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
+    getServiceIcon, // Certifique-se de extrair essa função do hook
   } = useAppointments(user);
 
   const { servicos, loading: loadingServicos, refreshServicos } = useServicos();
 
-  // Carregar agendamentos quando o componente montar
+  const { servicos, loading: loadingServicos, refreshServicos } = useServicos();
+
+  // Função para buscar serviços do Firestore
+  const fetchServices = async () => {
+    setServicosLoading(true);
+    try {
+      const servicosRef = collection(db, "servicos");
+      const snapshot = await getDocs(servicosRef);
+
+      if (snapshot.empty) {
+        // Se não houver serviços no Firestore, usar a lista estática
+        setServicos(servicosBarbearia);
+      } else {
+        const servicosData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Servico[];
+        setServicos(servicosData);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar serviços:", error);
+      // Em caso de erro, use a lista estática
+      setServicos(servicosBarbearia);
+    } finally {
+      setServicosLoading(false);
+    }
+  };
+
+  // Carregar agendamentos e serviços quando o componente montar
   useEffect(() => {
     console.log("Componente montado, carregando agendamentos iniciais");
     fetchAppointments();
+    fetchServices(); // Buscar serviços do Firestore
   }, [fetchAppointments]);
 
   // Atualizar serviços quando a tela entrar em foco
@@ -53,6 +93,12 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   useEffect(() => {
     console.log("Usuário autenticado:", user.displayName);
   }, [user]);
+
+  // Atualizar tudo ao fazer o refresh
+  const handleRefresh = () => {
+    refreshAppointments();
+    fetchServices();
+  };
 
   // Handlers para o modal de agendamento
   const handleOpenModal = (servico: Servico) => {
@@ -86,8 +132,8 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
       style={globalStyles.homeContainer}
       refreshControl={
         <RefreshControl
-          refreshing={refreshing}
-          onRefresh={refreshAppointments}
+          refreshing={refreshing || servicosLoading}
+          onRefresh={handleRefresh}
           colors={["#2A4A73"]}
           tintColor="#2A4A73"
         />

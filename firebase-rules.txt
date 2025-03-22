@@ -45,6 +45,14 @@ service cloud.firestore {
                      resource.data.userId == request.auth.uid;
     }
     
+    // Nova coleção: serviços
+    match /servicos/{servicoId} {
+      // Permitir leitura para usuários autenticados
+      allow read: if request.auth != null;
+      // Permitir escrita (criação, atualização, exclusão) somente para administradores
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Regra padrão: negar tudo que não foi explicitamente permitido
     match /{document=**} {
       allow read, write: if false;

@@ -65,6 +65,7 @@ export interface Servico {
   descricao: string;
   preco: number;
   tempo: string;
+  horarios?: string[];
   iconName: string;
   observacao?: string; // Observação para o cliente ler
   horarios?: string[]; // Array de horários disponíveis
