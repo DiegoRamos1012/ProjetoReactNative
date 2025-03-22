@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  ScrollView,
-  RefreshControl,
-  View,
-  Text,
-  Button,
-  ActivityIndicator,
-} from "react-native";
+import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
 import { HomeProps, Servico } from "../types";
 import { useAppointments } from "../hooks/useAppointments";
@@ -24,9 +17,6 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
     null
   );
-  // Novo estado para armazenar serviços do Firestore
-  const [servicos, setServicos] = useState<Servico[]>([]);
-  const [servicosLoading, setServicosLoading] = useState(true);
 
   // Usar o hook personalizado para gerenciar agendamentos
   const {
@@ -46,7 +36,6 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   useEffect(() => {
     console.log("Componente montado, carregando agendamentos iniciais");
     fetchAppointments();
-    fetchServices(); // Buscar serviços do Firestore
   }, [fetchAppointments]);
 
   // Atualizar serviços quando a tela entrar em foco
@@ -64,12 +53,6 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   useEffect(() => {
     console.log("Usuário autenticado:", user.displayName);
   }, [user]);
-
-  // Atualizar tudo ao fazer o refresh
-  const handleRefresh = () => {
-    refreshAppointments();
-    fetchServices();
-  };
 
   // Handlers para o modal de agendamento
   const handleOpenModal = (servico: Servico) => {
@@ -103,8 +86,8 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
       style={globalStyles.homeContainer}
       refreshControl={
         <RefreshControl
-          refreshing={refreshing || servicosLoading}
-          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          onRefresh={refreshAppointments}
           colors={["#2A4A73"]}
           tintColor="#2A4A73"
         />
