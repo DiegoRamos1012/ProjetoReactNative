@@ -22,14 +22,12 @@ import {
 } from "../../services/authService";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
-import ServicosHorarios from "../components/admin/ServicosHorarios";
 
 interface UserListItem extends UserData {
   id: string;
 }
 
 const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
-  // Estados existentes
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -38,11 +36,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
+  // Novo estado para rastrear o ID do usuário sendo atualizado
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
-
-  // Estados para controlar a expansão/contração das seções
-  const [usuariosExpanded, setUsuariosExpanded] = useState(true);
-  const [servicosExpanded, setServicosExpanded] = useState(false);
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -228,24 +223,6 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     }
   };
 
-  // Toggle para expandir/contrair seção de usuários
-  const toggleUsuariosSection = () => {
-    setUsuariosExpanded(!usuariosExpanded);
-    // Se expandir a seção de usuários, minimiza a de serviços para evitar problemas com listas
-    if (!usuariosExpanded) {
-      setServicosExpanded(false);
-    }
-  };
-
-  // Toggle para expandir/contrair seção de serviços
-  const toggleServicosSection = () => {
-    setServicosExpanded(!servicosExpanded);
-    // Se expandir a seção de serviços, minimiza a de usuários para evitar problemas com listas
-    if (!servicosExpanded) {
-      setUsuariosExpanded(false);
-    }
-  };
-
   const renderUserItem = ({ item }: { item: UserListItem }) => (
     <View style={globalStyles.userCard}>
       {/* Mostrar loading spinner quando este usuário específico estiver sendo atualizado */}
@@ -420,77 +397,47 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Usando FlatList como contêiner principal para evitar nesting issues */}
-      <FlatList
-        data={[{ key: "mainContent" }]} // Apenas um item para renderizar todo o conteúdo
-        renderItem={() => (
-          <View style={{ flex: 1 }}>
-            {/* Seção de Gerenciamento de Usuários com cabeçalho clicável */}
-            <View style={globalStyles.adminContainer}>
-              <TouchableOpacity
-                style={[
-                  globalStyles.adminHeader,
-                  { flexDirection: "row", justifyContent: "space-between" },
-                ]}
-                onPress={toggleUsuariosSection}
-              >
-                <Text style={globalStyles.adminTitle}>
-                  Gerenciamento de Usuários
-                </Text>
-                <MaterialIcons
-                  name={usuariosExpanded ? "expand-less" : "expand-more"}
-                  size={24}
-                  color="#FFF"
-                />
-              </TouchableOpacity>
+      <View style={globalStyles.adminContainer}>
+        <View style={globalStyles.adminHeader}>
+          <Text style={globalStyles.adminTitle}>
+            {" "}
+             Gerenciamento de Usuários
+          </Text>
+        </View>
 
-              {/* Lista de usuários - mostrada apenas quando expandida */}
-              {usuariosExpanded && (
-                <View style={{ maxHeight: 400 }}>
-                  {users.length === 0 ? (
-                    <Text style={globalStyles.emptyListText}>
-                      Nenhum usuário encontrado
-                    </Text>
-                  ) : (
-                    // Renderizando diretamente com uma key única para cada item
-                    <View>
-                      {users.map((item) => (
-                        <React.Fragment key={item.id}>
-                          {renderUserItem({ item })}
-                        </React.Fragment>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              )}
-            </View>
+        <FlatList
+          data={users}
+          renderItem={renderUserItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={globalStyles.userList}
+          ListEmptyComponent={
+            <Text style={globalStyles.emptyListText}>
+              Nenhum usuário encontrado
+            </Text>
+          }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[colors.secondary]}
+              tintColor={colors.secondary}
+            />
+          }
+        />
+      </View>
 
-            {/* Seção de Serviços e Horários com cabeçalho clicável */}
-            <View
-              style={[globalStyles.adminContainer, { marginTop: 15, flex: 1 }]}
-            >
-              <TouchableOpacity
-                style={[
-                  globalStyles.adminHeader,
-                  { flexDirection: "row", justifyContent: "space-between" },
-                ]}
-                onPress={toggleServicosSection}
-              >
-                <Text style={globalStyles.adminTitle}>Serviços e Horários</Text>
-                <MaterialIcons
-                  name={servicosExpanded ? "expand-less" : "expand-more"}
-                  size={24}
-                  color="#FFF"
-                />
-              </TouchableOpacity>
+      <View style={[globalStyles.adminContainer, { marginTop: 15 }]}>
+        {/* Cabeçalho da Nova Seção */}
+        <View style={globalStyles.adminHeader}>
+          <Text style={globalStyles.adminTitle}>           Serviços e horários</Text>
+        </View>
 
-              {/* Componente de Serviços - mostrado apenas quando expandido */}
-              {servicosExpanded && <ServicosHorarios isAdmin={isAdmin} />}
-            </View>
-          </View>
-        )}
-        keyExtractor={(item) => item.key}
-      />
+        {/* Corpo da Nova Seção */}
+        <View style={globalStyles.adminSectionContent}>
+          {/* Conteúdo específico da nova seção */}
+          {/* Pode ser outro FlatList, formulários, ou outros componentes */}
+        </View>
+      </View>
 
       {renderCargoSelectionModal()}
     </View>

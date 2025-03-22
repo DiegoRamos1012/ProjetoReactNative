@@ -63,12 +63,9 @@ export interface Servico {
   id: string;
   nome: string;
   descricao: string;
-  preco: number;
+  preco: string;
   tempo: string;
   iconName: string;
-  observacao?: string; // Observação para o cliente ler
-  horarios?: string[]; // Array de horários disponíveis
-  // horariosPersonalizados removido ou fixado em false
 }
 
 export interface Agendamento {
@@ -82,10 +79,6 @@ export interface Agendamento {
   status: string;
   criado_em: Timestamp;
   data_timestamp: Timestamp;
-  observacao_cliente: string; // Observação do cliente
   iconName?: string; // Adicionando campo opcional para ícone
 }
-export interface InicioProps {
-  setUser: (user: User | null) => void;
-  user: User;
-}
+
