@@ -914,5 +914,25 @@ export const globalStyles = StyleSheet.create({
     marginRight: 10,
     backgroundColor: colors.primary,
   },
+  iconSelector: {
+    flexDirection: "row",
+    marginVertical: 15,
+    paddingBottom: 10,
+  },
+  iconButtonServices: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+    backgroundColor: "#f8f8f8",
+  },
+  selectedIconButtonServices: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.darkBlue,
+  },
 });
 export default globalStyles;

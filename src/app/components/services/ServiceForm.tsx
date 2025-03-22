@@ -162,21 +162,22 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ flexDirection: 'row', marginVertical: 10 }}
+            style={globalStyles.iconSelector}
+            contentContainerStyle={{ paddingVertical: 10 }}
           >
             {availableIcons.map((icon) => (
               <TouchableOpacity
                 key={icon}
                 style={[
-                  globalStyles.iconButton,
-                  iconName === icon && globalStyles.selectedIconButton,
+                  globalStyles.iconButtonServices,
+                  iconName === icon && globalStyles.selectedIconButtonServices,
                 ]}
                 onPress={() => setIconName(icon)}
               >
                 <MaterialIcons
                   name={icon as any}
-                  size={24}
-                  color={iconName === icon ? "white" : colors.primary}
+                  size={28}
+                  color={iconName === icon ? "white" : colors.secondary}
                 />
               </TouchableOpacity>
             ))}

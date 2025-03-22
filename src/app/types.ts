@@ -1,6 +1,9 @@
-// ...existing code...
-
 import { User } from "firebase/auth";
+
+export interface HomeScreenProps {
+  navigation: any;
+  route: any;
+}
 
 export interface Servico {
   id: string;
@@ -24,4 +27,11 @@ export interface ProfileProps {
   navigation: any;
 }
 
-// ...existing code...
+export interface HomeProps extends HomeScreenProps {
+  user: User;
+  setUser: (user: User | null) => void;
+  setShowProfile: (show: boolean) => void;
+  navigation: any;
+  route: any;
+  // ...existing code...
+}
