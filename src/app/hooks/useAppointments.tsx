@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Agendamento, Servico } from "../types";
-import { servicosBarbearia } from "../data/services";
+import { formatCurrencyBRL } from "../format";
 
 export const useAppointments = (user: User) => {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
@@ -104,13 +104,13 @@ export const useAppointments = (user: User) => {
   }, [fetchAppointments]);
 
   const createAppointment = useCallback(
-    async (servico: Servico, hora: string) => {
+    async (servico: Servico, hora: string, observacao?: string) => {
       if (!user || !user.uid) {
         Alert.alert(
           "Erro",
           "Você precisa estar logado para fazer um agendamento"
         );
-        return;
+        return false;
       }
 
       setLoading(true);
@@ -123,12 +123,13 @@ export const useAppointments = (user: User) => {
           userId: user.uid,
           userName: user.displayName,
           servico: servico.nome,
-          preco: servico.preco,
+          preco: formatCurrencyBRL(servico.preco),
           data: dataFormatada,
           hora: hora,
           status: "confirmado",
           criado_em: Timestamp.now(),
           data_timestamp: Timestamp.now(),
+          observacao_cliente: observacao || "", // Add the client observation
         };
 
         console.log("Salvando agendamento:", novoAgendamento);
@@ -243,11 +244,6 @@ export const useAppointments = (user: User) => {
     [user]
   );
 
-  const getServiceIcon = (servicoNome: string) => {
-    const servico = servicosBarbearia.find((s) => s.nome === servicoNome);
-    return servico?.iconName || "content-cut"; // Retorna "content-cut" como padrão
-  };
-
   // Adicionando função para obter ícone de status
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
@@ -273,7 +269,6 @@ export const useAppointments = (user: User) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
-    getServiceIcon,
     getStatusIcon, // Exportando a nova função
     updateUserNameInAppointments,
   };
