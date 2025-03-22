@@ -38,40 +38,11 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
-    getServiceIcon, // Certifique-se de extrair essa função do hook
   } = useAppointments(user);
 
   const { servicos, loading: loadingServicos, refreshServicos } = useServicos();
 
-  const { servicos, loading: loadingServicos, refreshServicos } = useServicos();
-
-  // Função para buscar serviços do Firestore
-  const fetchServices = async () => {
-    setServicosLoading(true);
-    try {
-      const servicosRef = collection(db, "servicos");
-      const snapshot = await getDocs(servicosRef);
-
-      if (snapshot.empty) {
-        // Se não houver serviços no Firestore, usar a lista estática
-        setServicos(servicosBarbearia);
-      } else {
-        const servicosData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Servico[];
-        setServicos(servicosData);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar serviços:", error);
-      // Em caso de erro, use a lista estática
-      setServicos(servicosBarbearia);
-    } finally {
-      setServicosLoading(false);
-    }
-  };
-
-  // Carregar agendamentos e serviços quando o componente montar
+  // Carregar agendamentos quando o componente montar
   useEffect(() => {
     console.log("Componente montado, carregando agendamentos iniciais");
     fetchAppointments();
