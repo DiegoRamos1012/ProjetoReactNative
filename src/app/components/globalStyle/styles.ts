@@ -1,6 +1,8 @@
 import { StyleSheet } from "react-native";
 
-// Estilos compartilhados entre componentes
+// ==========================================
+// CORES GLOBAIS
+// ==========================================
 export const colors = {
   primary: "#FFFFFF", // Cor violeta
   secondary: "#2A4A73", // Cor azul
@@ -23,7 +25,9 @@ export const colors = {
 };
 
 export const globalStyles = StyleSheet.create({
-  // Estilos gerais
+  // ==========================================
+  // ESTILOS COMUNS/COMPARTILHADOS
+  // ==========================================
   container: {
     backgroundColor: colors.background,
     flex: 1,
@@ -93,8 +97,39 @@ export const globalStyles = StyleSheet.create({
     width: 600,
     height: 400,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  closeButton: {
+    position: "absolute",
+    right: 15,
+    top: 15,
+    zIndex: 1,
+  },
+  horizontalLine: {
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 10,
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: colors.textLight,
+    marginTop: 20,
+  },
+  emptyListText: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+    color: colors.textLight,
+  },
 
-  // Estilos da Home
+  // ==========================================
+  // ESTILOS DA TELA DE HOME
+  // ==========================================
   homeContainer: {
     flex: 1,
     backgroundColor: "#f8f8f8",
@@ -201,6 +236,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 13,
     color: colors.textLight,
   },
+
+  // ==========================================
+  // ESTILOS DE AGENDAMENTOS
+  // ==========================================
   agendamentoItem: {
     backgroundColor: colors.white,
     padding: 15,
@@ -239,18 +278,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 14,
     color: colors.secondary,
   },
-  emptyText: {
-    textAlign: "center",
-    fontSize: 16,
-    color: colors.textLight,
-    marginTop: 20,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
+
+  // ==========================================
+  // ESTILOS DE MODAIS DE AGENDAMENTO
+  // ==========================================
   modalView: {
     width: "85%",
     backgroundColor: colors.white,
@@ -264,12 +295,6 @@ export const globalStyles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  closeButton: {
-    position: "absolute",
-    right: 15,
-    top: 15,
-    zIndex: 1,
   },
   modalTitle: {
     fontSize: 22,
@@ -296,6 +321,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.secondary,
     marginBottom: 20,
+  },
+  modalDescricao: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
   horarioContainer: {
     marginVertical: 15,
@@ -343,27 +372,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  backButtonContainer: {
-    marginTop: 15,
-    backgroundColor: "#555",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    padding: 10,
-    width: "60%",
-  },
-  backButtonText: {
-    color: colors.white,
-    marginLeft: 8,
-  },
-  horizontalLine: {
-    borderWidth: 0.5,
-    borderColor: "black",
-    margin: 10,
-  },
 
-  // Estilos do perfil (Profile)
+  // ==========================================
+  // ESTILOS DA TELA DE PERFIL (PROFILE)
+  // ==========================================
   backButton: {
     padding: 5,
   },
@@ -432,32 +444,24 @@ export const globalStyles = StyleSheet.create({
   radioTextSelected: {
     color: "#FFF",
   },
-
-  // Estilos dos agendamentos (Appointments)
-  appointmentCard: {
+  backButtonContainer: {
+    marginTop: 15,
+    backgroundColor: "#555",
     flexDirection: "row",
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
+    borderRadius: 20,
+    padding: 10,
+    width: "60%",
   },
-  appointmentInfo: {
-    flex: 1,
+  backButtonText: {
+    color: colors.white,
+    marginLeft: 8,
   },
-  deleteButton: {
-    padding: 8,
-  },
-  modalDescricao: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+
+  // ==========================================
+  // ESTILOS DE BOTÕES COMUNS
+  // ==========================================
   button: {
     backgroundColor: colors.primary,
     paddingVertical: 15,
@@ -481,7 +485,9 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: 1,
   },
 
-  // Estilos para AdminTools
+  // ==========================================
+  // ESTILOS DA TELA ADMIN TOOLS
+  // ==========================================
   adminContainer: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -592,19 +598,12 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  emptyListText: {
-    textAlign: "center",
-    marginTop: 40,
-    fontSize: 16,
-    color: colors.textLight,
-  },
   horizontalButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 10,
     width: "100%",
   },
-  // Novos estilos para seleção de cargo
   cargoSelectionContainer: {
     marginTop: 10,
     backgroundColor: colors.white,
@@ -695,5 +694,250 @@ export const globalStyles = StyleSheet.create({
     opacity: 0.6,
     backgroundColor: "#aaaaaa",
   },
+
+  // ==========================================
+  // ESTILOS DO COMPONENTE SERVIÇOS E HORÁRIOS
+  // ==========================================
+  servicosHorariosContainer: {
+    flex: 1,
+  },
+  servicosContainer: {
+    marginTop: 15,
+    flex: 1,
+  },
+  addServicoButton: {
+    backgroundColor: colors.secondary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  addServicoButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  servicosListContainer: {
+    paddingBottom: 20,
+  },
+  servicoListItem: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  servicoInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  servicoIconContainerSmall: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 15,
+  },
+  servicoTextContainer: {
+    flex: 1,
+  },
+  servicoNomeItem: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 2,
+  },
+  servicoPrecoItem: {
+    fontSize: 15,
+    color: colors.secondary,
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  servicoTempoItem: {
+    fontSize: 14,
+    color: colors.textLight,
+  },
+  servicoActions: {
+    flexDirection: "row",
+  },
+  editButton: {
+    backgroundColor: colors.secondary,
+    borderRadius: 4,
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 8,
+  },
+  deleteButton: {
+    backgroundColor: colors.error,
+    borderRadius: 4,
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  servicoModalView: {
+    width: "90%",
+    maxHeight: "85%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  servicoModalTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: colors.secondary,
+    marginTop: 10,
+  },
+  formRow: {
+    flexDirection: "row",
+  },
+  priceInputContainer: {
+    position: "relative",
+  },
+  priceClearButton: {
+    position: "absolute",
+    right: 12,
+    top: "50%",
+    marginTop: -12,
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  priceHint: {
+    marginTop: 5,
+    fontSize: 12,
+    color: colors.textLight,
+    fontStyle: "italic",
+  },
+  iconSelector: {
+    flexDirection: "row",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    padding: 10,
+    maxHeight: 120,
+  },
+  iconOption: {
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 5,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  iconSelected: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
+  },
+  iconText: {
+    marginTop: 5,
+    fontSize: 12,
+    textAlign: "center",
+  },
+  iconTextSelected: {
+    color: "#fff",
+  },
+  horariosGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    backgroundColor: "#f5f5f5",
+    padding: 10,
+    borderRadius: 8,
+  },
+  servicoHorarioOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    margin: 5,
+    backgroundColor: "#fff",
+  },
+  horarioPersonalizadoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  addHorarioButton: {
+    backgroundColor: colors.secondary,
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  switchHelp: {
+    fontSize: 14,
+    color: colors.textLight,
+    fontStyle: "italic",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  cancelButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  cancelButtonText: {
+    color: colors.textDark,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  saveButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: colors.secondary,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  loadingIndicator: {
+    marginTop: 20,
+  },
 });
+
 export default globalStyles;
