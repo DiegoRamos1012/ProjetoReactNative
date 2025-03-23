@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { AdminToolsProps, UserData, UserRole } from "../types";
+import { AdminToolsProps } from "../types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import {
   isUserAdmin,
@@ -22,7 +22,7 @@ import {
 } from "../../services/authService";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
-import ServicosHorarios from "../components/admin/ServicosHorarios";
+import ServicosHorarios from "../components/ServicosHorarios";
 
 interface UserListItem extends UserData {
   id: string;
