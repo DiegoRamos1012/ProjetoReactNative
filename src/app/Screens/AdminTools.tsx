@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { AdminToolsProps } from "../types";
+import { AdminToolsProps, UserData, UserRole } from "../types/types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import {
   isUserAdmin,
@@ -29,7 +29,6 @@ interface UserListItem extends UserData {
 }
 
 const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
-  // Estados existentes
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);

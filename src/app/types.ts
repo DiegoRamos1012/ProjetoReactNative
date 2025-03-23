@@ -33,5 +33,4 @@ export interface HomeProps extends HomeScreenProps {
   setShowProfile: (show: boolean) => void;
   navigation: any;
   route: any;
-  // ...existing code...
 }
