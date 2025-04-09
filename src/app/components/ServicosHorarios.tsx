@@ -8,7 +8,6 @@ import {
   Modal,
   ScrollView,
   TextInput,
-  Switch,
 } from "react-native";
 import {
   collection,
@@ -18,15 +17,15 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../../../config/firebaseConfig";
-import { Servico } from "../../types";
-import globalStyles, { colors } from "../globalStyle/styles";
+import { db } from "../../config/firebaseConfig";
+import { Servico } from "../types/types";
+import globalStyles, { colors } from "./globalStyle/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   formatCurrencyBRL,
   parseCurrencyValue,
   formatCompactCurrency,
-} from "../../format";
+} from "../format";
 
 // Ícones disponíveis para serviços
 const ICONES_DISPONIVEIS = [

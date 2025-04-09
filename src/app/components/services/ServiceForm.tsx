@@ -10,9 +10,14 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Servico } from "../../types";
 import { colors } from "../globalStyle/styles"; // também importamos globalStyles se necessário
-import { horariosDisponiveis } from "../../data/services";
 import TimeSlotManager from "./TimeSlotManager";
 import globalStyles from "../globalStyle/styles";
+
+// Define horarios padrão para serviços
+const horariosDisponiveis = [
+  "08:00", "09:00", "10:00", "11:00", 
+  "13:00", "14:00", "15:00", "16:00", "17:00"
+];
 
 interface ServiceFormProps {
   service: Servico | null;
@@ -108,7 +113,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   };
 
   return (
-    <View style={globalStyles.serviceFormContainer}>
+    <View style={globalStyles.servicosContainer}>
       <Text style={globalStyles.serviceFormTitle}>
         {service ? "Editar Serviço" : "Novo Serviço"}
       </Text>

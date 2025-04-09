@@ -89,3 +89,4 @@ export interface InicioProps {
   setUser: (user: User | null) => void;
   user: User;
 }
+

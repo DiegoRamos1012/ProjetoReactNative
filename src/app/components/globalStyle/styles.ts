@@ -938,6 +938,85 @@ export const globalStyles = StyleSheet.create({
   loadingIndicator: {
     marginTop: 20,
   },
+
+  // ==========================================
+  // ESTILOS DO FORMULÁRIO DE SERVIÇOS
+  // ==========================================
+  serviceFormTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: colors.secondary,
+    textAlign: "center",
+  },
+  serviceFormGroup: {
+    marginBottom: 15,
+  },
+  serviceFormLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: colors.textDark,
+  },
+  serviceFormInput: {
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#DDD",
+    color: colors.textDark,
+  },
+  serviceFormTextArea: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  iconButtonServices: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  selectedIconButtonServices: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
+  },
+  serviceFormButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  serviceFormCancelButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  serviceFormCancelButtonText: {
+    color: colors.textDark,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  serviceFormSaveButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: colors.secondary,
+    alignItems: "center",
+  },
+  serviceFormSaveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default globalStyles;

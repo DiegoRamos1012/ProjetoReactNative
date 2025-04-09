@@ -41,3 +41,5 @@ export const useServicos = () => {
 
   return { servicos, loading, error, refreshServicos };
 };
+
+export default useServicos;
