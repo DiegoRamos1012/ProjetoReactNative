@@ -1,8 +1,9 @@
+// Configuração central do Firebase
+
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { initializeAuth, getAuth } from "firebase/auth";
 import { getReactNativePersistence } from "firebase/auth";
-// Add AsyncStorage for persistence
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
@@ -14,12 +15,11 @@ const firebaseConfig = {
   appId: "1:33108730466:android:eb4f4acae565732a01e73b",
 };
 
-// Inicializa o firebase
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+if (!getApps().length) {
+  initializeAuth(app, { persistence: getReactNativePersistence(AsyncStorage) });
+}
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
