@@ -19,7 +19,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Servico } from "../types/types";
-import globalStyles, { colors } from "./globalStyle/styles";
+// Fix incorrect import path for globalStyles
+import globalStyles, { colors } from "../components/globalStyle/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   formatCurrencyBRL,

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
-import { HomeProps, Servico } from "../types/types";
+import { HomeProps } from "../types/types";
+import { Servico } from "../types";
 import { useAppointments } from "../hooks/useAppointments";
-import { useServicos } from "../data/services";
+import useServicos from "../data/services";
 // Componentes modulares
 import Header from "../components/home/Header";
 import Banner from "../components/home/Banner";
@@ -112,7 +113,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
       {/* Lista de agendamentos */}
       <AppointmentsList
         agendamentos={agendamentos}
-        servicos={servicos}
+        servicos={servicos.map(s => ({...s, preco: Number(s.preco)}))}
         loading={loading}
         refreshing={refreshing}
         isLoading={loading || loadingServicos}
