@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.0.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Adicionar esta configuração para resolver a incompatibilidade de JVM target
+kotlin {
+    jvmToolchain(17) // Alinhando com a versão Java
+}
+
+// Configuração alternativa caso a abordagem acima não funcione
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17" // Igualando ao target do Java
+    }
+}
+
+android {
+    // Outras configurações...
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    // Caso tenha kotlinOptions aqui, também verificar:
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

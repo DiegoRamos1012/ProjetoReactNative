@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "projetoreactnative",
-    "slug": "projetoreactnative",
+    "slug": "projetoappbarbearia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.projetoreactnative"
+      "bundleIdentifier": "com.diego.appbarbearia"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.projetoreactnative",
+      "package": "com.diego.appbarbearia",
       "googleServicesFile": "./google-services.json"
     },
     "web": {
@@ -40,6 +40,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b2a9a738-5a6a-4fd7-9e0b-8420dfaeab45"
+      }
+    },
+    "owner": "diego1012"
   }
 }
