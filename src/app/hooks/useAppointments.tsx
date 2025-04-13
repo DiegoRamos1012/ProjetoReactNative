@@ -14,7 +14,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { Agendamento, Servico } from "../types";
+import { Agendamento, Servico } from "../types/types";
 import { formatCurrencyBRL } from "../format";
 
 export const useAppointments = (user: User) => {
