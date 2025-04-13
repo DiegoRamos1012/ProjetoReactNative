@@ -14,14 +14,15 @@ export default function App() {
     setUser(newUser);
   }, []);
 
-  // Monitorar estado de autenticação
+  // AUTH STATE LISTENER - Este é crucial para a persistência
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("AsyncStorage: " + (currentUser ? "Persistência funcionando corretamente" : "Usuário não autenticado"));
       setUser(currentUser);
       setLoading(false);
     });
 
-    // Limpar o listener quando o componente for desmontado
+    // Limpar inscrição ao desmontar
     return () => unsubscribe();
   }, []);
 

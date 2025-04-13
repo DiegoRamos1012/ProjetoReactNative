@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { View, StyleSheet, StatusBar, Animated } from "react-native";
+import { View, StyleSheet, StatusBar, Animated, Alert } from "react-native";
 import { User } from "firebase/auth";
 import { colors } from "../components/globalStyle/styles";
 import { useScreenTransition } from "../../hooks/useScreenTransition";
@@ -11,8 +11,9 @@ import LoginScreen from "../../components/screens/Login/LoginScreen";
 import RegisterScreen from "../../components/screens/Login/RegisterScreen";
 
 interface LoginProps {
-  setUser: (user: User | null) => void;
-  setPassword: (password: string) => void;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setPassword?: React.Dispatch<React.SetStateAction<string>>;
+  navigation?: any;
 }
 
 export const Login: React.FC<LoginProps> = ({
@@ -22,72 +23,102 @@ export const Login: React.FC<LoginProps> = ({
   // Form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPasswordState] = useState(""); // Fixed: added proper setter function
+  const [password, setPasswordState] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Screen transition hook
-  const { screenMode, isMounted, transitionToScreen, getAnimatedStyles } =
-    useScreenTransition("welcome");
+  const {
+    screenMode: currentScreen,
+    getAnimatedStyles,
+    transitionToScreen: handleNavigate,
+  } = useScreenTransition();
+  
+  // Get animation styles
+  const animation = getAnimatedStyles()[`${currentScreen}Style`];
 
-  // Get animated styles
-  const { welcomeStyle, loginStyle, registerStyle } = getAnimatedStyles();
+  // Login handler
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos");
+      return;
+    }
 
-  // Navigation handlers
+    setIsLoading(true);
+    try {
+      console.log("Iniciando login para:", email);
+      const userCredential = await loginUser(email, password);
+      console.log("Login bem-sucedido para:", userCredential.email);
+      
+      // Sem necessidade de guardar a senha, Firebase gerencia os tokens
+      if (setGlobalPassword) {
+        setGlobalPassword(""); // Limpar senha após login
+      }
+      
+      setUser(userCredential);
+    } catch (error: any) {
+      console.error("Erro no login:", error);
+      Alert.alert("Erro no login", "Verifique suas credenciais e tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Register handler
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      console.log("Iniciando registro para:", email);
+      const userCredential = await registerUser(name, email, password);
+      console.log("Registro bem-sucedido para:", userCredential.email);
+      
+      // Sem necessidade de guardar a senha, Firebase gerencia os tokens
+      if (setGlobalPassword) {
+        setGlobalPassword(""); // Limpar senha após registro
+      }
+      
+      setUser(userCredential);
+    } catch (error: any) {
+      console.error("Erro no registro:", error);
+      Alert.alert("Erro no registro", "Não foi possível criar sua conta. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Rest of the Login component code...
   const goToLogin = useCallback(() => {
-    transitionToScreen("login");
-  }, [transitionToScreen]);
+    handleNavigate("login");
+  }, [handleNavigate]);
 
   const goToRegister = useCallback(() => {
-    transitionToScreen("register");
-  }, [transitionToScreen]);
+    handleNavigate("register");
+  }, [handleNavigate]);
 
   const goToWelcome = useCallback(() => {
-    transitionToScreen("welcome");
+    handleNavigate("welcome");
     // Clear form data
     setName("");
     setEmail("");
-    setPasswordState(""); // Updated to use correct setter
-  }, [transitionToScreen]);
+    setPasswordState("");
+  }, [handleNavigate]);
 
   // Password visibility toggler
   const toggleShowPassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
 
-  // Authentication handlers
-  const handleLogin = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const user = await loginUser(email, password);
-      setUser(user);
-      setGlobalPassword(password); // Update global password if needed
-    } catch (error: any) {
-      alert(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [email, password, setUser, setGlobalPassword]);
-
-  const handleRegister = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const user = await registerUser(name, email, password);
-      setUser(user);
-      setGlobalPassword(password); // Update global password if needed
-    } catch (error: any) {
-      alert(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [name, email, password, setUser, setGlobalPassword]);
-
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
 
-      {isMounted.welcome && (
-        <Animated.View style={[styles.screenContainer, welcomeStyle]}>
+      {currentScreen === "welcome" && (
+        <Animated.View style={[styles.screenContainer, animation]}>
           <WelcomeScreen
             onLoginPress={goToLogin}
             onRegisterPress={goToRegister}
@@ -95,13 +126,13 @@ export const Login: React.FC<LoginProps> = ({
         </Animated.View>
       )}
 
-      {isMounted.login && (
-        <Animated.View style={[styles.screenContainer, loginStyle]}>
+      {currentScreen === "login" && (
+        <Animated.View style={[styles.screenContainer, animation]}>
           <LoginScreen
             email={email}
             setEmail={setEmail}
             password={password}
-            setPassword={setPasswordState} // Updated to use correct setter
+            setPassword={setPasswordState}
             showPassword={showPassword}
             toggleShowPassword={toggleShowPassword}
             handleLogin={handleLogin}
@@ -111,15 +142,15 @@ export const Login: React.FC<LoginProps> = ({
         </Animated.View>
       )}
 
-      {isMounted.register && (
-        <Animated.View style={[styles.screenContainer, registerStyle]}>
+      {currentScreen === "register" && (
+        <Animated.View style={[styles.screenContainer, animation]}>
           <RegisterScreen
             name={name}
             setName={setName}
             email={email}
             setEmail={setEmail}
             password={password}
-            setPassword={setPasswordState} // Updated to use correct setter
+            setPassword={setPasswordState}
             showPassword={showPassword}
             toggleShowPassword={toggleShowPassword}
             handleRegister={handleRegister}

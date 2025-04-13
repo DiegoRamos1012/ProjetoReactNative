@@ -2,120 +2,74 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  signOut,
   User,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebaseConfig";
-import { UserData, UserRole } from "../app/types";
+import { UserData, UserRole } from "../app/types/types";
 
+/**
+ * Realiza o login do usuário com email e senha
+ */
 export const loginUser = async (
   email: string,
   password: string
 ): Promise<User> => {
-  if (email === "") {
-    throw new Error("E-mail não pode ser vazio");
-  } else if (!email.includes("@")) {
-    throw new Error("E-mail inválido");
-  }
-
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const user = userCredential.user;
-
-    // Check if user exists in Firestore
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists()) {
-      // Option 1: Block login
-      await auth.signOut();
-      throw new Error(
-        "Sua conta foi excluída. Entre em contato com o suporte."
-      );
-    }
-
-    return user;
+    console.log("Auth service: Login bem-sucedido");
+    return userCredential.user;
   } catch (error: any) {
-    if (error.code === "auth/invalid-credential") {
-      throw new Error(
-        "E-mail ou senha incorretos. Por favor, tente novamente."
-      );
-    } else if (error.code === "auth/user-not-found") {
-      throw new Error(
-        "Não existe usuário com este e-mail. Deseja se cadastrar?"
-      );
-    } else if (error.code === "auth/wrong-password") {
-      throw new Error(
-        "Senha incorreta. Por favor, verifique e tente novamente."
-      );
-    } else if (error.code === "auth/user-disabled") {
-      throw new Error(
-        "Esta conta foi desativada. Entre em contato com o suporte."
-      );
-    } else if (error.code === "auth/network-request-failed") {
-      throw new Error("Erro de conexão com a internet. Verifique sua conexão.");
-    } else {
-      throw new Error(`Erro ao fazer login: ${error.message}`);
-    }
+    console.error("Auth service: Erro no login:", error.code, error.message);
+    throw error;
   }
 };
 
+/**
+ * Registra um novo usuário com nome, email e senha
+ */
 export const registerUser = async (
   name: string,
   email: string,
   password: string
 ): Promise<User> => {
-  // Validate inputs
-  if (email === "") {
-    throw new Error("E-mail não pode ser vazio");
-  } else if (!email.includes("@")) {
-    throw new Error("E-mail inválido");
-  }
-
-  if (name.trim() === "") {
-    throw new Error("Nome não pode ser vazio");
-  }
-
-  if (password.length < 6) {
-    throw new Error("A senha deve ter pelo menos 6 caracteres");
-  }
-
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const user = userCredential.user;
 
-    // Update profile with display name
-    await updateProfile(user, { displayName: name });
-
-    // Create user document in Firestore with role defaulting to "cliente"
-    await setDoc(doc(db, "users", user.uid), {
-      nome: name,
-      email: email,
-      dataCadastro: new Date(),
-      role: "cliente", // Default role
-      cargo: "cliente", // Default cargo
-    });
-
-    return user;
-  } catch (error: any) {
-    // Map Firebase errors to user-friendly messages
-    if (error.code === "auth/email-already-in-use") {
-      throw new Error("Este e-mail já está sendo usado por outra conta.");
-    } else if (error.code === "auth/weak-password") {
-      throw new Error("A senha é muito fraca. Utilize uma senha mais forte.");
-    } else if (error.code === "auth/invalid-email") {
-      throw new Error("O formato do e-mail é inválido.");
-    } else if (error.code === "auth/network-request-failed") {
-      throw new Error("Erro de conexão com a internet. Verifique sua conexão.");
-    } else {
-      throw new Error(`Erro ao cadastrar: ${error.message}`);
+    // Atualiza o perfil do usuário com o nome
+    if (name) {
+      await updateProfile(userCredential.user, {
+        displayName: name,
+      });
     }
+
+    console.log("Auth service: Registro bem-sucedido");
+    return userCredential.user;
+  } catch (error: any) {
+    console.error("Auth service: Erro no registro:", error.code, error.message);
+    throw error;
+  }
+};
+
+/**
+ * Realiza o logout do usuário atual
+ */
+export const logoutUser = async (): Promise<void> => {
+  try {
+    await signOut(auth);
+    console.log("Auth service: Logout bem-sucedido");
+  } catch (error: any) {
+    console.error("Auth service: Erro no logout:", error.code, error.message);
+    throw error;
   }
 };
 
