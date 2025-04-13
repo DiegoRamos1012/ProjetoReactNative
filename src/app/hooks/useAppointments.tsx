@@ -41,9 +41,6 @@ export const useAppointments = (user: User) => {
 
       console.log("Executando consulta ao Firestore...");
       const querySnapshot = await getDocs(q);
-      console.log(
-        `Consulta concluída. Documentos encontrados: ${querySnapshot.size}`
-      );
 
       const agendamentosData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
