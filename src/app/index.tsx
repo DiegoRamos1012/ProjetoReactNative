@@ -17,7 +17,12 @@ export default function App() {
   // AUTH STATE LISTENER - Este é crucial para a persistência
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("AsyncStorage: " + (currentUser ? "Persistência funcionando corretamente" : "Usuário não autenticado"));
+      console.log(
+        "AsyncStorage: " +
+          (currentUser
+            ? "Persistência funcionando corretamente"
+            : "Usuário não autenticado")
+      );
       setUser(currentUser);
       setLoading(false);
     });

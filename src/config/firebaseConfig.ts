@@ -19,10 +19,10 @@ const firebaseConfig = {
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
-  
+
   // Inicializar auth com persistência imediatamente após criar o app
   initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
   });
 } else {
   app = getApp();
