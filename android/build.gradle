@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0" // Atualizando para uma versão mais recente
     }
 }
 
@@ -42,6 +42,30 @@ android {
     }
 }
 
+project.ext.react = [
+    // Outras configurações existentes
+    kotlinVersion: "1.8.0"
+]
+
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Na parte inferior do arquivo, adicionar:
+afterEvaluate {
+    subprojects {
+        if (name.contains('expo-application')) {
+            android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+                kotlinOptions {
+                    jvmTarget = "17"
+                }
+            }
+        }
+    }
 }
