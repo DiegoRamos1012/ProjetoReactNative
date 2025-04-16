@@ -1,0 +1,16 @@
+// Este arquivo é aplicado especificamente ao módulo expo-application
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+// Desativar validação de target JVM para este módulo
+gradle.ext.kotlin.jvm.target.validation.mode = 'ignore'

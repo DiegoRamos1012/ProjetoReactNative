@@ -1,0 +1,7 @@
+// ...other settings...
+
+gradle.beforeProject { project ->
+    if (project.name == 'expo-application') {
+        project.apply from: new File(rootProject.projectDir, 'expo-application-fix.gradle')
+    }
+}
