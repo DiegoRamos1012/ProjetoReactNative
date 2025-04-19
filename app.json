@@ -4,7 +4,7 @@
     "slug": "projetoappbarbearia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-barb.png",
+    "icon": "./assets/images/logo_avila_barbearia.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo-barb.png",
+        "foregroundImage": "./assets/images/logo_avila_barbearia.png",
         "backgroundColor": "#000000"
       },
       "package": "com.diego.appbarbearia",
@@ -26,7 +26,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo_avila_barbearia.png"
     },
     "plugins": [
       "expo-router",
@@ -34,7 +34,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo-barb.png",
+          "image": "./assets/images/logo_avila_barbearia.png",
           "imageWidth": 600,
           "resizeMode": "contain",
           "backgroundColor": "#000000"
@@ -60,7 +60,7 @@
       "url": "https://u.expo.dev/b2a9a738-5a6a-4fd7-9e0b-8420dfaeab45"
     },
     "splash": {
-      "image": "./assets/images/logo-barb.png",
+      "image": "./assets/images/logo_avila_barbearia.png",
       "imageWidth": 600,
       "resizeMode": "contain",
       "backgroundColor": "#000000"

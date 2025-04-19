@@ -4,10 +4,11 @@ import { StyleSheet } from "react-native";
 // CORES GLOBAIS
 // ==========================================
 export const colors = {
-  primary: "#FFFFFF", 
-  secondary: "#2A4A73", 
-  background: "#000000", 
-  input: "gray",
+  primary: "#FFFFFF",
+  secondary: "#0C2340", // Azul marinho como na logo
+  background: "#000000",
+  input: "#333333",
+  inputFocused: "#444444",
   white: "#FFFFFF",
   text: "#FFFFFF",
   textDark: "#333333",
@@ -15,12 +16,27 @@ export const colors = {
   textLighter: "#dddddd",
   error: "#FF375B",
   disabled: "#cccccc",
-  adminRole: "#c2410c", // Nova cor para papel de administrador
-  clientRole: "#0891b2", // Nova cor para papel de cliente
-  funcionarioCargo: "#047857", // Nova cor para cargo de funcionário
-  clienteCargo: "#4b5563", // Nova cor para cargo de cliente normal
+  adminRole: "#c2410c",
+  clientRole: "#0891b2",
+  funcionarioCargo: "#047857",
+  clienteCargo: "#4b5563",
   barbeiroCargo: "#0891b2",
   gerenteCargo: "#9333ea",
+  gradient: {
+    start: "#0C2340", // Azul marinho escuro (como no poste da logo)
+    middle: "#0F172A", // Tom intermediário
+    end: "#000000", // Preto para o fundo
+  },
+  button: {
+    primary: "#3A5199",
+    secondary: "#555555",
+  },
+  barber: {
+    gold: "#D4AF37", // Dourado da coroa
+    red: "#B22222", // Vermelho do poste
+    navy: "#0C2340", // Azul marinho do personagem
+    lightGold: "rgba(212, 175, 55, 0.15)", // Dourado com baixa opacidade para detalhes
+  },
 };
 
 export const globalStyles = StyleSheet.create({
@@ -461,7 +477,7 @@ export const globalStyles = StyleSheet.create({
   backButtonText: {
     color: colors.white,
     marginLeft: 8,
-   },
+  },
 
   // ==========================================
   // ESTILOS DE BOTÕES COMUNS
@@ -1019,6 +1035,99 @@ export const globalStyles = StyleSheet.create({
   serviceFormSaveButtonText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  // ==========================================
+  // ESTILOS DE LOGIN/REGISTER/WELCOME MELHORADOS
+  // ==========================================
+
+  authContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  logoImage: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+    borderRadius: 20,
+    resizeMode: "contain",
+  },
+  authTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: colors.primary,
+    textAlign: "center",
+    marginBottom: 30,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  authInput: {
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.input,
+    borderRadius: 25,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: colors.text,
+    marginBottom: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  authInputFocused: {
+    borderColor: colors.secondary,
+    backgroundColor: colors.inputFocused,
+  },
+  passwordContainer: {
+    width: "100%",
+    position: "relative",
+    marginBottom: 20,
+  },
+  passwordIconContainer: {
+    position: "absolute",
+    right: 15,
+    top: 14,
+    zIndex: 1,
+  },
+  authButton: {
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.button.primary,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  authButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  backToHomeButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 25,
+    backgroundColor: "rgba(85, 85, 85, 0.5)",
+    width: "80%",
+  },
+  backToHomeText: {
+    color: colors.white,
+    marginRight: 8,
+    fontSize: 14,
+    textAlign: "center",
     fontWeight: "bold",
   },
 });

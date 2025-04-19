@@ -9,6 +9,7 @@ import { loginUser, registerUser } from "../../services/authService";
 import WelcomeScreen from "../../components/screens/Login/WelcomeScreen";
 import LoginScreen from "../../components/screens/Login/LoginScreen";
 import RegisterScreen from "../../components/screens/Login/RegisterScreen";
+import ForgotPasswordScreen from "../../components/screens/Login/ForgotPasswordScreen";
 
 interface LoginProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -33,7 +34,7 @@ export const Login: React.FC<LoginProps> = ({
     getAnimatedStyles,
     transitionToScreen: handleNavigate,
   } = useScreenTransition();
-  
+
   // Get animation styles
   const animation = getAnimatedStyles()[`${currentScreen}Style`];
 
@@ -49,16 +50,19 @@ export const Login: React.FC<LoginProps> = ({
       console.log("Iniciando login para:", email);
       const userCredential = await loginUser(email, password);
       console.log("Login bem-sucedido para:", userCredential.email);
-      
+
       // Sem necessidade de guardar a senha, Firebase gerencia os tokens
       if (setGlobalPassword) {
         setGlobalPassword(""); // Limpar senha após login
       }
-      
+
       setUser(userCredential);
     } catch (error: any) {
       console.error("Erro no login:", error);
-      Alert.alert("Erro no login", "Verifique suas credenciais e tente novamente.");
+      Alert.alert(
+        "Erro no login",
+        "Verifique suas credenciais e tente novamente."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -76,22 +80,25 @@ export const Login: React.FC<LoginProps> = ({
       console.log("Iniciando registro para:", email);
       const userCredential = await registerUser(name, email, password);
       console.log("Registro bem-sucedido para:", userCredential.email);
-      
+
       // Sem necessidade de guardar a senha, Firebase gerencia os tokens
       if (setGlobalPassword) {
         setGlobalPassword(""); // Limpar senha após registro
       }
-      
+
       setUser(userCredential);
     } catch (error: any) {
       console.error("Erro no registro:", error);
-      Alert.alert("Erro no registro", "Não foi possível criar sua conta. Tente novamente.");
+      Alert.alert(
+        "Erro no registro",
+        "Não foi possível criar sua conta. Tente novamente."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Rest of the Login component code...
+  // Navigation methods
   const goToLogin = useCallback(() => {
     handleNavigate("login");
   }, [handleNavigate]);
@@ -100,12 +107,9 @@ export const Login: React.FC<LoginProps> = ({
     handleNavigate("register");
   }, [handleNavigate]);
 
-  const goToWelcome = useCallback(() => {
-    handleNavigate("welcome");
-    // Clear form data
-    setName("");
-    setEmail("");
-    setPasswordState("");
+  // New navigation method for forgot password
+  const goToForgotPassword = useCallback(() => {
+    handleNavigate("forgotPassword");
   }, [handleNavigate]);
 
   // Password visibility toggler
@@ -114,8 +118,8 @@ export const Login: React.FC<LoginProps> = ({
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
+    <View style={styles.container}>
+      <StatusBar backgroundColor={colors.background} barStyle="light-content" />
 
       {currentScreen === "welcome" && (
         <Animated.View style={[styles.screenContainer, animation]}>
@@ -136,8 +140,9 @@ export const Login: React.FC<LoginProps> = ({
             showPassword={showPassword}
             toggleShowPassword={toggleShowPassword}
             handleLogin={handleLogin}
-            goToWelcome={goToWelcome}
+            goToWelcome={goToRegister} // Alterado: agora redireciona para a tela de cadastro
             isLoading={isLoading}
+            onForgotPassword={goToForgotPassword} // Adicionando o handler para Esqueci minha senha
           />
         </Animated.View>
       )}
@@ -154,9 +159,15 @@ export const Login: React.FC<LoginProps> = ({
             showPassword={showPassword}
             toggleShowPassword={toggleShowPassword}
             handleRegister={handleRegister}
-            goToWelcome={goToWelcome}
+            goToWelcome={goToLogin} // Continua redirecionando para o login
             isLoading={isLoading}
           />
+        </Animated.View>
+      )}
+
+      {currentScreen === "forgotPassword" && (
+        <Animated.View style={[styles.screenContainer, animation]}>
+          <ForgotPasswordScreen goBack={goToLogin} />
         </Animated.View>
       )}
     </View>

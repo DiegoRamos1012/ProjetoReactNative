@@ -3,7 +3,7 @@ import { Animated, Dimensions, Easing } from "react-native";
 
 const { width } = Dimensions.get("window");
 
-type ScreenMode = "welcome" | "login" | "register";
+type ScreenMode = "welcome" | "login" | "register" | "forgotPassword";
 
 interface ScreenState {
   [key: string]: boolean;
@@ -16,12 +16,14 @@ export const useScreenTransition = (initialMode: ScreenMode = "welcome") => {
   const welcomePosition = useRef(new Animated.Value(0)).current;
   const loginPosition = useRef(new Animated.Value(width)).current;
   const registerPosition = useRef(new Animated.Value(width)).current;
+  const forgotPasswordPosition = useRef(new Animated.Value(width)).current;
 
   // Track which screens are mounted to prevent flashes
   const [isMounted, setIsMounted] = useState<ScreenState>({
     welcome: true,
     login: false,
     register: false,
+    forgotPassword: false,
   });
 
   const getPositionForMode = (mode: ScreenMode): Animated.Value => {
@@ -32,6 +34,10 @@ export const useScreenTransition = (initialMode: ScreenMode = "welcome") => {
         return loginPosition;
       case "register":
         return registerPosition;
+      case "forgotPassword":
+        return forgotPasswordPosition;
+      default:
+        return welcomePosition;
     }
   };
 
@@ -60,6 +66,14 @@ export const useScreenTransition = (initialMode: ScreenMode = "welcome") => {
         direction = 1; // Login to register (go right)
       } else if (screenMode === "register" && nextMode === "login") {
         direction = -1; // Register to login (go left)
+      }
+      // To forgotPassword
+      else if (nextMode === "forgotPassword") {
+        direction = 1; // Going to forgotPassword slides from right
+      }
+      // From forgotPassword
+      else if (screenMode === "forgotPassword") {
+        direction = -1; // Going back from forgotPassword slides to left
       }
 
       // Ensure next screen is mounted
@@ -102,11 +116,21 @@ export const useScreenTransition = (initialMode: ScreenMode = "welcome") => {
             register:
               prev.register &&
               (nextMode === "register" || screenMode === "register"),
+            forgotPassword:
+              prev.forgotPassword &&
+              (nextMode === "forgotPassword" ||
+                screenMode === "forgotPassword"),
           }));
         }, 100);
       });
     },
-    [screenMode, welcomePosition, loginPosition, registerPosition]
+    [
+      screenMode,
+      welcomePosition,
+      loginPosition,
+      registerPosition,
+      forgotPasswordPosition,
+    ]
   );
 
   // Get animated styles for each screen
@@ -115,6 +139,9 @@ export const useScreenTransition = (initialMode: ScreenMode = "welcome") => {
       welcomeStyle: { transform: [{ translateX: welcomePosition }] },
       loginStyle: { transform: [{ translateX: loginPosition }] },
       registerStyle: { transform: [{ translateX: registerPosition }] },
+      forgotPasswordStyle: {
+        transform: [{ translateX: forgotPasswordPosition }],
+      },
     };
   };
 
