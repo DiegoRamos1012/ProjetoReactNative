@@ -1,15 +1,17 @@
 import React from "react";
-import { 
-  View, 
-  Text, 
-  Image, 
-  TextInput, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
   ActivityIndicator,
-  StatusBar 
+  StatusBar,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import globalStyles, {colors} from "../../../app/components/globalStyle/styles";
+import globalStyles, {
+  colors,
+} from "../../../app/components/globalStyle/styles";
 interface LoginScreenProps {
   email: string;
   setEmail: (email: string) => void;
@@ -34,9 +36,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   isLoading,
 }) => (
   <View style={globalStyles.container}>
-    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
-    <Image style={globalStyles.image} />
-    <Text style={[globalStyles.title, { marginBottom: 30 }]}>
+    <StatusBar backgroundColor={colors.background} barStyle="light-content" />
+    <Image
+      source={require("../../../../assets/images/logo-barb.png")}
+      style={globalStyles.image}
+    />
+    <Text
+      style={[globalStyles.title, { marginBottom: 30 }, { marginTop: -100 }]}
+    >
       Faça seu Login
     </Text>
 

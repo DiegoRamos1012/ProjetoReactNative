@@ -13,11 +13,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onRegisterPress,
 }) => (
   <View style={globalStyles.container}>
-    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
-    <Image style={globalStyles.image} />
-    <Text style={[globalStyles.title, { marginBottom: 20 }]}>
-      Bem-vindo à Barbearia
-    </Text>
+    <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
+    <Image
+      source={require("../../../../assets/images/logo-barb.png")}
+      style={globalStyles.image}
+    />
+    <Text style={[globalStyles.title, { marginBottom: 20 }]}>Bem-vindo!</Text>
 
     <TouchableOpacity style={globalStyles.singleButton} onPress={onLoginPress}>
       <Text style={globalStyles.singleButtonText}>Fazer Login</Text>

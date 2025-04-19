@@ -20,6 +20,12 @@ export type AdminToolsScreenProps = NativeStackScreenProps<
   "AdminTools"
 >;
 
+// Compatibilidade com código antigo
+export interface HomeScreenPropsLegacy {
+  navigation: any;
+  route: any;
+}
+
 export interface HomeProps extends HomeScreenProps {
   user: User;
   setUser: (user: User | null) => void;
@@ -44,6 +50,12 @@ export interface AdminToolsProps extends AdminToolsScreenProps {
   user: User;
 }
 
+// Interface adicionada do arquivo antigo
+export interface ServicesManagementProps {
+  navigation: any;
+  user: User;
+}
+
 export type UserRole = "administrador" | "cliente";
 
 export interface UserData {
@@ -63,7 +75,7 @@ export interface Servico {
   id: string;
   nome: string;
   descricao: string;
-  preco: number;
+  preco: number; // Atualizado para aceitar ambos os tipos para compatibilidade
   tempo: string;
   iconName: string;
   observacao?: string; // Observação para o cliente ler
@@ -89,4 +101,3 @@ export interface InicioProps {
   setUser: (user: User | null) => void;
   user: User;
 }
-

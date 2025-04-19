@@ -39,9 +39,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   isLoading,
 }) => (
   <View style={globalStyles.container}>
-    <StatusBar backgroundColor={colors.darkBlue} barStyle="light-content" />
-    <Image style={globalStyles.image} />
-    <Text style={[globalStyles.title, { marginBottom: 30 }]}>Cadastre-se</Text>
+    <StatusBar backgroundColor={colors.background} barStyle="light-content" />
+    <Image  source={require("../../../../assets/images/logo-barb.png")} style={globalStyles.image} />
+    <Text style={[globalStyles.title, { marginBottom: 30 }, {marginTop: -100}]}>Cadastre-se</Text>
     <TextInput
       style={globalStyles.textInput}
       placeholder="Nome"
@@ -76,6 +76,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
           name={showPassword ? "visibility" : "visibility-off"}
           size={25}
           color="#FFFFFF"
+          height={44}
         />
       </TouchableOpacity>
     </View>

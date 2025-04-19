@@ -47,7 +47,7 @@ export const useAppointments = (user: User) => {
         ...doc.data(),
       })) as Agendamento[];
 
-      console.log("Agendamentos processados:", agendamentosData.length);
+      console.log("Agendamentos encontrados:", agendamentosData.length);
       setAgendamentos(agendamentosData);
       setErrorMessage(null);
     } catch (error: any) {

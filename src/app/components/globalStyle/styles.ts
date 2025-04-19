@@ -4,10 +4,9 @@ import { StyleSheet } from "react-native";
 // CORES GLOBAIS
 // ==========================================
 export const colors = {
-  primary: "#FFFFFF", // Cor violeta
-  secondary: "#2A4A73", // Cor azul
-  darkBlue: "#1E2F4D", // Cor azul escuro
-  background: "#0EA1D8", // Cor de fundo
+  primary: "#FFFFFF", 
+  secondary: "#2A4A73", 
+  background: "#000000", 
   input: "gray",
   white: "#FFFFFF",
   text: "#FFFFFF",
@@ -86,6 +85,7 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: "bold",
     color: colors.primary,
+    textAlign: "center",
   },
   iconWrapper: {
     position: "absolute",
@@ -94,8 +94,9 @@ export const globalStyles = StyleSheet.create({
     transform: [{ translateY: -22 }],
   },
   image: {
-    width: 600,
-    height: 400,
+    width: 400,
+    height: 450,
+    marginBottom: 10,
   },
   centeredView: {
     flex: 1,
@@ -135,7 +136,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
   },
   header: {
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.background,
     padding: 20,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -457,7 +458,7 @@ export const globalStyles = StyleSheet.create({
   backButtonText: {
     color: colors.white,
     marginLeft: 8,
-  },
+   },
 
   // ==========================================
   // ESTILOS DE BOTÕES COMUNS
@@ -498,7 +499,7 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.background,
     borderRadius: 8,
     padding: 16,
   },

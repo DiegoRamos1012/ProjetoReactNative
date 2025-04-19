@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
 import globalStyles from "../components/globalStyle/styles";
 import { HomeProps } from "../types/types";
-import { Servico } from "../types";
+import { Servico } from "../types/types";
 import { useAppointments } from "../hooks/useAppointments";
 import useServicos from "../data/services";
 // Componentes modulares
@@ -35,14 +35,12 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
 
   // Carregar agendamentos quando o componente montar
   useEffect(() => {
-    console.log("Componente montado, carregando agendamentos iniciais");
     fetchAppointments();
   }, [fetchAppointments]);
 
   // Atualizar serviços quando a tela entrar em foco
   useFocusEffect(
     React.useCallback(() => {
-      console.log("Home screen em foco, atualizando serviços");
       refreshServicos();
       return () => {
         // Cleanup opcional
