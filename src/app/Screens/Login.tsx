@@ -115,7 +115,7 @@ export const Login: React.FC<LoginProps> = ({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar backgroundColor={colors.background} barStyle="light-content" />
+      <StatusBar backgroundColor={colors.background} barStyle="dark-content" />
 
       {currentScreen === "welcome" && (
         <Animated.View style={[styles.screenContainer, animation]}>

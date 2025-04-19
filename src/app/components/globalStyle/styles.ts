@@ -97,6 +97,9 @@ export const globalStyles = StyleSheet.create({
     width: 400,
     height: 450,
     marginBottom: 10,
+    padding: 10,
+    borderRadius: 20,
+    borderWidth: 2,
   },
   centeredView: {
     flex: 1,
