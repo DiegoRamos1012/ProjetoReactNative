@@ -50,5 +50,12 @@
     "@types/react-test-renderer": "^18.3.0",
     "typescript": "^5.7.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
