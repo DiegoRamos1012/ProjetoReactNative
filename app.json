@@ -4,7 +4,7 @@
     "slug": "projetoappbarbearia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-barbearia.png",
+    "icon": "./assets/images/logo-barb.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,8 +17,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/logo-barb.png",
+        "backgroundColor": "#000000"
       },
       "package": "com.diego.appbarbearia",
       "googleServicesFile": "./google-services.json"
@@ -34,10 +34,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/logo-barb.png",
+          "imageWidth": 600,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000"
         }
       ]
     ],
@@ -58,6 +58,12 @@
     },
     "updates": {
       "url": "https://u.expo.dev/b2a9a738-5a6a-4fd7-9e0b-8420dfaeab45"
+    },
+    "splash": {
+      "image": "./assets/images/logo-barb.png",
+      "imageWidth": 600,
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
     }
   }
 }
