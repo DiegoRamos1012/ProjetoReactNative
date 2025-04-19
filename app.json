@@ -49,6 +49,12 @@
         "projectId": "b2a9a738-5a6a-4fd7-9e0b-8420dfaeab45"
       }
     },
-    "owner": "diego1012"
+    "owner": "diego1012",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b2a9a738-5a6a-4fd7-9e0b-8420dfaeab45"
+    }
   }
 }
