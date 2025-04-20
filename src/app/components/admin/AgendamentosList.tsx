@@ -20,8 +20,6 @@ import { db } from "../../../config/firebaseConfig";
 import { Agendamento } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
 import { MaterialIcons } from "@expo/vector-icons";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { formatCurrencyBRL } from "../../format";
 
 interface AgendamentosListProps {
