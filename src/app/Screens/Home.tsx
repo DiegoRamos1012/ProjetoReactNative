@@ -82,7 +82,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
 
   return (
     <ScrollView
-      style={globalStyles.homeContainer}
+      style={globalStyles.homeContainerEnhanced}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -111,7 +111,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
       {/* Lista de agendamentos */}
       <AppointmentsList
         agendamentos={agendamentos}
-        servicos={servicos.map(s => ({...s, preco: Number(s.preco)}))}
+        servicos={servicos.map((s) => ({ ...s, preco: Number(s.preco) }))}
         loading={loading}
         refreshing={refreshing}
         isLoading={loading || loadingServicos}

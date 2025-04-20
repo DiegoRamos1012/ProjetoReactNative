@@ -9,9 +9,9 @@ interface BannerProps {
 
 const Banner: React.FC<BannerProps> = ({ title, subtitle }) => {
   return (
-    <View style={globalStyles.banner}>
-      <Text style={globalStyles.bannerTitle}>{title}</Text>
-      <Text style={globalStyles.bannerSubtitle}>{subtitle}</Text>
+    <View style={globalStyles.bannerEnhanced}>
+      <Text style={globalStyles.bannerTitleEnhanced}>{title}</Text>
+      <Text style={globalStyles.bannerSubtitleEnhanced}>{subtitle}</Text>
     </View>
   );
 };

@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Servico } from "../../types";
+import { Servico } from "../../types/types";
 import { formatCurrencyBRL } from "../../format";
 import globalStyles, { colors } from "../globalStyle/styles";
 
