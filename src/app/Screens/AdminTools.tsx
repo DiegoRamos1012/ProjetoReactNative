@@ -581,8 +581,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               </TouchableOpacity>
 
               {/* Usando o componente dedicado para exibir os agendamentos */}
-              <AgendamentosList
-                canAccessTools={canAccessTools}
+              <AgendamentosList 
+                canAccessTools={canAccessTools} 
                 expanded={agendamentosExpanded}
                 onStatusChange={(id, status) => {
                   console.log(`Agendamento ${id} alterado para ${status}`);
