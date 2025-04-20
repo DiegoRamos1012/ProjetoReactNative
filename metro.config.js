@@ -1,3 +1,6 @@
+// Este arquivo é usado para configurar o Metro Bundler, que é o empacotador de módulos usado pelo React Native. O seu principal papel é otimizar
+// O processo de refatoração do código atualizando a tela em que o desenvolvedor está, sem perder o estado atual do aplicativo.
+
 const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
