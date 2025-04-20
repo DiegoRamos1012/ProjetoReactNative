@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { ProfileProps } from "../types";
+import { ProfileProps } from "../types/types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
@@ -122,32 +122,53 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   };
 
   return (
-    <View style={globalStyles.homeContainer}>
-      <View style={globalStyles.header}>
+    <View
+      style={{
+        backgroundColor: colors.gradient.middle,
+        flex: 1,
+      }}
+    >
+      <View
+        style={[
+          globalStyles.header,
+          { backgroundColor: colors.gradient.start },
+        ]}
+      >
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={globalStyles.backButton}
+          style={[globalStyles.backButton, { backgroundColor: "transparent" }]}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#FFF" />
+          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={[globalStyles.bannerTitle, { marginBottom: 0 }]}>
+
+        <Text
+          style={[
+            globalStyles.bannerTitle,
+            { marginBottom: 0, color: colors.primary },
+          ]}
+        >
           Meu Perfil
         </Text>
-        {isAdmin ? (
+
+        {/* Botão Admin com estilo padronizado */}
+        {isAdmin && (
           <TouchableOpacity
             onPress={() => navigation.navigate("AdminTools")}
             style={[
               globalStyles.backButton,
-              { backgroundColor: colors.secondary },
+              { backgroundColor: colors.button.primary },
             ]}
           >
-            <MaterialIcons name="admin-panel-settings" size={24} color="#FFF" />
+            <MaterialIcons
+              name="admin-panel-settings"
+              size={24}
+              color={colors.primary}
+            />
           </TouchableOpacity>
-        ) : (
-          <View style={{ width: 24 }} />
         )}
       </View>
 
+      {/* Formulário com cores padronizadas */}
       {loading ? (
         <View style={globalStyles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.secondary} />
@@ -156,7 +177,12 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
           </Text>
         </View>
       ) : (
-        <ScrollView style={globalStyles.profileContent}>
+        <ScrollView
+          style={[
+            globalStyles.profileContent,
+            { backgroundColor: colors.gradient.middle },
+          ]}
+        >
           <View style={globalStyles.profileAvatarContainer}>
             <View style={globalStyles.profileAvatar}>
               <MaterialIcons name="person" size={60} color="#FFF" />
@@ -241,11 +267,19 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
           </View>
 
           <TouchableOpacity
-            style={globalStyles.agendarButton}
+            style={[
+              globalStyles.agendarButton,
+              { backgroundColor: colors.button.primary },
+            ]}
             onPress={handleSave}
             disabled={saving}
           >
-            <Text style={globalStyles.agendarButtonText}>
+            <Text
+              style={[
+                globalStyles.agendarButtonText,
+                { color: colors.primary },
+              ]}
+            >
               {saving ? "Salvando..." : "Salvar Alterações"}
             </Text>
           </TouchableOpacity>

@@ -28,8 +28,8 @@ export const colors = {
     end: "#000000", // Preto para o fundo
   },
   button: {
-    primary: "#3A5199",
-    secondary: "#555555",
+    primary: "#3A5199", // Mantendo a cor azul do botão das telas de cadastro
+    secondary: "#4a9eff", // Azul mais claro para links e botões secundários
   },
   barber: {
     gold: "#D4AF37", // Dourado da coroa
@@ -37,6 +37,7 @@ export const colors = {
     navy: "#0C2340", // Azul marinho do personagem
     lightGold: "rgba(212, 175, 55, 0.15)", // Dourado com baixa opacidade para detalhes
   },
+  link: "#4a9eff", // Cor dos links na aplicação - mesmo das telas de cadastro
 };
 
 export const globalStyles = StyleSheet.create({
@@ -152,10 +153,10 @@ export const globalStyles = StyleSheet.create({
   // ==========================================
   homeContainer: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: colors.gradient.middle,
   },
   header: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.gradient.start,
     padding: 20,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -181,6 +182,7 @@ export const globalStyles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 14,
+    color: colors.white,
   },
   logoutButton: {
     padding: 10,
@@ -204,12 +206,14 @@ export const globalStyles = StyleSheet.create({
   section: {
     padding: 20,
     marginBottom: 15,
+    backgroundColor: colors.gradient.end,
+    borderRadius: 8,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
-    color: colors.textDark,
+    color: colors.primary,
   },
   sectionSubtitle: {
     fontSize: 14,
@@ -220,7 +224,7 @@ export const globalStyles = StyleSheet.create({
     marginTop: 10,
   },
   servicoCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.gradient.end,
     padding: 15,
     borderRadius: 10,
     marginRight: 15,
@@ -304,7 +308,7 @@ export const globalStyles = StyleSheet.create({
   // ==========================================
   modalView: {
     width: "85%",
-    backgroundColor: colors.white,
+    backgroundColor: colors.gradient.end,
     borderRadius: 15,
     padding: 25,
     shadowColor: "#000",
@@ -428,7 +432,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
-    color: colors.textDark,
+    color: colors.white,
   },
   formInput: {
     backgroundColor: "#FFF",
@@ -454,8 +458,8 @@ export const globalStyles = StyleSheet.create({
     borderColor: "#DDD",
   },
   radioSelected: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.secondary,
+    backgroundColor: colors.button.primary,
+    borderColor: colors.button.primary,
   },
   radioText: {
     fontSize: 16,
@@ -483,7 +487,7 @@ export const globalStyles = StyleSheet.create({
   // ESTILOS DE BOTÕES COMUNS
   // ==========================================
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.button.primary,
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -529,7 +533,7 @@ export const globalStyles = StyleSheet.create({
     textAlign: "center",
   },
   adminRefreshButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 4,
@@ -597,7 +601,7 @@ export const globalStyles = StyleSheet.create({
     color: colors.clienteCargo,
   },
   roleActionButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 4,
@@ -659,7 +663,7 @@ export const globalStyles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: colors.secondary,
+    borderColor: colors.button.primary,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
@@ -668,7 +672,7 @@ export const globalStyles = StyleSheet.create({
     height: 10,
     width: 10,
     borderRadius: 5,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
   },
   cargoText: {
     fontSize: 14,
@@ -726,7 +730,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
   },
   addServicoButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -781,7 +785,7 @@ export const globalStyles = StyleSheet.create({
   },
   servicoPrecoItem: {
     fontSize: 15,
-    color: colors.secondary,
+    color: colors.button.primary,
     fontWeight: "600",
     marginBottom: 2,
   },
@@ -793,7 +797,7 @@ export const globalStyles = StyleSheet.create({
     flexDirection: "row",
   },
   editButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     borderRadius: 4,
     width: 36,
     height: 36,
@@ -829,7 +833,7 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: colors.secondary,
+    color: colors.button.primary,
     marginTop: 10,
   },
   formRow: {
@@ -875,8 +879,8 @@ export const globalStyles = StyleSheet.create({
     borderColor: "#ddd",
   },
   iconSelected: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.secondary,
+    backgroundColor: colors.button.primary,
+    borderColor: colors.button.primary,
   },
   iconText: {
     marginTop: 5,
@@ -906,7 +910,7 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
   },
   addHorarioButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     width: 48,
     height: 48,
     borderRadius: 8,
@@ -947,7 +951,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     alignItems: "center",
   },
   saveButtonText: {
@@ -966,7 +970,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: colors.secondary,
+    color: colors.button.primary,
     textAlign: "center",
   },
   serviceFormGroup: {
@@ -1003,8 +1007,8 @@ export const globalStyles = StyleSheet.create({
     borderColor: "#ddd",
   },
   selectedIconButtonServices: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.secondary,
+    backgroundColor: colors.button.primary,
+    borderColor: colors.button.primary,
   },
   serviceFormButtonContainer: {
     flexDirection: "row",
@@ -1029,7 +1033,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.button.primary,
     alignItems: "center",
   },
   serviceFormSaveButtonText: {
@@ -1041,7 +1045,6 @@ export const globalStyles = StyleSheet.create({
   // ==========================================
   // ESTILOS DE LOGIN/REGISTER/WELCOME MELHORADOS
   // ==========================================
-
   authContainer: {
     flex: 1,
     justifyContent: "center",
@@ -1079,7 +1082,7 @@ export const globalStyles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   authInputFocused: {
-    borderColor: colors.secondary,
+    borderColor: colors.button.primary,
     backgroundColor: colors.inputFocused,
   },
   passwordContainer: {
@@ -1125,7 +1128,7 @@ export const globalStyles = StyleSheet.create({
   },
   backToHomeText: {
     color: colors.white,
-    marginRight: 8,
+    marginLeft: 8,
     fontSize: 14,
     textAlign: "center",
     fontWeight: "bold",

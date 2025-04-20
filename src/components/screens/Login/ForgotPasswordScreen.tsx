@@ -235,9 +235,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   backButtonText: {
-    color: "#FFFFFF",
+    color: colors.button.secondary, // Usando a mesma cor dos links das telas iniciais
     fontSize: 16,
     marginLeft: 10,
+    fontWeight: "bold",
+    textDecorationLine: "underline", // Adicionando sublinhado como nos links das telas iniciais
   },
 });
 

@@ -404,42 +404,70 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   }
 
   return (
-    <View style={globalStyles.homeContainer}>
-      {/* Header com botão de voltar */}
-      <View style={globalStyles.header}>
+    <View
+      style={[
+        globalStyles.homeContainer,
+        { backgroundColor: colors.gradient.middle },
+      ]}
+    >
+      {/* Header padronizado */}
+      <View
+        style={[
+          globalStyles.header,
+          { backgroundColor: colors.gradient.start },
+        ]}
+      >
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={globalStyles.backButton}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#FFF" />
+          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={[globalStyles.bannerTitle, { marginBottom: 0 }]}>
+
+        <Text
+          style={[
+            globalStyles.bannerTitle,
+            { marginBottom: 0, color: colors.primary },
+          ]}
+        >
           Administração
         </Text>
+
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Usando FlatList como contêiner principal para evitar nesting issues */}
+      {/* Conteúdo principal */}
       <FlatList
         data={[{ key: "mainContent" }]} // Apenas um item para renderizar todo o conteúdo
         renderItem={() => (
           <View style={{ flex: 1 }}>
-            {/* Seção de Gerenciamento de Usuários com cabeçalho clicável */}
-            <View style={globalStyles.adminContainer}>
+            {/* Seção de Gerenciamento de Usuários */}
+            <View
+              style={[
+                globalStyles.adminContainer,
+                { backgroundColor: colors.gradient.middle },
+              ]}
+            >
               <TouchableOpacity
                 style={[
                   globalStyles.adminHeader,
-                  { flexDirection: "row", justifyContent: "space-between" },
+                  {
+                    backgroundColor: colors.button.primary,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  },
                 ]}
                 onPress={toggleUsuariosSection}
               >
-                <Text style={globalStyles.adminTitle}>
+                <Text
+                  style={[globalStyles.adminTitle, { color: colors.primary }]}
+                >
                   Gerenciamento de Usuários
                 </Text>
                 <MaterialIcons
                   name={usuariosExpanded ? "expand-less" : "expand-more"}
                   size={24}
-                  color="#FFF"
+                  color={colors.primary}
                 />
               </TouchableOpacity>
 
@@ -464,26 +492,41 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               )}
             </View>
 
-            {/* Seção de Serviços e Horários com cabeçalho clicável */}
+            {/* Seção de Serviços com estilos padronizados */}
             <View
-              style={[globalStyles.adminContainer, { marginTop: 15, flex: 1 }]}
+              style={[
+                globalStyles.adminContainer,
+                {
+                  marginTop: 15,
+                  flex: 1,
+                  backgroundColor: colors.gradient.middle,
+                },
+              ]}
             >
               <TouchableOpacity
                 style={[
                   globalStyles.adminHeader,
-                  { flexDirection: "row", justifyContent: "space-between" },
+                  {
+                    backgroundColor: colors.button.primary,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  },
                 ]}
                 onPress={toggleServicosSection}
               >
-                <Text style={globalStyles.adminTitle}>Serviços e Horários</Text>
+                <Text
+                  style={[globalStyles.adminTitle, { color: colors.primary }]}
+                >
+                  Serviços e Horários
+                </Text>
                 <MaterialIcons
                   name={servicosExpanded ? "expand-less" : "expand-more"}
                   size={24}
-                  color="#FFF"
+                  color={colors.primary}
                 />
               </TouchableOpacity>
 
-              {/* Componente de Serviços - mostrado apenas quando expandido */}
+              {/* Componente de Serviços */}
               {servicosExpanded && <ServicosHorarios isAdmin={isAdmin} />}
             </View>
           </View>
@@ -491,6 +534,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         keyExtractor={(item) => item.key}
       />
 
+      {/* Modal de seleção de cargo com estilos padronizados */}
       {renderCargoSelectionModal()}
     </View>
   );
