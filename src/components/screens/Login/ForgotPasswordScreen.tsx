@@ -13,7 +13,6 @@ import {
   Easing,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import BackgroundAvila from "../../BackgroundAvila";
 import globalStyles, {
   colors,
 } from "../../../app/components/globalStyle/styles";
@@ -113,7 +112,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   };
 
   return (
-    <BackgroundAvila>
+    <View style={{ flex: 1 }}>
       <StatusBar
         backgroundColor={colors.gradient.start}
         barStyle="light-content"
@@ -141,7 +140,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
             },
           ]}
         >
-          Esqueci minha senha
+          Recuperação de Senha
         </Animated.Text>
 
         <Animated.View
@@ -207,7 +206,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </TouchableOpacity>
         </Animated.View>
       </View>
-    </BackgroundAvila>
+    </View>
   );
 };
 

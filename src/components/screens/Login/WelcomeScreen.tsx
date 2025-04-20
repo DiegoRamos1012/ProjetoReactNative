@@ -9,7 +9,6 @@ import {
   Easing,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import BackgroundAvila from "../../BackgroundAvila";
 import globalStyles, {
   colors,
 } from "../../../app/components/globalStyle/styles";
@@ -145,7 +144,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   };
 
   return (
-    <BackgroundAvila>
+    <View style={{ flex: 1 }}>
       <StatusBar
         backgroundColor={colors.gradient.start}
         barStyle="light-content"
@@ -203,7 +202,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               onPressOut={handleRegisterPressOut}
             >
               <Text style={[globalStyles.authButtonText, { fontSize: 18 }]}>
-                <MaterialIcons name="person-add" size={20} /> Cadastrar-se
+                <MaterialIcons
+                  name="person-add"
+                  size={20}
+                  style={{ alignSelf: "center", marginRight: 5 }}
+                />{" "}
+                Cadastrar-se
               </Text>
             </TouchableOpacity>
           </Animated.View>
@@ -239,7 +243,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </View>
         </Animated.View>
       </View>
-    </BackgroundAvila>
+    </View>
   );
 };
 

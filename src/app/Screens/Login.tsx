@@ -4,6 +4,7 @@ import { User } from "firebase/auth";
 import { colors } from "../components/globalStyle/styles";
 import { useScreenTransition } from "../../hooks/useScreenTransition";
 import { loginUser, registerUser } from "../../services/authService";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Import screen components
 import WelcomeScreen from "../../components/screens/Login/WelcomeScreen";
@@ -107,7 +108,15 @@ export const Login: React.FC<LoginProps> = ({
     handleNavigate("register");
   }, [handleNavigate]);
 
-  // New navigation method for forgot password
+  const goToWelcome = useCallback(() => {
+    handleNavigate("welcome");
+    // Clear form data
+    setName("");
+    setEmail("");
+    setPasswordState("");
+  }, [handleNavigate]);
+
+  // Navigation method for forgot password
   const goToForgotPassword = useCallback(() => {
     handleNavigate("forgotPassword");
   }, [handleNavigate]);
@@ -118,7 +127,14 @@ export const Login: React.FC<LoginProps> = ({
   }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[
+        colors.gradient.start,
+        colors.gradient.middle,
+        colors.gradient.end,
+      ]}
+      style={styles.container}
+    >
       <StatusBar backgroundColor={colors.background} barStyle="light-content" />
 
       {currentScreen === "welcome" && (
@@ -170,7 +186,7 @@ export const Login: React.FC<LoginProps> = ({
           <ForgotPasswordScreen goBack={goToLogin} />
         </Animated.View>
       )}
-    </View>
+    </LinearGradient>
   );
 };
 

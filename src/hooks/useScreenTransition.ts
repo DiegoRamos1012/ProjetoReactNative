@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Animated, Dimensions, Easing } from "react-native";
+import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 

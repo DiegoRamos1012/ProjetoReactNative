@@ -11,7 +11,6 @@ import {
   Easing,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import BackgroundAvila from "../../BackgroundAvila";
 import globalStyles, {
   colors,
 } from "../../../app/components/globalStyle/styles";
@@ -127,7 +126,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
   };
 
   return (
-    <BackgroundAvila>
+    <View style={{ flex: 1 }}>
       <View style={globalStyles.authContainer}>
         <StatusBar
           backgroundColor={colors.gradient.start}
@@ -293,7 +292,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({
           </Animated.View>
         </Animated.View>
       </View>
-    </BackgroundAvila>
+    </View>
   );
 };
 

@@ -12,7 +12,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import BackgroundAvila from "../../BackgroundAvila";
 import globalStyles, {
   colors,
 } from "../../../app/components/globalStyle/styles";
@@ -122,7 +121,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <BackgroundAvila>
+    <View style={{ flex: 1 }}>
       <StatusBar
         backgroundColor={colors.gradient.start}
         barStyle="light-content"
@@ -259,7 +258,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           </Animated.View>
         </Animated.View>
       </View>
-    </BackgroundAvila>
+    </View>
   );
 };
 
