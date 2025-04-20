@@ -4,7 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { User } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../config/firebaseConfig";
-import globalStyles from "../globalStyle/styles";
+import globalStyles, { colors } from "../globalStyle/styles";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/AppNavigator";
@@ -34,27 +34,56 @@ const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
   };
 
   return (
-    <View style={globalStyles.header}>
-      <View style={globalStyles.userInfoContainer}>
-        <TouchableOpacity
-          onPress={navigateToProfile}
-          style={globalStyles.userAvatarPlaceholder}
-          activeOpacity={0.7}
-        >
-          <MaterialIcons name="person" size={30} color="#FFF" />
-        </TouchableOpacity>
-        <View>
-          <Text style={globalStyles.userName}>
-            Olá, {user.displayName || "Cliente"}
-          </Text>
+    <View>
+      <View style={globalStyles.header}>
+        <View style={globalStyles.userInfoContainer}>
+          <TouchableOpacity
+            onPress={navigateToProfile}
+            style={globalStyles.userAvatarPlaceholder}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons name="person" size={30} color="#FFF" />
+          </TouchableOpacity>
+          <View>
+            <Text style={globalStyles.userName}>
+              Olá, {user.displayName || "Cliente"}
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity
+          onPress={handleLogout}
+          style={globalStyles.logoutButton}
+        >
+          <MaterialIcons name="logout" size={24} color="#FFF" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={handleLogout}
-        style={globalStyles.logoutButton}
+
+      {/* Linha horizontal para finalizar o header */}
+      <View
+        style={{
+          height: 2,
+          backgroundColor: "transparent",
+          marginVertical: 2,
+          borderBottomWidth: 1,
+          borderBottomColor: "rgba(30, 41, 59, 0.8)",
+          shadowColor: "rgba(30, 41, 59, 0.8)",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.6,
+          shadowRadius: 3,
+          elevation: 2,
+        }}
       >
-        <MaterialIcons name="logout" size={24} color="#FFF" />
-      </TouchableOpacity>
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            height: 1,
+            backgroundColor: colors.gradient.middle,
+            opacity: 0.3,
+          }}
+        />
+      </View>
     </View>
   );
 };

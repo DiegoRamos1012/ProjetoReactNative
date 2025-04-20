@@ -407,9 +407,18 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   if (loading) {
     return (
       <View style={globalStyles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.secondary} />
-        <Text style={globalStyles.profileLoadingText}>
-          Carregando usuários...
+        <View style={globalStyles.loadingCircle}>
+          <MaterialIcons
+            name="admin-panel-settings"
+            size={40}
+            color={colors.button.primary}
+          />
+        </View>
+        <Text style={globalStyles.loadingText}>
+          Carregando painel administrativo
+        </Text>
+        <Text style={globalStyles.loadingSubText}>
+          Preparando ferramentas e carregando dados do sistema...
         </Text>
       </View>
     );

@@ -171,9 +171,16 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
       {/* Formulário com cores padronizadas */}
       {loading ? (
         <View style={globalStyles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.secondary} />
-          <Text style={globalStyles.profileLoadingText}>
-            Carregando dados...
+          <View style={globalStyles.loadingCircle}>
+            <MaterialIcons
+              name="person"
+              size={40}
+              color={colors.button.primary}
+            />
+          </View>
+          <Text style={globalStyles.loadingText}>Carregando seu perfil</Text>
+          <Text style={globalStyles.loadingSubText}>
+            Aguarde enquanto buscamos suas informações...
           </Text>
         </View>
       ) : (

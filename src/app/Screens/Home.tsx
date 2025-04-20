@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import { ScrollView, RefreshControl, View, Text } from "react-native";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import { HomeProps } from "../types/types";
 import { Servico } from "../types/types";
@@ -12,6 +12,7 @@ import ServicesList from "../components/home/ServicesList";
 import AppointmentsList from "../components/home/AppointmentsList";
 import AppointmentModal from "../components/home/AppointmentModal";
 import { useFocusEffect } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -81,53 +82,74 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
   };
 
   return (
-    <ScrollView
-      style={globalStyles.homeContainer}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={refreshAppointments}
-          colors={[colors.button.primary]}
-          tintColor={colors.button.primary}
-        />
-      }
-    >
-      {/* Header com informações do usuário */}
-      <Header user={user} setUser={setUser} />
+    <>
+      {/* Tela de carregamento estilizada */}
+      {loading && agendamentos.length === 0 && loadingServicos ? (
+        <View style={globalStyles.loadingContainer}>
+          <View style={globalStyles.loadingCircle}>
+            <MaterialIcons
+              name="content-cut"
+              size={40}
+              color={colors.button.primary}
+            />
+          </View>
+          <Text style={globalStyles.loadingText}>
+            Bem-vindo à Ávila Barbearia
+          </Text>
+          <Text style={globalStyles.loadingSubText}>
+            Carregando sua experiência personalizada...
+          </Text>
+        </View>
+      ) : (
+        <ScrollView
+          style={globalStyles.homeContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refreshAppointments}
+              colors={[colors.button.primary]}
+              tintColor={colors.button.primary}
+            />
+          }
+        >
+          {/* Header com informações do usuário */}
+          <Header user={user} setUser={setUser} />
 
-      {/* Banner de destaque */}
-      <Banner
-        title="Ávila Barbearia"
-        subtitle="Qualidade e estilo para você"
-      />
+          {/* Banner de destaque */}
+          <Banner
+            title="Ávila Barbearia"
+            subtitle="Qualidade e estilo para você"
+          />
 
-      {/* Lista de serviços - Usando serviços do Firebase */}
-      <ServicesList
-        servicos={servicos}
-        onServicoPress={handleOpenModal}
-        loading={loadingServicos}
-      />
+          {/* Lista de serviços - Usando serviços do Firebase */}
+          <ServicesList
+            servicos={servicos}
+            onServicoPress={handleOpenModal}
+            loading={loadingServicos}
+          />
 
-      {/* Lista de agendamentos */}
-      <AppointmentsList
-        agendamentos={agendamentos}
-        servicos={servicos.map((s) => ({ ...s, preco: Number(s.preco) }))}
-        loading={loading}
-        refreshing={refreshing}
-        isLoading={loading || loadingServicos}
-        errorMessage={errorMessage}
-        onDeleteAppointment={deleteAppointment}
-      />
+          {/* Lista de agendamentos */}
+          <AppointmentsList
+            agendamentos={agendamentos}
+            servicos={servicos.map((s) => ({ ...s, preco: Number(s.preco) }))}
+            loading={loading}
+            refreshing={refreshing}
+            isLoading={loading || loadingServicos}
+            errorMessage={errorMessage}
+            onDeleteAppointment={deleteAppointment}
+          />
 
-      {/* Modal de agendamento */}
-      <AppointmentModal
-        visible={modalVisible}
-        servico={servicoSelecionado}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmAppointment}
-        loading={loading}
-      />
-    </ScrollView>
+          {/* Modal de agendamento */}
+          <AppointmentModal
+            visible={modalVisible}
+            servico={servicoSelecionado}
+            onClose={handleCloseModal}
+            onConfirm={handleConfirmAppointment}
+            loading={loading}
+          />
+        </ScrollView>
+      )}
+    </>
   );
 };
 

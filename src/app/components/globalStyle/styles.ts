@@ -55,7 +55,49 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8f8f8",
+    backgroundColor: colors.gradient.middle,
+  },
+  loadingAnimation: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  loadingContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  loadingText: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 15,
+    textShadowColor: "rgba(0, 0, 0, 0.4)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  loadingSubText: {
+    color: colors.textLighter,
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 8,
+    maxWidth: 250,
+  },
+  loadingCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(12, 35, 64, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: colors.button.primary,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   textInput: {
     width: "100%",
@@ -170,7 +212,7 @@ export const globalStyles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.gradient.middle,
     marginRight: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -219,6 +261,7 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     color: colors.primary,
+    marginTop: -10,
   },
   sectionSubtitle: {
     fontSize: 14,
@@ -516,7 +559,6 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 5,
     color: colors.textLighter,
-
   },
   modalPreco: {
     fontSize: 16,
@@ -541,7 +583,6 @@ export const globalStyles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     color: colors.textLighter,
-
   },
   horarioOption: {
     padding: 10,
