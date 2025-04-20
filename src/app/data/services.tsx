@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { Servico } from "../types";
+import { Servico } from "../types/types";
 
 // Hook para buscar serviços do Firebase
 export const useServicos = () => {

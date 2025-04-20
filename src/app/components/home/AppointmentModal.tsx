@@ -9,9 +9,9 @@ import {
   TextInput,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Servico } from "../../types";
-import globalStyles from "../globalStyle/styles";
-import { formatCurrencyBRL } from "../../format"; // Import the formatting function
+import { Servico } from "../../types/types";
+import globalStyles, { colors } from "../globalStyle/styles";
+import { formatCurrencyBRL } from "../../format"; 
 
 const localStyles = StyleSheet.create({
   observacaoContainer: {
@@ -25,17 +25,20 @@ const localStyles = StyleSheet.create({
     marginBottom: 5,
   },
   observacaoText: {
-    color: "#555",
+    color: colors.textLighter,
   },
   clientObservationContainer: {
-    marginVertical: 10,
+    marginVertical: 5,
     width: "100%",
+    color: colors.textLighter,
+
   },
   clientObservationLabel: {
     fontSize: 16,
     fontWeight: "500",
-    marginBottom: 5,
-    color: "#333",
+    marginBottom: 10,
+    color: colors.textLighter,
+
   },
   clientObservationInput: {
     borderWidth: 1,
@@ -110,7 +113,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
               : `R$ ${servico.preco}`}{" "}
             • {servico.tempo}
           </Text>
-          <Text style={globalStyles.modalDescricao}>{servico.descricao}</Text>
+          <Text  style={globalStyles.modalDescricao}>Descrição: {servico.descricao}</Text>
 
           <View style={globalStyles.horarioContainer}>
             <Text style={globalStyles.horarioTitle}>
@@ -155,7 +158,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
             </Text>
             <TextInput
               style={localStyles.clientObservationInput}
-              placeholder="Adicione observações para este agendamento..."
+              placeholder="Precisa de algo especial? Insira aqui! Isso ajuda o profissional a saber exatamente do que você precisa"
               value={observacao}
               onChangeText={setObservacao}
               multiline={true}

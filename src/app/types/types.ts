@@ -86,6 +86,7 @@ export interface Servico {
 export interface Agendamento {
   id: string;
   userId: string;
+  userName: string;
   servico: string;
   preco: string;
   data: string;
@@ -94,7 +95,7 @@ export interface Agendamento {
   status: string;
   criado_em: Timestamp;
   data_timestamp: Timestamp;
-  observacao_cliente: string; // Observação do cliente
+  observacao: string; // Observação do cliente
   iconName?: string; // Adicionando campo opcional para ícone
 }
 export interface InicioProps {

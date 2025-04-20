@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, RefreshControl, View, Text, Button } from "react-native";
-import globalStyles from "../components/globalStyle/styles";
+import { ScrollView, RefreshControl } from "react-native";
+import globalStyles, { colors } from "../components/globalStyle/styles";
 import { HomeProps } from "../types/types";
 import { Servico } from "../types/types";
 import { useAppointments } from "../hooks/useAppointments";
@@ -82,13 +82,13 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
 
   return (
     <ScrollView
-      style={globalStyles.homeContainerEnhanced}
+      style={globalStyles.homeContainer}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
           onRefresh={refreshAppointments}
-          colors={["#2A4A73"]}
-          tintColor="#2A4A73"
+          colors={[colors.button.primary]}
+          tintColor={colors.button.primary}
         />
       }
     >
@@ -97,7 +97,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
 
       {/* Banner de destaque */}
       <Banner
-        title="Barbearia Premium"
+        title="Ávila Barbearia"
         subtitle="Qualidade e estilo para você"
       />
 

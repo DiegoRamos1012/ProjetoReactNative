@@ -1,17 +1,18 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ImageSourcePropType } from "react-native";
 import globalStyles from "../globalStyle/styles";
 
 interface BannerProps {
   title: string;
   subtitle: string;
+  openingHours?: string;
 }
 
-const Banner: React.FC<BannerProps> = ({ title, subtitle }) => {
+const Banner: React.FC<BannerProps> = ({ title, subtitle, openingHours = "Não informado" }) => {
   return (
-    <View style={globalStyles.bannerEnhanced}>
-      <Text style={globalStyles.bannerTitleEnhanced}>{title}</Text>
-      <Text style={globalStyles.bannerSubtitleEnhanced}>{subtitle}</Text>
+    <View style={globalStyles.banner}>
+      <Text style={globalStyles.bannerTitle}>{title}</Text>
+      <Text style={globalStyles.bannerSubtitle}>{subtitle}</Text>
     </View>
   );
 };

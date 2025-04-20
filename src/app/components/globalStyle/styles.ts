@@ -203,6 +203,11 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.textLighter,
   },
+  bannerOpeningHours: {
+    fontSize: 14,
+    color: colors.textLighter,
+    marginTop: 5,
+  },
   section: {
     padding: 20,
     marginBottom: 15,
@@ -217,14 +222,14 @@ export const globalStyles = StyleSheet.create({
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: colors.textLight,
+    color: colors.textLighter,
     marginBottom: 15,
   },
   servicosList: {
     marginTop: 10,
   },
   servicoCard: {
-    backgroundColor: colors.gradient.end,
+    backgroundColor: colors.gradient.start,
     padding: 15,
     borderRadius: 10,
     marginRight: 15,
@@ -240,25 +245,26 @@ export const globalStyles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "#f0f0f0",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
+    color: colors.white,
   },
   servicoNome: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 5,
+    marginBottom: 15,
+    color: colors.textLighter,
   },
   servicoPreco: {
     fontSize: 15,
-    color: colors.secondary,
+    color: colors.textLighter,
     fontWeight: "600",
   },
   servicoTempo: {
     fontSize: 13,
-    color: colors.textLight,
+    color: colors.textLighter,
   },
 
   // ==========================================
@@ -477,7 +483,7 @@ export const globalStyles = StyleSheet.create({
   // ==========================================
   modalView: {
     width: "85%",
-    backgroundColor: colors.gradient.end,
+    backgroundColor: colors.gradient.middle,
     borderRadius: 15,
     padding: 25,
     shadowColor: "#000",
@@ -509,15 +515,18 @@ export const globalStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 5,
+    color: colors.textLighter,
+
   },
   modalPreco: {
     fontSize: 16,
-    color: colors.secondary,
+    color: colors.textLighter,
     marginBottom: 20,
   },
   modalDescricao: {
     fontWeight: "bold",
     fontSize: 16,
+    color: colors.textLighter,
   },
   horarioContainer: {
     marginVertical: 15,
@@ -526,18 +535,22 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 10,
+    color: colors.textLighter,
   },
   horarioOptions: {
     flexDirection: "row",
     flexWrap: "wrap",
+    color: colors.textLighter,
+
   },
   horarioOption: {
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
     borderRadius: 8,
     marginRight: 10,
     marginBottom: 10,
+    color: colors.textLighter,
+    backgroundColor: colors.white,
   },
   horarioSelected: {
     backgroundColor: colors.secondary,

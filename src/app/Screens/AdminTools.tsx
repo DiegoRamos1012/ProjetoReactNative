@@ -23,6 +23,8 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
 import ServicosHorarios from "../components/ServicosHorarios";
+import AgendamentosList from "../components/admin/AgendamentosList";
+import useServicos from "../data/services";
 
 interface UserListItem extends UserData {
   id: string;
@@ -42,6 +44,10 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   // Estados para controlar a expansão/contração das seções
   const [usuariosExpanded, setUsuariosExpanded] = useState(true);
   const [servicosExpanded, setServicosExpanded] = useState(false);
+  const [agendamentosExpanded, setAgendamentosExpanded] = useState(false);
+
+  // Use o hook para serviços
+  const { servicos } = useServicos();
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -242,6 +248,16 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     // Se expandir a seção de serviços, minimiza a de usuários para evitar problemas com listas
     if (!servicosExpanded) {
       setUsuariosExpanded(false);
+    }
+  };
+
+  // Toggle para expandir/contrair seção de agendamentos
+  const toggleAgendamentosSection = () => {
+    setAgendamentosExpanded(!agendamentosExpanded);
+    // Se expandir a seção de agendamentos, minimiza outras seções
+    if (!agendamentosExpanded) {
+      setUsuariosExpanded(false);
+      setServicosExpanded(false);
     }
   };
 
@@ -529,9 +545,62 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               {/* Componente de Serviços */}
               {servicosExpanded && <ServicosHorarios isAdmin={isAdmin} />}
             </View>
+
+            {/* Nova Seção de Agendamentos usando o componente dedicado */}
+            <View
+              style={[
+                globalStyles.adminContainer,
+                {
+                  marginTop: 15,
+                  flex: 1,
+                  backgroundColor: colors.gradient.middle,
+                },
+              ]}
+            >
+              <TouchableOpacity
+                style={[
+                  globalStyles.adminHeader,
+                  {
+                    backgroundColor: colors.button.primary,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  },
+                ]}
+                onPress={toggleAgendamentosSection}
+              >
+                <Text
+                  style={[globalStyles.adminTitle, { color: colors.primary }]}
+                >
+                  Agendamentos
+                </Text>
+                <MaterialIcons
+                  name={agendamentosExpanded ? "expand-less" : "expand-more"}
+                  size={24}
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
+
+              {/* Usando o componente dedicado para exibir os agendamentos */}
+              <AgendamentosList
+                canAccessTools={canAccessTools}
+                expanded={agendamentosExpanded}
+                onStatusChange={(id, status) => {
+                  console.log(`Agendamento ${id} alterado para ${status}`);
+                  // Você pode adicionar lógica adicional aqui se necessário
+                }}
+              />
+            </View>
           </View>
         )}
         keyExtractor={(item) => item.key}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[colors.button.primary]}
+            tintColor={colors.button.primary}
+          />
+        }
       />
 
       {/* Modal de seleção de cargo com estilos padronizados */}

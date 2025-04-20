@@ -102,7 +102,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
                   {agendamento.data} às {agendamento.hora}
                 </Text>
                 {/* Display client observation if it exists */}
-                {agendamento.observacao_cliente && (
+                {agendamento.observacao && (
                   <View
                     style={{
                       marginTop: 5,
@@ -118,7 +118,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
                         fontSize: 13,
                       }}
                     >
-                      Observação: {agendamento.observacao_cliente}
+                      Observação: {agendamento.observacao}
                     </Text>
                   </View>
                 )}
