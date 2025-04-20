@@ -552,6 +552,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                 globalStyles.adminContainer,
                 {
                   marginTop: 15,
+                  marginBottom: 20,
                   flex: 1,
                   backgroundColor: colors.gradient.middle,
                 },
@@ -581,8 +582,8 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               </TouchableOpacity>
 
               {/* Usando o componente dedicado para exibir os agendamentos */}
-              <AgendamentosList 
-                canAccessTools={canAccessTools} 
+              <AgendamentosList
+                canAccessTools={canAccessTools}
                 expanded={agendamentosExpanded}
                 onStatusChange={(id, status) => {
                   console.log(`Agendamento ${id} alterado para ${status}`);

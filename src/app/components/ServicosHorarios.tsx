@@ -558,8 +558,11 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
             style={globalStyles.loadingIndicator}
           />
         ) : (
-          // Renderização não-virtualizada para evitar erro de VirtualizedLists aninhadas
-          <ScrollView style={{ maxHeight: 400 }}>
+          <ScrollView
+            style={{ maxHeight: 400 }}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={true}
+          >
             {servicos.length === 0 ? (
               <Text style={globalStyles.emptyListText}>
                 Nenhum serviço cadastrado

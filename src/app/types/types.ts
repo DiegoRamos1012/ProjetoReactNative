@@ -83,23 +83,25 @@ export interface Servico {
   // horariosPersonalizados removido ou fixado em false
 }
 
+// Tipo para agendamentos
 export interface Agendamento {
   id: string;
   userId: string;
   userName: string;
   servico: string;
-  preco: string;
-  data: string;
+  preco: string | number;
+  data: any; // Aceita timestamp ou string
+  data_timestamp?: any; // Para ordenação
+  data_exclusao?: any; // Para exclusão
   hora: string;
-  barbeiro: string;
-  status: string;
-  criado_em: Timestamp;
-  data_timestamp: Timestamp;
-  observacao: string; // Observação do cliente
-  iconName?: string; // Adicionando campo opcional para ícone
+  barbeiro?: string;
+  observacao?: string;
+  status: "pendente" | "confirmado" | "cancelado" | "finalizado" | string;
+  criado_em: any; // Timestamp do Firestore
+  metadados?: Record<string, any>; // Campos adicionais que podem ser úteis
 }
+
 export interface InicioProps {
   setUser: (user: User | null) => void;
   user: User;
 }
-

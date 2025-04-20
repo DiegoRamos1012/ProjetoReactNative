@@ -36,13 +36,25 @@ service cloud.firestore {
       allow create: if request.auth != null && 
                      request.resource.data.userId == request.auth.uid;
                      
-      // Permitir atualização se o usuário for o dono do agendamento
+      // Permitir atualização se o usuário for o dono do agendamento ou admin/funcionário
       allow update: if request.auth != null && 
-                     resource.data.userId == request.auth.uid;
+                     (resource.data.userId == request.auth.uid || canAccessAdminTools());
                      
-      // Permitir exclusão se o usuário for o dono do agendamento
+      // Permitir exclusão se o usuário for o dono do agendamento ou admin/funcionário
       allow delete: if request.auth != null && 
-                     resource.data.userId == request.auth.uid;
+                     (resource.data.userId == request.auth.uid || canAccessAdminTools());
+    }
+    
+    // Regras para a coleção de agendamentos na lixeira
+    match /agendamentos_lixeira/{agendamentoId} {
+      // Permitir leitura apenas para administradores e funcionários
+      allow read: if canAccessAdminTools();
+      
+      // Permitir criação apenas para administradores e funcionários
+      allow create: if canAccessAdminTools();
+      
+      // Permitir exclusão (permanente) apenas para administradores e funcionários
+      allow delete: if canAccessAdminTools();
     }
     
     // Nova coleção: serviços
