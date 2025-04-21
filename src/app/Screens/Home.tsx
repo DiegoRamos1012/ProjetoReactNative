@@ -14,7 +14,7 @@ import AppointmentModal from "../components/home/AppointmentModal";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export const Home: React.FC<HomeProps> = ({ user, setUser, navigation }) => {
+export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
     null

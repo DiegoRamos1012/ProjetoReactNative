@@ -251,7 +251,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.textLighter,
   },
-  bannerOpeningHours: {
+  bannerSocialMedia: {
     fontSize: 14,
     color: colors.textLighter,
     marginTop: 5,
@@ -1374,11 +1374,11 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   lixeiraModalView: {
+    backgroundColor: "rgba(15, 23, 42, 0.95)",
     width: "90%",
-    height: "70%",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 20,
+    maxHeight: "80%",
+    borderRadius: 10,
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1392,59 +1392,450 @@ export const globalStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
   },
   lixeiraModalTitle: {
-    fontSize: 24,
+    color: "#fff",
+    fontSize: 18,
     fontWeight: "bold",
-    color: colors.primary,
   },
   lixeiraCloseButton: {
     padding: 5,
   },
-  lixeiraScrollContainer: {
-    flex: 1,
-  },
-  lixeiraAgendamentoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  lixeiraModalContent: {
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray,
+    maxHeight: 500,
   },
-  lixeiraAgendamentoInfo: {
-    flex: 1,
+  lixeiraScrollView: {
+    maxHeight: 450,
   },
-  lixeiraClienteName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: colors.textDark,
-  },
-  lixeiraServicoName: {
-    fontSize: 14,
-    color: colors.darkGray,
-  },
-  lixeiraDataHora: {
-    fontSize: 12,
-    color: colors.gray,
-    marginTop: 5,
-  },
-  lixeiraActions: {
-    flexDirection: "row",
+  lixeiraLoadingContainer: {
+    padding: 20,
     alignItems: "center",
   },
-  lixeiraActionButton: {
-    marginLeft: 15,
+  lixeiraLoadingText: {
+    marginTop: 10,
+    color: colors.textLight,
   },
-  lixeiraEmptyContainer: {
+  lixeiraEmptyText: {
+    textAlign: "center",
+    padding: 20,
+    color: colors.textLight,
+  },
+  lixeiraItemLixeira: {
+    backgroundColor: "rgba(25, 33, 52, 0.7)",
+    borderRadius: 8,
+    marginBottom: 15,
+    padding: 15,
+    position: "relative",
+  },
+  lixeiraItemOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  lixeiraItemHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  lixeiraItemNome: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  lixeiraItemData: {
+    fontSize: 14,
+    color: colors.textLighter,
+  },
+  lixeiraItemServico: {
+    fontSize: 15,
+    color: colors.barber.gold,
+    marginBottom: 5,
+  },
+  lixeiraItemObservacao: {
+    fontSize: 14,
+    color: colors.textLighter,
+    fontStyle: "italic",
+    marginTop: 5,
+    marginBottom: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    padding: 8,
+    borderRadius: 5,
+  },
+  lixeiraItemFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  lixeiraDataExclusao: {
+    fontSize: 12,
+    color: colors.textLight,
+  },
+  lixeiraItemButtons: {
+    flexDirection: "row",
+  },
+  lixeiraItemButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginLeft: 8,
+  },
+  lixeiraRestaurarButton: {
+    backgroundColor: "#4CAF50", // Verde
+  },
+  lixeiraExcluirButton: {
+    backgroundColor: "#F44336", // Vermelho
+  },
+  lixeiraItemButtonText: {
+    color: "#FFF",
+    fontSize: 10,
+    marginLeft: 5,
+  },
+  lixeiraModalFooter: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    alignItems: "center",
+  },
+  lixeiraFecharButton: {
+    backgroundColor: colors.button.primary,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  lixeiraFecharButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+
+  // ==========================================
+  // ESTILOS PARA O STATUS MODAL
+  // ==========================================
+  statusModalCenteredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
-  lixeiraEmptyText: {
+  statusModalView: {
+    backgroundColor: "rgba(15, 23, 42, 0.95)",
+    width: "85%",
+    borderRadius: 10,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  statusModalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(10, 17, 35, 0.8)",
+  },
+  statusModalTitle: {
+    color: "#fff",
     fontSize: 18,
-    color: colors.lightGray,
+    fontWeight: "bold",
+  },
+  statusCloseButton: {
+    padding: 5,
+  },
+  statusModalContent: {
+    padding: 15,
+  },
+  statusAgendamentoInfoContainer: {
+    marginBottom: 15,
+  },
+  statusAgendamentoInfo: {
+    fontSize: 16,
+    color: colors.barber.gold,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  statusClienteInfo: {
+    fontSize: 14,
+    color: colors.textLighter,
+  },
+  statusOptionsContainer: {
     marginTop: 10,
+    marginBottom: 15,
+  },
+  statusOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  statusLabel: {
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  statusObservacoesContainer: {
+    marginTop: 15,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.barber.gold,
+  },
+  statusObservacoesLabel: {
+    color: colors.barber.gold,
+    fontWeight: "500",
+    marginBottom: 5,
+    fontSize: 14,
+  },
+  statusObservacoesText: {
+    color: colors.textLighter,
+    fontStyle: "italic",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  statusModalFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 15,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(10, 17, 35, 0.8)",
+  },
+  statusCancelButton: {
+    backgroundColor: "#555",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  statusConfirmButton: {
+    backgroundColor: colors.button.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  statusButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
+  // ==========================================
+  // ESTILOS PARA O AGENDAMENTO CARD
+  // ==========================================
+  agendamentoCardContainer: {
+    backgroundColor: "rgba(15, 23, 42, 0.8)",
+    borderRadius: 8,
+    marginHorizontal: 10,
+    marginBottom: 15,
+    padding: 15,
+    position: "relative",
+    borderLeftWidth: 3,
+    borderLeftColor: colors.button.primary,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  agendamentoCardContainerDisabled: {
+    opacity: 0.7,
+  },
+  agendamentoCardLoadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    borderRadius: 8,
+    zIndex: 10,
+  },
+  agendamentoCardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  agendamentoCardClienteInfo: {
+    flex: 1,
+  },
+  agendamentoCardUserName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.white,
+    marginBottom: 3,
+  },
+  agendamentoCardDateTime: {
+    fontSize: 14,
+    color: colors.textLighter,
+  },
+  agendamentoCardStatusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 12,
+    marginLeft: 10,
+  },
+  agendamentoCardStatusText: {
+    color: "#FFF",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  agendamentoCardContent: {
+    marginVertical: 10,
+  },
+  agendamentoCardServiceName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.barber.gold,
+    marginBottom: 5,
+  },
+  agendamentoCardBarberName: {
+    fontSize: 14,
+    color: colors.textLighter,
+    marginBottom: 10,
+  },
+  agendamentoCardObsContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  agendamentoCardObsTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: colors.barber.gold,
+    marginBottom: 3,
+  },
+  agendamentoCardObsText: {
+    fontSize: 14,
+    color: colors.textLighter,
+    fontStyle: "italic",
+  },
+  agendamentoCardFooter: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    paddingTop: 10,
+  },
+  agendamentoCardActionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.button.primary,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  agendamentoCardDeleteButton: {
+    backgroundColor: "#F44336",
+  },
+  agendamentoCardActionText: {
+    color: colors.white,
+    fontWeight: "500",
+    fontSize: 14,
+    marginLeft: 5,
+  },
+
+  // ==========================================
+  // ESTILOS PARA A LISTA DE AGENDAMENTOS
+  // ==========================================
+  agendamentosListContainer: {
+    flex: 1,
+  },
+  agendamentosListHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  agendamentosListActionsButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    elevation: 2,
+  },
+  agendamentosListRefreshButton: {
+    backgroundColor: colors.button.primary,
+  },
+  agendamentosListLixeiraButton: {
+    backgroundColor: "rgba(97, 97, 97, 0.8)",
+  },
+  agendamentosListButtonText: {
+    color: "#fff",
+    fontWeight: "500",
+  },
+  agendamentosListButtonIcon: {
+    marginRight: 5,
+  },
+  agendamentosListBadge: {
+    backgroundColor: "rgba(244, 67, 54, 0.9)",
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 5,
+  },
+  agendamentosListBadgeText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  agendamentosListLoadingContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  agendamentosListLoadingText: {
+    marginTop: 10,
+    color: colors.textLight,
+  },
+  agendamentosListEmptyContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  agendamentosListEmptyText: {
+    textAlign: "center",
+    marginTop: 15,
+    fontSize: 16,
+    color: colors.textLight,
+  },
+  agendamentosListTryAgainButton: {
+    backgroundColor: colors.button.primary,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  agendamentosListContent: {
+    maxHeight: 600,
+    paddingBottom: 20,
   },
 });
 

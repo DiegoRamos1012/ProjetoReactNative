@@ -15,10 +15,10 @@ import {
   orderBy,
   Timestamp,
   where,
-  updateDoc,
   doc,
   deleteDoc,
   addDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Agendamento } from "../../types/types";
@@ -113,11 +113,7 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
     try {
       const agendamentosRef = collection(db, "agendamentos");
       // Ordena por data mais recente primeiro
-      const q = query(
-        agendamentosRef,
-        where("data_exclusao", "==", null), // Filtra apenas os não excluídos
-        orderBy("data_timestamp", "desc")
-      );
+      const q = query(agendamentosRef, orderBy("data_timestamp", "desc"));
       const querySnapshot = await getDocs(q);
 
       const agendamentosList: Agendamento[] = [];
@@ -164,12 +160,8 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
 
     setLoadingLixeira(true);
     try {
-      const agendamentosRef = collection(db, "agendamentos");
-      const q = query(
-        agendamentosRef,
-        where("data_exclusao", "!=", null),
-        orderBy("data_exclusao", "desc")
-      );
+      const lixeiraRef = collection(db, "agendamentos_lixeira");
+      const q = query(lixeiraRef, orderBy("data_exclusao", "desc"));
       const querySnapshot = await getDocs(q);
 
       const lixeiraList: Agendamento[] = [];
@@ -189,57 +181,14 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
     }
   };
 
-  // Função para mostrar o modal personalizado de alteração de status
-  const mostrarMenuStatus = (agendamento: Agendamento) => {
-    setAgendamentoSelecionado(agendamento);
-    setStatusModalVisible(true);
-  };
+  // Função para excluir um agendamento (mover para lixeira)
+  const excluirAgendamento = async (agendamento: Agendamento) => {
+    if (!canAccessTools) return;
 
-  // Função para alterar o status do agendamento
-  const handleStatusChange = async (
-    agendamentoId: string,
-    novoStatus: string
-  ) => {
-    setAtualizandoAgendamento(agendamentoId);
-    try {
-      const agendamentoRef = doc(db, "agendamentos", agendamentoId);
-      await updateDoc(agendamentoRef, {
-        status: novoStatus,
-      });
-
-      // Atualiza o estado local para refletir a mudança imediatamente
-      setAgendamentos((prevAgendamentos) =>
-        prevAgendamentos.map((agendamento) =>
-          agendamento.id === agendamentoId
-            ? { ...agendamento, status: novoStatus }
-            : agendamento
-        )
-      );
-
-      // Notifica o componente pai se necessário
-      if (onStatusChange) {
-        onStatusChange(agendamentoId, novoStatus);
-      }
-
-      Alert.alert("Sucesso", "Status do agendamento atualizado com sucesso.");
-      setStatusModalVisible(false);
-    } catch (error: any) {
-      console.error("Erro ao atualizar status:", error);
-      Alert.alert(
-        "Erro",
-        "Não foi possível atualizar o status: " +
-          (error.message || "Erro desconhecido")
-      );
-    } finally {
-      setAtualizandoAgendamento(null);
-    }
-  };
-
-  // Função para excluir agendamento (mover para lixeira)
-  const handleExcluir = async (agendamento: Agendamento) => {
+    // Pedimos confirmação do usuário antes de excluir
     Alert.alert(
       "Confirmar exclusão",
-      "Deseja mover este agendamento para a lixeira?",
+      `Deseja realmente mover o agendamento de ${agendamento.userName} para a lixeira?`,
       [
         {
           text: "Cancelar",
@@ -247,27 +196,37 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
         },
         {
           text: "Confirmar",
-          style: "destructive",
           onPress: async () => {
-            setExcluindoAgendamento(agendamento.id);
             try {
+              setExcluindoAgendamento(agendamento.id);
+              
+              // Primeiro busca o documento completo para armazenar na lixeira
               const agendamentoRef = doc(db, "agendamentos", agendamento.id);
-
-              // Marcar como excluído com timestamp
-              await updateDoc(agendamentoRef, {
-                data_exclusao: Timestamp.now(),
-                status: "cancelado",
-              });
-
-              // Atualizar estado local de agendamentos (remover o excluído)
-              setAgendamentos((prev) =>
-                prev.filter((a) => a.id !== agendamento.id)
-              );
-
-              // Buscar novamente os agendamentos excluídos para atualizar a lixeira
-              await fetchAgendamentosExcluidos();
-
-              Alert.alert("Sucesso", "Agendamento movido para a lixeira.");
+              const agendamentoDoc = await getDoc(agendamentoRef);
+              
+              if (agendamentoDoc.exists()) {
+                const agendamentoData = agendamentoDoc.data();
+                
+                // Adiciona à coleção da lixeira com data de exclusão
+                await addDoc(collection(db, "agendamentos_lixeira"), {
+                  ...agendamentoData,
+                  id_original: agendamento.id,
+                  data_exclusao: Timestamp.now(),
+                });
+                
+                // Remove o documento da coleção principal
+                await deleteDoc(agendamentoRef);
+                
+                // Atualiza a lista de agendamentos
+                setAgendamentos(agendamentos.filter(a => a.id !== agendamento.id));
+                
+                // Atualiza a lixeira
+                fetchAgendamentosExcluidos();
+                
+                Alert.alert("Sucesso", "Agendamento movido para a lixeira.");
+              } else {
+                throw new Error("Agendamento não encontrado");
+              }
             } catch (error: any) {
               console.error("Erro ao excluir agendamento:", error);
               Alert.alert(
@@ -284,25 +243,38 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
     );
   };
 
-  // Função para restaurar agendamento da lixeira
-  const handleRestaurar = async (agendamento: Agendamento) => {
+  // Função para restaurar um agendamento da lixeira
+  const restaurarAgendamento = async (agendamento: Agendamento) => {
+    if (!canAccessTools) return;
+    
     try {
-      const agendamentoRef = doc(db, "agendamentos", agendamento.id);
-
-      // Remover o marcador de exclusão
-      await updateDoc(agendamentoRef, {
-        data_exclusao: null,
-        status: "pendente",
-      });
-
-      // Atualizar estado local da lixeira
-      setAgendamentosExcluidos((prev) =>
-        prev.filter((a) => a.id !== agendamento.id)
-      );
-
-      // Buscar novamente os agendamentos ativos
-      await fetchAgendamentos();
-
+      setExcluindoAgendamento(agendamento.id);
+      
+      // Preparar o objeto para adicionar de volta à coleção principal
+      const { data_exclusao, id_original, ...dadosAgendamento } = agendamento as any;
+      
+      // Se tiver o ID original, usar ele, caso contrário gerar um novo
+      if (id_original) {
+        // Adicionar de volta com o ID original
+        await addDoc(collection(db, "agendamentos"), {
+          ...dadosAgendamento,
+          restaurado_em: Timestamp.now(),
+        });
+      } else {
+        // Adicionar como um novo documento
+        await addDoc(collection(db, "agendamentos"), {
+          ...dadosAgendamento,
+          restaurado_em: Timestamp.now(),
+        });
+      }
+      
+      // Remover da lixeira
+      await deleteDoc(doc(db, "agendamentos_lixeira", agendamento.id));
+      
+      // Atualizar as listas
+      fetchAgendamentos();
+      setAgendamentosExcluidos(agendamentosExcluidos.filter(a => a.id !== agendamento.id));
+      
       Alert.alert("Sucesso", "Agendamento restaurado com sucesso.");
     } catch (error: any) {
       console.error("Erro ao restaurar agendamento:", error);
@@ -311,45 +283,57 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
         "Não foi possível restaurar o agendamento: " +
           (error.message || "Erro desconhecido")
       );
+    } finally {
+      setExcluindoAgendamento(null);
     }
   };
 
-  // Função para excluir permanentemente
-  const handleExcluirPermanente = async (agendamento: Agendamento) => {
+  // Função para excluir permanentemente um agendamento
+  const excluirPermanentemente = async (agendamento: Agendamento) => {
+    if (!canAccessTools) return;
+    
     Alert.alert(
-      "Confirmar exclusão permanente",
-      "Esta ação não poderá ser desfeita. Deseja excluir permanentemente este agendamento?",
+      "Excluir permanentemente",
+      "Este agendamento será excluído permanentemente e não poderá ser recuperado. Deseja continuar?",
       [
         {
           text: "Cancelar",
           style: "cancel",
         },
         {
-          text: "Excluir",
+          text: "Excluir permanentemente",
           style: "destructive",
           onPress: async () => {
             try {
-              const agendamentoRef = doc(db, "agendamentos", agendamento.id);
-              await deleteDoc(agendamentoRef);
-
-              // Atualizar estado local da lixeira
-              setAgendamentosExcluidos((prev) =>
-                prev.filter((a) => a.id !== agendamento.id)
-              );
-
+              setExcluindoAgendamento(agendamento.id);
+              
+              // Excluir permanentemente da lixeira
+              await deleteDoc(doc(db, "agendamentos_lixeira", agendamento.id));
+              
+              // Atualizar a lista da lixeira
+              setAgendamentosExcluidos(agendamentosExcluidos.filter(a => a.id !== agendamento.id));
+              
               Alert.alert("Sucesso", "Agendamento excluído permanentemente.");
             } catch (error: any) {
               console.error("Erro ao excluir permanentemente:", error);
               Alert.alert(
                 "Erro",
-                "Não foi possível excluir permanentemente o agendamento: " +
+                "Não foi possível excluir o agendamento permanentemente: " +
                   (error.message || "Erro desconhecido")
               );
+            } finally {
+              setExcluindoAgendamento(null);
             }
           },
         },
       ]
     );
+  };
+
+  // Função para mostrar o modal personalizado de alteração de status
+  const mostrarMenuStatus = (agendamento: Agendamento) => {
+    setAgendamentoSelecionado(agendamento);
+    setStatusModalVisible(true);
   };
 
   if (!expanded) return null;
@@ -429,7 +413,7 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
               atualizandoAgendamento={atualizandoAgendamento}
               excluindoAgendamento={excluindoAgendamento}
               mostrarMenuStatus={mostrarMenuStatus}
-              onExcluir={handleExcluir}
+              onExcluir={excluirAgendamento}
             />
           ))}
         </ScrollView>
@@ -440,7 +424,12 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
         visible={statusModalVisible}
         agendamento={agendamentoSelecionado}
         onClose={() => setStatusModalVisible(false)}
-        onStatusChange={handleStatusChange}
+        onStatusChange={(id, status) => {
+          if (onStatusChange) {
+            onStatusChange(id, status);
+            setStatusModalVisible(false);
+          }
+        }}
       />
 
       <LixeiraModal
@@ -450,8 +439,8 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
         excluindoAgendamento={excluindoAgendamento}
         onClose={() => setLixeiraVisible(false)}
         formatarData={formatarData}
-        onRestaurar={handleRestaurar}
-        onExcluirPermanente={handleExcluirPermanente}
+        onRestaurar={restaurarAgendamento}
+        onExcluirPermanente={excluirPermanentemente}
       />
     </View>
   );

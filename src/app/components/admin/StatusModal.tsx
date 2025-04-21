@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Modal, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { colors } from "../globalStyle/styles";
+import { colors, globalStyles } from "../globalStyle/styles";
 import { Agendamento } from "../../types/types";
 
 interface StatusModalProps {
@@ -50,7 +50,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   );
 
   // Quando o modal é aberto, definir o status selecionado como o atual do agendamento
-  React.useEffect(() => {
+  useEffect(() => {
     if (visible && agendamento) {
       setStatusSelecionado(agendamento.status || "pendente");
     }
@@ -65,29 +65,36 @@ const StatusModal: React.FC<StatusModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Alterar Status</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+      <View style={globalStyles.statusModalCenteredView}>
+        <View style={globalStyles.statusModalView}>
+          {/* Cabeçalho do Modal */}
+          <View style={globalStyles.statusModalHeader}>
+            <Text style={globalStyles.statusModalTitle}>Alterar Status</Text>
+            <TouchableOpacity
+              style={globalStyles.statusCloseButton}
+              onPress={onClose}
+            >
               <MaterialIcons name="close" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.modalContent}>
-            <Text style={styles.agendamentoInfo}>
-              Agendamento: {agendamento.servico}
-            </Text>
-            <Text style={styles.clienteInfo}>
-              Cliente: {agendamento.userName}
-            </Text>
+          {/* Conteúdo do Modal */}
+          <View style={globalStyles.statusModalContent}>
+            <View style={globalStyles.statusAgendamentoInfoContainer}>
+              <Text style={globalStyles.statusAgendamentoInfo}>
+                Agendamento: {agendamento.servico}
+              </Text>
+              <Text style={globalStyles.statusClienteInfo}>
+                Cliente: {agendamento.userName}
+              </Text>
+            </View>
 
-            <View style={styles.statusOptionsContainer}>
+            <View style={globalStyles.statusOptionsContainer}>
               {statusOptions.map((option) => (
                 <TouchableOpacity
                   key={option.value}
                   style={[
-                    styles.statusOption,
+                    globalStyles.statusOption,
                     {
                       backgroundColor:
                         statusSelecionado === option.value
@@ -107,7 +114,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
                   />
                   <Text
                     style={[
-                      styles.statusLabel,
+                      globalStyles.statusLabel,
                       {
                         color:
                           statusSelecionado === option.value
@@ -122,33 +129,35 @@ const StatusModal: React.FC<StatusModalProps> = ({
               ))}
             </View>
 
-            <View style={styles.observacoesContainer}>
-              {agendamento.observacao && (
-                <>
-                  <Text style={styles.observacoesLabel}>
-                    Observações do cliente:
-                  </Text>
-                  <Text style={styles.observacoesText}>
-                    {agendamento.observacao}
-                  </Text>
-                </>
-              )}
-            </View>
+            {agendamento.observacao && (
+              <View style={globalStyles.statusObservacoesContainer}>
+                <Text style={globalStyles.statusObservacoesLabel}>
+                  Observações do cliente:
+                </Text>
+                <Text style={globalStyles.statusObservacoesText}>
+                  {agendamento.observacao}
+                </Text>
+              </View>
+            )}
           </View>
 
-          <View style={styles.modalFooter}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancelar</Text>
+          {/* Rodapé do Modal */}
+          <View style={globalStyles.statusModalFooter}>
+            <TouchableOpacity
+              style={globalStyles.statusCancelButton}
+              onPress={onClose}
+            >
+              <Text style={globalStyles.statusButtonText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.confirmButton}
+              style={globalStyles.statusConfirmButton}
               onPress={() => {
                 if (statusSelecionado) {
                   onStatusChange(agendamento.id, statusSelecionado);
                 }
               }}
             >
-              <Text style={styles.buttonText}>Confirmar</Text>
+              <Text style={globalStyles.statusButtonText}>Confirmar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -156,117 +165,5 @@ const StatusModal: React.FC<StatusModalProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-  },
-  modalView: {
-    backgroundColor: "rgba(15, 23, 42, 0.95)",
-    width: "80%",
-    borderRadius: 10,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.1)",
-  },
-  modalTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  closeButton: {
-    padding: 5,
-  },
-  modalContent: {
-    padding: 15,
-  },
-  agendamentoInfo: {
-    fontSize: 16,
-    color: colors.barber.gold,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  clienteInfo: {
-    fontSize: 14,
-    color: colors.textLighter,
-    marginBottom: 15,
-  },
-  statusOptionsContainer: {
-    marginTop: 10,
-    marginBottom: 15,
-  },
-  statusOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  statusLabel: {
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  observacoesContainer: {
-    marginTop: 15,
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    padding: 10,
-    borderRadius: 5,
-    borderLeftWidth: 2,
-    borderLeftColor: colors.barber.gold,
-  },
-  observacoesLabel: {
-    color: colors.barber.gold,
-    fontWeight: "500",
-    marginBottom: 5,
-    fontSize: 14,
-  },
-  observacoesText: {
-    color: colors.textLighter,
-    fontStyle: "italic",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  modalFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 15,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.1)",
-  },
-  cancelButton: {
-    backgroundColor: "#555",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  confirmButton: {
-    backgroundColor: colors.button.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-});
 
 export default StatusModal;

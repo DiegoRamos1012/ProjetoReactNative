@@ -156,7 +156,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
             onPress={() => navigation.navigate("AdminTools")}
             style={[
               globalStyles.backButton,
-              { backgroundColor: colors.button.primary },
+              { backgroundColor: colors.gradient.start },
             ]}
           >
             <MaterialIcons
