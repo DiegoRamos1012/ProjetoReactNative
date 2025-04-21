@@ -22,7 +22,7 @@ import {
 } from "../../services/authService";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
-import ServicosHorarios from "../components/ServicosHorarios";
+import ServicosHorarios from "../components/admin/ServicosHorarios";
 import AgendamentosList from "../components/admin/AgendamentosList";
 import useServicos from "../data/services";
 

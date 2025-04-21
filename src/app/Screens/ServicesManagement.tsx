@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
-  ScrollView,
   RefreshControl,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Servico, ServicesManagementProps } from "../types";
-import globalStyles, { colors } from "../components/globalStyle/styles";
+import { Servico, ServicesManagementProps } from "../types/types";
+import { colors } from "../components/globalStyle/styles";
 import {
   servicosBarbearia,
   adicionarServico,
@@ -36,9 +35,9 @@ const ServicesManagement: React.FC<ServicesManagementProps> = ({
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [selectedService, setSelectedService] = useState<Servico | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [, setIsAdmin] = useState(false);
 
   // Verificar se o usuário é administrador
   useEffect(() => {

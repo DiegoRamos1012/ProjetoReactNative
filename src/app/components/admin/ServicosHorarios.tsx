@@ -17,16 +17,16 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../../config/firebaseConfig";
-import { Servico } from "../types/types";
+import { db } from "../../../config/firebaseConfig";
+import { Servico } from "../../types/types";
 // Fix incorrect import path for globalStyles
-import globalStyles, { colors } from "../components/globalStyle/styles";
+import globalStyles, { colors } from "../globalStyle/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   formatCurrencyBRL,
   parseCurrencyValue,
   formatCompactCurrency,
-} from "../format";
+} from "../../format";
 
 // Ícones disponíveis para serviços
 const ICONES_DISPONIVEIS = [
