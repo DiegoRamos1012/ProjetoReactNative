@@ -73,6 +73,7 @@ export interface UserData {
 
 export interface Servico {
   id: string;
+  ordem: number;
   nome: string;
   descricao: string;
   preco: number; // Atualizado para aceitar ambos os tipos para compatibilidade

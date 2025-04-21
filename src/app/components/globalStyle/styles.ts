@@ -250,11 +250,7 @@ export const globalStyles = StyleSheet.create({
   bannerSubtitle: {
     fontSize: 16,
     color: colors.textLighter,
-  },
-  bannerSocialMedia: {
-    fontSize: 14,
-    color: colors.textLighter,
-    marginTop: 5,
+    fontStyle: "italic",
   },
   section: {
     padding: 20,
@@ -662,7 +658,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
-    color: colors.white,
+    color: colors.gradient.start,
   },
   formInput: {
     backgroundColor: "#FFF",
@@ -672,6 +668,77 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#DDD",
     color: colors.textDark,
+  },
+  // Estilos para o modal de exclusão de horário
+  horarioDeleteModal: {
+    width: "80%",
+    backgroundColor: colors.gradient.middle,
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  horarioDeleteModalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: colors.white,
+    textAlign: "center",
+  },
+  horarioDeleteModalText: {
+    fontSize: 16,
+    color: colors.textLighter,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  horarioDeleteModalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  horarioDeleteCancelButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: colors.gradient.start,
+    alignItems: "center",
+    marginRight: 10,
+  },
+  horarioDeleteConfirmButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: colors.error,
+    alignItems: "center",
+  },
+  horarioDeleteButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  // Estilos para opções de horário
+  servicoHorarioOptionContainer: {
+    position: "relative",
+  },
+  servicoHorarioOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    margin: 5,
+    backgroundColor: "#fff",
+  },
+  servicoHorarioOptionSelected: {
+    borderColor: colors.button.primary,
+    backgroundColor: "rgba(58, 81, 153, 0.1)",
+  },
+  servicoHorarioOptionPressed: {
+    backgroundColor: "rgba(58, 81, 153, 0.2)",
   },
   radioGroup: {
     flexDirection: "row",
@@ -1126,14 +1193,6 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 10,
     borderRadius: 8,
-  },
-  servicoHorarioOption: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    margin: 5,
-    backgroundColor: "#fff",
   },
   horarioPersonalizadoContainer: {
     flexDirection: "row",
@@ -1836,6 +1895,19 @@ export const globalStyles = StyleSheet.create({
   agendamentosListContent: {
     maxHeight: 600,
     paddingBottom: 20,
+  },
+
+  // Banner component styles
+  bannerItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    width: "100%",
+  },
+  bannerIcon: {
+    marginRight: 12,
+    marginLeft: 5,
+    color: colors.barber.gold,
   },
 });
 

@@ -1,54 +1,67 @@
 import React from "react";
 import { View, Text } from "react-native";
-import globalStyles from "../globalStyle/styles";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { StyleSheet } from "react-native";
-
+import globalStyles, { colors } from "../globalStyle/styles";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 interface BannerProps {
   title: string;
   subtitle: string;
   socialMedia?: string;
+  phoneNumber?: string;
 }
 
-const Banner: React.FC<BannerProps> = ({ title, subtitle, socialMedia }) => {
+const Banner: React.FC<BannerProps> = ({
+  title,
+  subtitle,
+  socialMedia,
+  phoneNumber,
+}) => {
   return (
-    <View style={globalStyles.banner}>
-      <View style={styles.titleContainer}>
-        <Icon name="cut" size={24} color="#000" style={styles.icon} />
-        <Text style={globalStyles.bannerTitle}>{title}</Text>
+    <View style={globalStyles.bannerEnhanced}>
+      <View style={globalStyles.bannerItemContainer}>
+        <MaterialIcons
+          name="content-cut"
+          size={24}
+          color={colors.barber.gold}
+          style={globalStyles.bannerIcon}
+        />
+        <Text style={globalStyles.bannerTitleEnhanced}>{title}</Text>
       </View>
-      
-      <View style={styles.subtitleContainer}>
-        <Icon name="star" size={18} color="#000" style={styles.icon} />
+
+      <View style={globalStyles.bannerItemContainer}>
+        <FontAwesome6
+          name="clock"
+          size={18}
+          color={colors.barber.gold}
+          style={globalStyles.bannerIcon}
+        />
         <Text style={globalStyles.bannerSubtitle}>{subtitle}</Text>
       </View>
-      
-      <View style={styles.socialContainer}>
-        <Icon name="instagram" size={20} color="#000" style={styles.icon} />
-        <Text style={globalStyles.bannerSubtitle}>@barbeariaavilajf</Text>
+
+      <View style={globalStyles.bannerItemContainer}>
+        <FontAwesome6
+          name="instagram"
+          size={20}
+          color={colors.barber.gold}
+          style={globalStyles.bannerIcon}
+        />
+        <Text style={globalStyles.bannerSubtitle}>
+          {socialMedia || "@barbeariaavilajf"}
+        </Text>
+      </View>
+
+      <View style={globalStyles.bannerItemContainer}>
+        <FontAwesome6
+          name="whatsapp"
+          size={20}
+          color={colors.barber.gold}
+          style={globalStyles.bannerIcon}
+        />
+        <Text style={globalStyles.bannerSubtitle}>
+          {phoneNumber || "+55 12 99607-2065"}
+        </Text>
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  subtitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    marginRight: 8,
-  }
-});
 
 export default Banner;

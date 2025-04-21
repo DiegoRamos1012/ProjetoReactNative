@@ -13,6 +13,7 @@ import AppointmentsList from "../components/home/AppointmentsList";
 import AppointmentModal from "../components/home/AppointmentModal";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+;
 
 export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -121,7 +122,8 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
           {/* Banner de destaque */}
           <Banner
             title="Ávila Barbearia"
-            subtitle="Qualidade e estilo para você"
+            subtitle="Terça a sexta: 09:00 - 20:00. Sábado: 
+            09:00 - 18:00."
           />
 
           {/* Lista de serviços - Usando serviços do Firebase */}
