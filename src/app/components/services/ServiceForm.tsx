@@ -8,15 +8,22 @@ import {
   Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Servico } from "../../types";
+import { Servico } from "../../types/types";
 import { colors } from "../globalStyle/styles"; // também importamos globalStyles se necessário
 import TimeSlotManager from "./TimeSlotManager";
 import globalStyles from "../globalStyle/styles";
 
 // Define horarios padrão para serviços
 const horariosDisponiveis = [
-  "08:00", "09:00", "10:00", "11:00", 
-  "13:00", "14:00", "15:00", "16:00", "17:00"
+  "08:00",
+  "09:00",
+  "10:00",
+  "11:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
 ];
 
 interface ServiceFormProps {
@@ -46,27 +53,33 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
 }) => {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [preco, setPreco] = useState("");
+  const [precoInput, setPrecoInput] = useState("");
   const [tempo, setTempo] = useState("");
   const [iconName, setIconName] = useState("content-cut");
   const [selectedHorarios, setSelectedHorarios] = useState<string[]>([]);
   const [customHorario, setCustomHorario] = useState("");
+  const [observacao, setObservacao] = useState("");
 
   useEffect(() => {
     if (service) {
       setNome(service.nome);
       setDescricao(service.descricao || "");
-      setPreco(service.preco);
+      // Convert number to string for display in the input
+      setPrecoInput(
+        `R$ ${String(service.preco).replace(".", ",")}`
+      );
       setTempo(service.tempo);
       setIconName(service.iconName);
       setSelectedHorarios(service.horarios || []);
+      setObservacao(service.observacao || "");
     } else {
       setNome("");
       setDescricao("");
-      setPreco("R$ ");
+      setPrecoInput("R$ ");
       setTempo("");
       setIconName("content-cut");
       setSelectedHorarios([]);
+      setObservacao("");
     }
   }, [service]);
 
@@ -75,7 +88,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
       Alert.alert("Erro", "O nome do serviço é obrigatório");
       return;
     }
-    if (!preco.trim() || preco === "R$ ") {
+    if (!precoInput.trim() || precoInput === "R$ ") {
       Alert.alert("Erro", "O preço do serviço é obrigatório");
       return;
     }
@@ -83,14 +96,32 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
       Alert.alert("Erro", "O tempo de duração é obrigatório");
       return;
     }
+
+    // Convert price string to number for saving
+    let precoNumerico: number;
+    try {
+      // Remove currency symbol and convert comma to dot
+      const precoLimpo = precoInput.replace("R$ ", "").replace(",", ".");
+      precoNumerico = parseFloat(precoLimpo);
+
+      if (isNaN(precoNumerico)) {
+        Alert.alert("Erro", "Formato de preço inválido");
+        return;
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Ocorreu um erro ao processar o preço");
+      return;
+    }
+
     const updatedService: Servico = {
       id: service?.id || "",
       nome,
       descricao,
-      preco,
+      preco: precoNumerico,
       tempo,
       iconName,
       horarios: selectedHorarios,
+      observacao,
     };
     onSave(updatedService);
   };
@@ -147,8 +178,8 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
           <Text style={globalStyles.serviceFormLabel}>Preço*</Text>
           <TextInput
             style={globalStyles.serviceFormInput}
-            value={preco}
-            onChangeText={setPreco}
+            value={precoInput}
+            onChangeText={setPrecoInput}
             placeholder="Ex: R$ 35,00"
             keyboardType="decimal-pad"
           />
@@ -162,6 +193,22 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             placeholder="Ex: 30 min"
           />
         </View>
+
+        <View style={globalStyles.serviceFormGroup}>
+          <Text style={globalStyles.serviceFormLabel}>Observação</Text>
+          <TextInput
+            style={[
+              globalStyles.serviceFormInput,
+              globalStyles.serviceFormTextArea,
+            ]}
+            value={observacao}
+            onChangeText={setObservacao}
+            placeholder="Observação para o cliente"
+            multiline
+            numberOfLines={2}
+          />
+        </View>
+
         <View style={globalStyles.serviceFormGroup}>
           <Text style={globalStyles.serviceFormLabel}>Ícone</Text>
           <ScrollView

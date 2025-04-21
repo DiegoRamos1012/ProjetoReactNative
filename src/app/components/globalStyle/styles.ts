@@ -38,6 +38,12 @@ export const colors = {
     lightGold: "rgba(212, 175, 55, 0.15)", // Dourado transparente - Para detalhes sutis
   },
   link: "#4a9eff", // Azul claro - Links clicáveis
+
+  // Novas cores adicionadas para LixeiraModal e outros componentes
+  gray: "#888888", // Cinza médio para textos secundários
+  lightGray: "#cccccc", // Cinza claro para detalhes e borda
+  darkGray: "#555555", // Cinza escuro para textos importantes
+  danger: "#dc2626", // Vermelho para botões de ação perigosa
 };
 
 export const globalStyles = StyleSheet.create({
@@ -1356,6 +1362,89 @@ export const globalStyles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     fontWeight: "bold",
+  },
+
+  // ==========================================
+  // ESTILOS PARA O LIXEIRA MODAL
+  // ==========================================
+  lixeiraModalCenteredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  lixeiraModalView: {
+    width: "90%",
+    height: "70%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  lixeiraModalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  lixeiraModalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.primary,
+  },
+  lixeiraCloseButton: {
+    padding: 5,
+  },
+  lixeiraScrollContainer: {
+    flex: 1,
+  },
+  lixeiraAgendamentoItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+  },
+  lixeiraAgendamentoInfo: {
+    flex: 1,
+  },
+  lixeiraClienteName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.textDark,
+  },
+  lixeiraServicoName: {
+    fontSize: 14,
+    color: colors.darkGray,
+  },
+  lixeiraDataHora: {
+    fontSize: 12,
+    color: colors.gray,
+    marginTop: 5,
+  },
+  lixeiraActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  lixeiraActionButton: {
+    marginLeft: 15,
+  },
+  lixeiraEmptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  lixeiraEmptyText: {
+    fontSize: 18,
+    color: colors.lightGray,
+    marginTop: 10,
   },
 });
 

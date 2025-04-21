@@ -37,6 +37,147 @@ export const formatBirthDate = (value: string) => {
   )}/${limitedValue.slice(4)}`;
 };
 
+/**
+ * Formata uma data para o formato brasileiro (DD/MM/YYYY)
+ * @param date Data a ser formatada (timestamp do Firebase, Date ou string)
+ * @param options Opções de formatação
+ * @returns String formatada no padrão brasileiro
+ */
+export const formatDate = (
+  date: any,
+  options: {
+    includeTime?: boolean; // Incluir hora
+    includeWeekday?: boolean; // Incluir dia da semana
+    shortMonth?: boolean; // Usar mês abreviado
+  } = {}
+): string => {
+  // Opções padrão
+  const {
+    includeTime = false,
+    includeWeekday = false,
+    shortMonth = false,
+  } = options;
+
+  // Se não houver data, retornar string vazia
+  if (!date) return "";
+
+  let dateObj: Date;
+
+  try {
+    // Verificar se é um timestamp do Firestore
+    if (
+      date &&
+      typeof date === "object" &&
+      date.toDate &&
+      typeof date.toDate === "function"
+    ) {
+      dateObj = date.toDate();
+    }
+    // Verificar se já é um objeto Date
+    else if (date instanceof Date) {
+      dateObj = date;
+    }
+    // Se for string, tentar converter para Date
+    else if (typeof date === "string") {
+      // Verificar se está no formato brasileiro (DD/MM/YYYY)
+      if (/^\d{2}\/\d{2}\/\d{4}/.test(date)) {
+        const [day, month, year] = date.split("/").map(Number);
+        dateObj = new Date(year, month - 1, day);
+      } else {
+        // Tentar converter normalmente
+        dateObj = new Date(date);
+      }
+    }
+    // Se for timestamp em milissegundos
+    else if (typeof date === "number") {
+      dateObj = new Date(date);
+    } else {
+      return "Data inválida";
+    }
+
+    // Verificar se a data é válida
+    if (isNaN(dateObj.getTime())) {
+      return "Data inválida";
+    }
+
+    // Array com os nomes dos dias da semana
+    const weekdays = [
+      "Domingo",
+      "Segunda",
+      "Terça",
+      "Quarta",
+      "Quinta",
+      "Sexta",
+      "Sábado",
+    ];
+
+    // Array com os nomes dos meses
+    const months = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+
+    // Array com os nomes abreviados dos meses
+    const shortMonths = [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ];
+
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const year = dateObj.getFullYear();
+
+    let formattedDate = `${day}/${month}/${year}`;
+
+    // Se solicitado incluir dia da semana
+    if (includeWeekday) {
+      const weekday = weekdays[dateObj.getDay()];
+      formattedDate = `${weekday}, ${formattedDate}`;
+    }
+
+    // Se solicitado incluir hora
+    if (includeTime) {
+      const hours = dateObj.getHours().toString().padStart(2, "0");
+      const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+      formattedDate = `${formattedDate} às ${hours}:${minutes}`;
+    }
+
+    // Se solicitado usar mês por extenso
+    if (shortMonth) {
+      const monthName = shortMonths[dateObj.getMonth()];
+      formattedDate = formattedDate.replace(
+        `/${month}/`,
+        ` de ${monthName} de `
+      );
+    }
+
+    return formattedDate;
+  } catch (error) {
+    console.error("Erro ao formatar data:", error);
+    return "Data inválida";
+  }
+};
+
 // Cache de formatadores para melhorar performance
 const formattersCache: Record<string, Intl.NumberFormat> = {};
 
@@ -164,6 +305,7 @@ export const formatCompactCurrency = (value: number): string => {
 export default {
   formatPhoneNumber,
   formatBirthDate,
+  formatDate,
   formatCurrencyBRL,
   parseCurrencyValue,
   formatSimpleCurrency,
