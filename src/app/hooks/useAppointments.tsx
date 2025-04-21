@@ -100,72 +100,64 @@ export const useAppointments = (user: User) => {
       });
   }, [fetchAppointments]);
 
-  const createAppointment = useCallback(
-    async (servico: Servico, hora: string, observacao?: string) => {
-      if (!user || !user.uid) {
+  // Função para criar um novo agendamento
+  const createAppointment = async (
+    servico: Servico,
+    hora: string,
+    observacao?: string
+  ) => {
+    if (!user) return false;
+    setLoading(true);
+
+    try {
+      // Criar o objeto de agendamento com todos os campos necessários
+      const agendamento = {
+        userId: user.uid,
+        userName: user.displayName || user.email,
+        userEmail: user.email,
+        servico: servico.nome,
+        preco: servico.preco,
+        data: new Date().toLocaleDateString("pt-BR"),
+        hora: hora,
+        status: "pendente",
+        observacao: observacao || "", // Garantindo que a observação seja salva
+        criado_em: Timestamp.now(),
+        data_timestamp: Timestamp.now(),
+      };
+
+      // Salvar no Firestore
+      await addDoc(collection(db, "agendamentos"), agendamento);
+
+      console.log("Agendamento salvo com sucesso");
+
+      Alert.alert(
+        "Agendamento Confirmado",
+        `Seu ${servico.nome} foi agendado com sucesso para hoje às ${hora}!`
+      );
+
+      // Atualizar a lista de agendamentos
+      await fetchAppointments();
+      return true;
+    } catch (error: any) {
+      console.error("Erro ao criar agendamento:", error);
+
+      if (error.code === "permission-denied") {
         Alert.alert(
-          "Erro",
-          "Você precisa estar logado para fazer um agendamento"
+          "Erro de permissão",
+          "Você não tem permissão para criar agendamentos. Verifique se está logado corretamente."
         );
-        return false;
-      }
-
-      setLoading(true);
-
-      try {
-        const hoje = new Date();
-        const dataFormatada = hoje.toLocaleDateString("pt-BR");
-
-        const novoAgendamento = {
-          userId: user.uid,
-          userName: user.displayName,
-          servico: servico.nome,
-          preco: formatCurrencyBRL(servico.preco),
-          data: dataFormatada,
-          hora: hora,
-          status: "confirmado",
-          criado_em: Timestamp.now(),
-          data_timestamp: Timestamp.now(),
-          observacao_cliente: observacao || "", // Add the client observation
-        };
-
-        console.log("Salvando agendamento:", novoAgendamento);
-
-        const agendamentosRef = collection(db, "agendamentos");
-        const docRef = await addDoc(agendamentosRef, novoAgendamento);
-
-        console.log("Agendamento salvo com ID:", docRef.id);
-
+      } else {
         Alert.alert(
-          "Agendamento Confirmado",
-          `Seu ${servico.nome} foi agendado com sucesso para hoje às ${hora}!`
+          "Erro ao agendar",
+          error.message ||
+            "Não foi possível criar o agendamento. Tente novamente."
         );
-
-        // Atualizar a lista de agendamentos
-        await fetchAppointments();
-        return true;
-      } catch (error: any) {
-        console.error("Erro ao criar agendamento:", error);
-
-        if (error.code === "permission-denied") {
-          Alert.alert(
-            "Erro de permissão",
-            "Você não tem permissão para criar agendamentos. Verifique se está logado corretamente."
-          );
-        } else {
-          Alert.alert(
-            "Erro ao agendar",
-            error.message ||
-              "Não foi possível criar o agendamento. Tente novamente."
-          );
-        }
-        return false;
-      } finally {
-        setLoading(false);
       }
-    },
-    [user, fetchAppointments]
-  );
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const deleteAppointment = async (appointmentId: any) => {
     if (!user?.uid) return false;

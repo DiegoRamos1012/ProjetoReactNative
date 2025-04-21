@@ -1,8 +1,16 @@
 import React from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Agendamento, Servico } from "../../types/types";
-import globalStyles from "../globalStyle/styles";
+import globalStyles, { colors } from "../globalStyle/styles";
+
+// Função para formatar moeda em BRL
+const formatCurrencyBRL = (value: number) => {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+};
 
 interface AppointmentsListProps {
   agendamentos: Agendamento[];
@@ -82,7 +90,6 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
         {agendamentos.map((agendamento) => {
           // Obter serviço de forma segura
           const servico = findServicoSeguro(agendamento.servico);
-          // Usar o ícone do serviço encontrado, ou cair para o método getServiceIcon
 
           return (
             <View key={agendamento.id} style={globalStyles.agendamentoItem}>
@@ -91,7 +98,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
                   <MaterialIcons
                     name={"content-cut" as any}
                     size={20}
-                    color="#2A4A73"
+                    color={colors.textLighter}
                     style={{ marginRight: 8 }}
                   />
                   <Text style={globalStyles.agendamentoServico}>
@@ -101,36 +108,14 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
                 <Text style={globalStyles.agendamentoData}>
                   {agendamento.data} às {agendamento.hora}
                 </Text>
-                {/* Display client observation if it exists */}
-                {agendamento.observacao && (
-                  <View
-                    style={{
-                      marginTop: 5,
-                      paddingTop: 5,
-                      borderTopWidth: 1,
-                      borderTopColor: "#eee",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontStyle: "italic",
-                        color: "#555",
-                        fontSize: 13,
-                      }}
-                    >
-                      Observação: {agendamento.observacao}
-                    </Text>
-                  </View>
-                )}
               </View>
-              <View style={{ flexDirection: "row" }}>
-                <MaterialIcons
-                  name="delete"
-                  size={24}
-                  color="#333"
-                  onPress={() => handleDeletePress(agendamento)}
-                />
-              </View>
+
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeletePress(agendamento)}
+              >
+                <MaterialIcons name="delete" size={22} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
           );
         })}
@@ -140,5 +125,15 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
 
   return <View>{renderContent()}</View>;
 };
+
+const styles = StyleSheet.create({
+  deleteButton: {
+    backgroundColor: "rgba(255, 55, 91, 0.8)",
+    padding: 6,
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default AppointmentsList;

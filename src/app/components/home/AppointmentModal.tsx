@@ -11,7 +11,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Servico } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
-import { formatCurrencyBRL } from "../../format"; 
+import { formatCurrencyBRL } from "../../format";
 
 const localStyles = StyleSheet.create({
   observacaoContainer: {
@@ -31,14 +31,12 @@ const localStyles = StyleSheet.create({
     marginVertical: 5,
     width: "100%",
     color: colors.textLighter,
-
   },
   clientObservationLabel: {
     fontSize: 16,
     fontWeight: "500",
     marginBottom: 10,
     color: colors.textLighter,
-
   },
   clientObservationInput: {
     borderWidth: 1,
@@ -67,9 +65,11 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
   loading,
 }) => {
   const [horaSelecionada, setHoraSelecionada] = useState("");
+  // Verificando se o nome da variável está correto para consistência com AdminTools
   const [observacao, setObservacao] = useState("");
 
   const handleConfirm = () => {
+    // Passando a observação para ser salva no Firestore
     onConfirm(horaSelecionada, observacao);
   };
 
@@ -113,7 +113,9 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
               : `R$ ${servico.preco}`}{" "}
             • {servico.tempo}
           </Text>
-          <Text  style={globalStyles.modalDescricao}>Descrição: {servico.descricao}</Text>
+          <Text style={globalStyles.modalDescricao}>
+            Descrição: {servico.descricao}
+          </Text>
 
           <View style={globalStyles.horarioContainer}>
             <Text style={globalStyles.horarioTitle}>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import { colors } from "../components/globalStyle/styles";
+import { useNavigationContainerRef } from "@react-navigation/native";
 
 import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
@@ -24,6 +25,44 @@ interface AppNavigatorProps {
 
 const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
   const [password, setPassword] = useState<string>("");
+  // Referência para rastrear a rota anterior
+  const prevRouteRef = useRef<string | null>(null);
+  const fromAdminRef = useRef<boolean>(false);
+
+  // Função para detectar transições específicas
+  const getAnimationForRoute = (
+    currentRoute: string,
+    previousRoute: string | null
+  ) => {
+    // Estamos vindo do AdminTools para o Profile?
+    if (currentRoute === "Profile" && previousRoute === "AdminTools") {
+      fromAdminRef.current = true;
+      return "slide_from_left"; // AdminTools -> Profile desliza da esquerda
+    }
+
+    // Estamos vindo do Profile para o Home, depois de ter vindo do AdminTools?
+    if (
+      currentRoute === "Home" &&
+      previousRoute === "Profile" &&
+      fromAdminRef.current
+    ) {
+      fromAdminRef.current = false;
+      return "slide_from_left"; // Profile -> Home (após AdminTools) desliza da esquerda
+    }
+
+    // Para outras transições Profile -> Home, também deslizamos da esquerda
+    if (currentRoute === "Home" && previousRoute === "Profile") {
+      return "slide_from_left";
+    }
+
+    // Para transições para Profile ou AdminTools, deslizamos da direita
+    if (currentRoute === "Profile" || currentRoute === "AdminTools") {
+      return "slide_from_right";
+    }
+
+    // Default
+    return "fade";
+  };
 
   return (
     <Stack.Navigator
@@ -32,11 +71,10 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
         headerShown: false,
         contentStyle: { backgroundColor: colors.gradient.middle },
         animation: "fade",
-        animationDuration: 200,
+        animationDuration: 300,
         gestureEnabled: true,
         gestureDirection: "horizontal",
         fullScreenGestureEnabled: true,
-        // Configuração para eliminar o flash branco
         presentation: "transparentModal",
       }}
     >
@@ -51,7 +89,16 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
           <Stack.Screen
             name="Home"
             options={{
-              animation: "slide_from_left",
+              animation: "fade",
+            }}
+            listeners={{
+              focus: () => {
+                const animation = getAnimationForRoute(
+                  "Home",
+                  prevRouteRef.current
+                );
+                prevRouteRef.current = "Home";
+              },
             }}
           >
             {(props) => (
@@ -68,7 +115,19 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
             name="Profile"
             options={{
               animation: "slide_from_right",
-              animationDuration: 250,
+              animationDuration: 300,
+            }}
+            listeners={{
+              focus: () => {
+                const animation = getAnimationForRoute(
+                  "Profile",
+                  prevRouteRef.current
+                );
+                prevRouteRef.current = "Profile";
+              },
+              beforeRemove: () => {
+                // Se sairmos do Profile, configuramos a animação com base na próxima tela
+              },
             }}
           >
             {(props) => <Profile {...props} user={user} setUser={setUser} />}
@@ -78,7 +137,12 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
             options={{
               title: "Ferramentas de Admin",
               animation: "slide_from_right",
-              animationDuration: 250,
+              animationDuration: 300,
+            }}
+            listeners={{
+              focus: () => {
+                prevRouteRef.current = "AdminTools";
+              },
             }}
           >
             {(props) => <AdminTools {...props} user={user} />}

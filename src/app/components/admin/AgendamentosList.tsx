@@ -903,7 +903,7 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
                     </View>
                   </View>
 
-                  {/* Observação do cliente */}
+                  {/* Observação do cliente - certifique-se que seja bem visível */}
                   {agendamento.observacao && (
                     <View
                       style={{
@@ -912,7 +912,8 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
                         padding: 12,
                         borderWidth: 1,
                         borderColor: "rgba(212, 175, 55, 0.3)",
-                        marginTop: 5,
+                        marginTop: 10,
+                        marginBottom: 5,
                       }}
                     >
                       <View
@@ -931,7 +932,7 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
                         <Text
                           style={{
                             color: colors.barber.gold,
-                            fontWeight: "500",
+                            fontWeight: "bold",
                             fontSize: 14,
                           }}
                         >
@@ -940,10 +941,11 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
                       </View>
                       <Text
                         style={{
-                          color: colors.barber.lightGold,
+                          color: colors.white,
                           fontStyle: "italic",
                           marginLeft: 26,
                           lineHeight: 20,
+                          fontSize: 15,
                         }}
                       >
                         "{agendamento.observacao}"

@@ -4,40 +4,40 @@ import { StyleSheet } from "react-native";
 // CORES GLOBAIS
 // ==========================================
 export const colors = {
-  primary: "#FFFFFF",
-  secondary: "#0C2340", // Azul marinho como na logo
-  background: "#000000",
-  input: "#333333",
-  inputFocused: "#444444",
-  white: "#FFFFFF",
-  text: "#FFFFFF",
-  textDark: "#333333",
-  textLight: "#666666",
-  textLighter: "#dddddd",
-  error: "#FF375B",
-  disabled: "#cccccc",
-  adminRole: "#c2410c",
-  clientRole: "#0891b2",
-  funcionarioCargo: "#047857",
-  clienteCargo: "#4b5563",
-  barbeiroCargo: "#0891b2",
-  gerenteCargo: "#9333ea",
+  primary: "#FFFFFF", // Branco puro - Cor primária para textos e elementos importantes
+  secondary: "#0C2340", // Azul marinho escuro - Cor secundária, como na logo
+  background: "#000000", // Preto - Cor de fundo principal
+  input: "#333333", // Cinza escuro - Campos de entrada
+  inputFocused: "#444444", // Cinza mais claro - Campos de entrada quando focados
+  white: "#FFFFFF", // Branco puro - Usado para textos sobre fundos escuros
+  text: "#FFFFFF", // Branco puro - Cor padrão para textos
+  textDark: "#333333", // Cinza escuro - Textos sobre fundos claros
+  textLight: "#666666", // Cinza médio - Textos secundários/menos importantes
+  textLighter: "#dddddd", // Cinza muito claro - Textos terciários/subtítulos
+  error: "#FF375B", // Vermelho vibrante - Mensagens de erro
+  disabled: "#cccccc", // Cinza claro - Elementos desabilitados
+  adminRole: "#c2410c", // Laranja queimado - Indicador de função de administrador
+  clientRole: "#0891b2", // Azul turquesa - Indicador de função de cliente
+  funcionarioCargo: "#047857", // Verde escuro - Indicador de cargo de funcionário
+  clienteCargo: "#4b5563", // Cinza azulado - Indicador de cargo de cliente
+  barbeiroCargo: "#0891b2", // Azul turquesa - Indicador de cargo de barbeiro
+  gerenteCargo: "#9333ea", // Roxo - Indicador de cargo de gerente
   gradient: {
-    start: "#0C2340", // Azul marinho escuro (como no poste da logo)
-    middle: "#0F172A", // Tom intermediário
-    end: "#000000", // Preto para o fundo
+    start: "#0C2340", // Azul marinho escuro - Início do gradiente (como no poste da logo)
+    middle: "#0F172A", // Azul escuro médio - Tom intermediário do gradiente
+    end: "#000000", // Preto - Final do gradiente para o fundo
   },
   button: {
-    primary: "#3A5199", // Mantendo a cor azul do botão das telas de cadastro
-    secondary: "#4a9eff", // Azul mais claro para links e botões secundários
+    primary: "#3A5199", // Azul escuro - Botões primários
+    secondary: "#4a9eff", // Azul claro - Botões secundários e links
   },
   barber: {
-    gold: "#D4AF37", // Dourado da coroa
-    red: "#B22222", // Vermelho do poste
-    navy: "#0C2340", // Azul marinho do personagem
-    lightGold: "rgba(212, 175, 55, 0.15)", // Dourado com baixa opacidade para detalhes
+    gold: "#D4AF37", // Dourado - Cor da coroa e detalhes premium
+    red: "#B22222", // Vermelho escuro - Cor do poste de barbeiro
+    navy: "#0C2340", // Azul marinho - Cor do personagem da logo
+    lightGold: "rgba(212, 175, 55, 0.15)", // Dourado transparente - Para detalhes sutis
   },
-  link: "#4a9eff", // Cor dos links na aplicação - mesmo das telas de cadastro
+  link: "#4a9eff", // Azul claro - Links clicáveis
 };
 
 export const globalStyles = StyleSheet.create({
@@ -314,7 +314,7 @@ export const globalStyles = StyleSheet.create({
   // ESTILOS DE AGENDAMENTOS
   // ==========================================
   agendamentoItem: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.gradient.start,
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
@@ -335,17 +335,18 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
-    color: colors.white,
+    color: colors.textLighter,
   },
   agendamentoServico: {
     fontSize: 16,
     textAlign: "left",
     fontWeight: "bold",
     marginBottom: 5,
+    color: colors.textLighter,
   },
   agendamentoData: {
     fontSize: 14,
-    color: colors.textLight,
+    color: colors.textLighter,
     marginBottom: 3,
   },
   agendamentoBarbeiro: {
