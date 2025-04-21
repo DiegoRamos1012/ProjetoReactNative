@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import { colors } from "../components/globalStyle/styles";
-import { Animated, Easing } from "react-native";
-import { CardStyleInterpolators } from "@react-navigation/stack";
 
 import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
@@ -24,50 +22,6 @@ interface AppNavigatorProps {
   setUser: (user: User | null) => void;
 }
 
-// Animação personalizada para slide da esquerda
-const customSlideFromLeft = {
-  cardStyleInterpolator: ({ current, layouts }) => {
-    return {
-      cardStyle: {
-        transform: [
-          {
-            translateX: current.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-layouts.screen.width, 0],
-            }),
-          },
-        ],
-        backgroundColor: colors.gradient.middle,
-      },
-      overlayStyle: {
-        opacity: current.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.5],
-          extrapolate: "clamp",
-        }),
-      },
-    };
-  },
-  transitionSpec: {
-    open: {
-      animation: "timing",
-      config: {
-        duration: 250,
-        easing: Easing.out(Easing.poly(4)),
-        useNativeDriver: true,
-      },
-    },
-    close: {
-      animation: "timing",
-      config: {
-        duration: 200,
-        easing: Easing.in(Easing.poly(4)),
-        useNativeDriver: true,
-      },
-    },
-  },
-};
-
 const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
   const [password, setPassword] = useState<string>("");
 
@@ -77,12 +31,13 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.gradient.middle },
-        animationDuration: 250,
+        animation: "fade",
+        animationDuration: 200,
         gestureEnabled: true,
         gestureDirection: "horizontal",
-        // Configurações adicionais para evitar o flash branco durante a transição
-        animationTypeForReplace: "push",
-        cardStyle: { backgroundColor: colors.gradient.dark },
+        fullScreenGestureEnabled: true,
+        // Configuração para eliminar o flash branco
+        presentation: "transparentModal",
       }}
     >
       {!user ? (
@@ -96,8 +51,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
           <Stack.Screen
             name="Home"
             options={{
-              // Quando voltamos do Profile para Home, a tela vem da esquerda
-              ...customSlideFromLeft,
+              animation: "slide_from_left",
             }}
           >
             {(props) => (
@@ -113,7 +67,6 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
           <Stack.Screen
             name="Profile"
             options={{
-              // Por padrão, quando vamos para Profile, a tela vem da direita
               animation: "slide_from_right",
               animationDuration: 250,
             }}
