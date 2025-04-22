@@ -658,7 +658,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
-    color: colors.gradient.start,
+    color: colors.textLighter,
   },
   formInput: {
     backgroundColor: "#FFF",
