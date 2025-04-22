@@ -564,7 +564,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
       onRequestClose={() => setServicosModalVisible(false)}
     >
       <View style={globalStyles.centeredView}>
-        <View style={globalStyles.servicoModalView}>
+        <View style={[globalStyles.servicoModalView, { paddingRight: 0 }]}>
           <TouchableOpacity
             style={globalStyles.closeButton}
             onPress={() => setServicosModalVisible(false)}
@@ -572,7 +572,10 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
             <MaterialIcons name="close" size={24} color="#333" />
           </TouchableOpacity>
 
-          <ScrollView>
+          <ScrollView
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={{ paddingRight: 20 }}
+          >
             <Text style={globalStyles.servicoModalTitle}>
               {editandoServico ? "Editar Serviço" : "Novo Serviço"}
             </Text>
@@ -611,48 +614,60 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                 style={[globalStyles.formGroup, { flex: 1, marginRight: 10 }]}
               >
                 <Text style={globalStyles.formLabel}>Preço *</Text>
-                <View style={globalStyles.priceInputContainer}>
+                <View
+                  style={[
+                    globalStyles.priceInputContainer,
+                    { flexDirection: "row", alignItems: "center" },
+                  ]}
+                >
+                  <Text
+                    style={{
+                      position: "absolute",
+                      left: 12,
+                      fontSize: 16,
+                      color: colors.textDark,
+                      zIndex: 1,
+                    }}
+                  >
+                    R$
+                  </Text>
                   <TextInput
                     style={[
                       globalStyles.formInput,
-                      { paddingRight: 45 }, // Adiciona espaço para o ícone
+                      { paddingLeft: 34 }, // Reduzido para eliminar o espaço em branco
                     ]}
                     value={
-                      servicoAtual.preco > 0
-                        ? formatCurrencyBRL(servicoAtual.preco, {
-                            showCurrency: true,
+                      servicoAtual.preco === 0
+                        ? ""
+                        : formatCurrencyBRL(servicoAtual.preco, {
+                            showCurrency: false,
                             decimals: 2,
                           })
-                        : ""
                     }
                     onChangeText={(text) => {
-                      // Usa a função aprimorada de parsing
-                      const numericValue = parseCurrencyValue(text);
+                      // Remove tudo que não for número
+                      const numericText = text.replace(/[^0-9]/g, "");
 
-                      // Atualizar o estado com o valor numérico
-                      setServicoAtual({ ...servicoAtual, preco: numericValue });
+                      // Converte para valor numérico (em centavos)
+                      const cents = numericText ? parseInt(numericText) : 0;
+
+                      // Converte centavos para valor real (dividindo por 100)
+                      const value = cents / 100;
+
+                      // Atualiza o estado
+                      setServicoAtual({ ...servicoAtual, preco: value });
                     }}
-                    placeholder="R$ 0,00"
+                    placeholder="0,00"
                     keyboardType="numeric"
+                    maxLength={10}
                   />
-                  {servicoAtual.preco > 0 && (
-                    <TouchableOpacity
-                      style={globalStyles.priceClearButton}
-                      onPress={() =>
-                        setServicoAtual({ ...servicoAtual, preco: 0 })
-                      }
-                    >
-                      <MaterialIcons
-                        name="close"
-                        size={16}
-                        color={colors.textLight}
-                      />
-                    </TouchableOpacity>
-                  )}
                 </View>
-                {servicoAtual.preco > 1000 && (
+                {servicoAtual.preco > 0 && (
                   <Text style={globalStyles.priceHint}>
-                    {formatCompactCurrency(servicoAtual.preco)}
+                    {formatCurrencyBRL(servicoAtual.preco, {
+                      showCurrency: true,
+                      decimals: 2,
+                    })}
                   </Text>
                 )}
               </View>
