@@ -1,54 +1,66 @@
 import { StyleSheet } from "react-native";
 
 // ==========================================
-// CORES GLOBAIS
+// COLORS THEME
 // ==========================================
 export const colors = {
   primary: "#FFFFFF", // Branco puro - Cor primária para textos e elementos importantes
   secondary: "#0C2340", // Azul marinho escuro - Cor secundária, como na logo
   background: "#000000", // Preto - Cor de fundo principal
-  input: "#333333", // Cinza escuro - Campos de entrada
-  inputFocused: "#444444", // Cinza mais claro - Campos de entrada quando focados
-  white: "#FFFFFF", // Branco puro - Usado para textos sobre fundos escuros
+
+  // Text Colors
   text: "#FFFFFF", // Branco puro - Cor padrão para textos
   textDark: "#333333", // Cinza escuro - Textos sobre fundos claros
   textLight: "#666666", // Cinza médio - Textos secundários/menos importantes
   textLighter: "#dddddd", // Cinza muito claro - Textos terciários/subtítulos
+  white: "#FFFFFF", // Branco puro - Usado para textos sobre fundos escuros
+
+  // UI Elements
+  input: "#333333", // Cinza escuro - Campos de entrada
+  inputFocused: "#444444", // Cinza mais claro - Campos de entrada quando focados
   error: "#FF375B", // Vermelho vibrante - Mensagens de erro
   disabled: "#cccccc", // Cinza claro - Elementos desabilitados
+  danger: "#dc2626", // Vermelho para botões de ação perigosa
+  link: "#4a9eff", // Azul claro - Links clicáveis
+
+  // Gray Scale
+  gray: "#888888", // Cinza médio para textos secundários
+  lightGray: "#cccccc", // Cinza claro para detalhes e borda
+  darkGray: "#555555", // Cinza escuro para textos importantes
+
+  // Roles & Cargo Colors
   adminRole: "#c2410c", // Laranja queimado - Indicador de função de administrador
   clientRole: "#0891b2", // Azul turquesa - Indicador de função de cliente
   funcionarioCargo: "#047857", // Verde escuro - Indicador de cargo de funcionário
   clienteCargo: "#4b5563", // Cinza azulado - Indicador de cargo de cliente
   barbeiroCargo: "#0891b2", // Azul turquesa - Indicador de cargo de barbeiro
   gerenteCargo: "#9333ea", // Roxo - Indicador de cargo de gerente
+
+  // Gradient
   gradient: {
     start: "#0C2340", // Azul marinho escuro - Início do gradiente (como no poste da logo)
     middle: "#0F172A", // Azul escuro médio - Tom intermediário do gradiente
     end: "#000000", // Preto - Final do gradiente para o fundo
   },
+
+  // Buttons
   button: {
     primary: "#3A5199", // Azul escuro - Botões primários
     secondary: "#4a9eff", // Azul claro - Botões secundários e links
   },
+
+  // Barber Theme
   barber: {
     gold: "#D4AF37", // Dourado - Cor da coroa e detalhes premium
     red: "#B22222", // Vermelho escuro - Cor do poste de barbeiro
     navy: "#0C2340", // Azul marinho - Cor do personagem da logo
     lightGold: "rgba(212, 175, 55, 0.15)", // Dourado transparente - Para detalhes sutis
   },
-  link: "#4a9eff", // Azul claro - Links clicáveis
-
-  // Novas cores adicionadas para LixeiraModal e outros componentes
-  gray: "#888888", // Cinza médio para textos secundários
-  lightGray: "#cccccc", // Cinza claro para detalhes e borda
-  darkGray: "#555555", // Cinza escuro para textos importantes
-  danger: "#dc2626", // Vermelho para botões de ação perigosa
 };
 
 export const globalStyles = StyleSheet.create({
   // ==========================================
-  // ESTILOS COMUNS/COMPARTILHADOS
+  // 1. LAYOUT & CONTAINERS
   // ==========================================
   container: {
     backgroundColor: colors.background,
@@ -57,6 +69,205 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     padding: 32,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  section: {
+    padding: 20,
+    marginBottom: 15,
+    backgroundColor: colors.gradient.middle,
+    borderRadius: 8,
+  },
+  horizontalLine: {
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 10,
+  },
+
+  // ==========================================
+  // 2. TEXT STYLES
+  // ==========================================
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    fontWeight: "bold",
+    color: colors.primary,
+    textAlign: "center",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: colors.primary,
+    marginTop: -10,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: colors.textLighter,
+    marginBottom: 15,
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: colors.textLight,
+    marginTop: 20,
+  },
+  emptyListText: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+    color: colors.textLight,
+  },
+  bannerTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: colors.white,
+    marginBottom: 5,
+  },
+  bannerSubtitle: {
+    fontSize: 16,
+    color: colors.textLighter,
+    fontStyle: "italic",
+  },
+
+  // ==========================================
+  // 3. BUTTONS & INTERACTIVE ELEMENTS
+  // ==========================================
+  button: {
+    backgroundColor: colors.button.primary,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  singleButton: {
+    width: "60%",
+    height: 40,
+    backgroundColor: colors.input,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  singleButtonText: {
+    color: colors.text,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeButton: {
+    position: "absolute",
+    right: 15,
+    top: 15,
+    zIndex: 1,
+  },
+  backButton: {
+    padding: 5,
+  },
+  disabledButton: {
+    opacity: 0.6,
+    backgroundColor: "#aaaaaa",
+  },
+
+  // ==========================================
+  // 4. FORM ELEMENTS
+  // ==========================================
+  textInput: {
+    width: "100%",
+    height: 40,
+    backgroundColor: colors.input,
+    borderRadius: 20,
+    paddingLeft: 20,
+    color: colors.text,
+    marginBottom: 20,
+  },
+  passwordGroup: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  passwordInput: {
+    paddingRight: 50,
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 15,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    zIndex: 1,
+  },
+  iconWrapper: {
+    position: "absolute",
+    right: 15,
+    top: "50%",
+    transform: [{ translateY: -22 }],
+  },
+  formGroup: {
+    marginBottom: 20,
+  },
+  formLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: colors.textLighter,
+  },
+  formInput: {
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    padding: 15,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#DDD",
+    color: colors.textDark,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  radioButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#DDD",
+  },
+  radioSelected: {
+    backgroundColor: colors.button.primary,
+    borderColor: colors.button.primary,
+  },
+  radioText: {
+    fontSize: 16,
+    color: colors.textDark,
+  },
+  radioTextSelected: {
+    color: "#FFF",
+  },
+
+  // ==========================================
+  // 5. LOADING & FEEDBACK STATES
+  // ==========================================
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -105,110 +316,87 @@ export const globalStyles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 8,
   },
-  textInput: {
-    width: "100%",
-    height: 40,
-    backgroundColor: colors.input,
-    borderRadius: 20,
-    paddingLeft: 20,
-    color: colors.text,
-    marginBottom: 20,
-  },
-  singleButton: {
-    width: "60%",
-    height: 40,
-    backgroundColor: colors.input,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  singleButtonText: {
-    color: colors.text,
-    height: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  passwordGroup: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  passwordInput: {
-    paddingRight: 50,
-  },
-  iconContainer: {
-    position: "absolute",
-    right: 15,
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    zIndex: 1,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: "bold",
-    color: colors.primary,
-    textAlign: "center",
-  },
-  iconWrapper: {
-    position: "absolute",
-    right: 15,
-    top: "50%",
-    transform: [{ translateY: -22 }],
-  },
-  image: {
-    width: 400,
-    height: 450,
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 20,
-    borderWidth: 2,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  closeButton: {
-    position: "absolute",
-    right: 15,
-    top: 15,
-    zIndex: 1,
-  },
-  horizontalLine: {
-    borderWidth: 0.5,
-    borderColor: "black",
-    margin: 10,
-  },
-  emptyText: {
-    textAlign: "center",
-    fontSize: 16,
-    color: colors.textLight,
+  loadingIndicator: {
     marginTop: 20,
-  },
-  emptyListText: {
-    textAlign: "center",
-    marginTop: 40,
-    fontSize: 16,
-    color: colors.textLight,
   },
 
   // ==========================================
-  // ESTILOS DA TELA DE HOME
+  // 6. HEADER & BANNER STYLES
   // ==========================================
-  homeContainer: {
-    flex: 1,
-    backgroundColor: colors.gradient.middle,
-  },
   header: {
     backgroundColor: colors.gradient.start,
     padding: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  banner: {
+    backgroundColor: colors.secondary,
+    padding: 20,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  bannerEnhanced: {
+    backgroundColor: "rgba(12, 35, 64, 0.8)", // Cor secundária com transparência
+    margin: 16,
+    padding: 24,
+    borderRadius: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  bannerTitleEnhanced: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.white,
+    marginBottom: 8,
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  bannerSubtitleEnhanced: {
+    fontSize: 16,
+    color: colors.barber.lightGold,
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  bannerItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    width: "100%",
+  },
+  bannerIcon: {
+    marginRight: 12,
+    marginLeft: 5,
+    color: colors.barber.gold,
+  },
+
+  // ==========================================
+  // 7. HOME SCREEN STYLES
+  // ==========================================
+  homeContainer: {
+    flex: 1,
+    backgroundColor: colors.gradient.middle,
+  },
+  homeContainerEnhanced: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  headerEnhanced: {
+    backgroundColor: colors.gradient.start,
+    padding: 20,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
   },
   userInfoContainer: {
     flexDirection: "row",
@@ -235,41 +423,37 @@ export const globalStyles = StyleSheet.create({
   logoutButton: {
     padding: 10,
   },
-  banner: {
-    backgroundColor: colors.secondary,
+  sectionEnhanced: {
+    margin: 16,
+    marginTop: 8,
+    marginBottom: 24,
+    borderRadius: 15,
+    backgroundColor: "rgba(15, 23, 42, 0.9)", // Cor do meio do gradiente com transparência
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
     padding: 20,
-    alignItems: "center",
-    marginBottom: 20,
   },
-  bannerTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 5,
-  },
-  bannerSubtitle: {
-    fontSize: 16,
-    color: colors.textLighter,
-    fontStyle: "italic",
-  },
-  section: {
-    padding: 20,
-    marginBottom: 15,
-    backgroundColor: colors.gradient.middle,
-    borderRadius: 8,
-  },
-  sectionTitle: {
+  sectionTitleEnhanced: {
     fontSize: 20,
     fontWeight: "bold",
+    color: colors.barber.gold,
     marginBottom: 5,
-    color: colors.primary,
-    marginTop: -10,
+    textShadowColor: "rgba(0, 0, 0, 0.4)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-  sectionSubtitle: {
+  sectionSubtitleEnhanced: {
     fontSize: 14,
     color: colors.textLighter,
     marginBottom: 15,
   },
+
+  // ==========================================
+  // 8. SERVICES LIST STYLES
+  // ==========================================
   servicosList: {
     marginTop: 10,
   },
@@ -310,124 +494,6 @@ export const globalStyles = StyleSheet.create({
   servicoTempo: {
     fontSize: 13,
     color: colors.textLighter,
-  },
-
-  // ==========================================
-  // ESTILOS DE AGENDAMENTOS
-  // ==========================================
-  agendamentoItem: {
-    backgroundColor: colors.gradient.start,
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  agendamentoInfo: {
-    flex: 1,
-  },
-  agendamentoTitulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-    color: colors.textLighter,
-  },
-  agendamentoServico: {
-    fontSize: 16,
-    textAlign: "left",
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: colors.textLighter,
-  },
-  agendamentoData: {
-    fontSize: 14,
-    color: colors.textLighter,
-    marginBottom: 3,
-  },
-  agendamentoBarbeiro: {
-    fontSize: 14,
-    color: colors.secondary,
-  },
-
-  // ==========================================
-  // ESTILOS APRIMORADOS PARA A TELA HOME
-  // ==========================================
-  homeContainerEnhanced: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  headerEnhanced: {
-    backgroundColor: colors.gradient.start,
-    padding: 20,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 6,
-  },
-  bannerEnhanced: {
-    backgroundColor: "rgba(12, 35, 64, 0.8)", // Cor secundária com transparência
-    margin: 16,
-    padding: 24,
-    borderRadius: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  bannerTitleEnhanced: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 8,
-    textAlign: "center",
-    textShadowColor: "rgba(0, 0, 0, 0.5)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  bannerSubtitleEnhanced: {
-    fontSize: 16,
-    color: colors.barber.lightGold,
-    textAlign: "center",
-    fontStyle: "italic",
-  },
-  sectionEnhanced: {
-    margin: 16,
-    marginTop: 8,
-    marginBottom: 24,
-    borderRadius: 15,
-    backgroundColor: "rgba(15, 23, 42, 0.9)", // Cor do meio do gradiente com transparência
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
-    padding: 20,
-  },
-  sectionTitleEnhanced: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.barber.gold,
-    marginBottom: 5,
-    textShadowColor: "rgba(0, 0, 0, 0.4)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  sectionSubtitleEnhanced: {
-    fontSize: 14,
-    color: colors.textLighter,
-    marginBottom: 15,
   },
   servicoCardEnhanced: {
     backgroundColor: "rgba(0, 0, 0, 0.7)",
@@ -479,6 +545,50 @@ export const globalStyles = StyleSheet.create({
     color: colors.textLighter,
     marginTop: 4,
   },
+
+  // ==========================================
+  // 9. APPOINTMENTS (AGENDAMENTOS) STYLES
+  // ==========================================
+  agendamentoItem: {
+    backgroundColor: colors.gradient.start,
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  agendamentoInfo: {
+    flex: 1,
+  },
+  agendamentoTitulo: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+    color: colors.textLighter,
+  },
+  agendamentoServico: {
+    fontSize: 16,
+    textAlign: "left",
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: colors.textLighter,
+  },
+  agendamentoData: {
+    fontSize: 14,
+    color: colors.textLighter,
+    marginBottom: 3,
+  },
+  agendamentoBarbeiro: {
+    fontSize: 14,
+    color: colors.secondary,
+  },
   agendamentoItemEnhanced: {
     backgroundColor: "rgba(15, 23, 42, 0.8)",
     padding: 16,
@@ -523,10 +633,27 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  agendarButton: {
+    backgroundColor: colors.secondary,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  agendarButtonDisabled: {
+    backgroundColor: colors.disabled,
+  },
+  agendarButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 
   // ==========================================
-  // ESTILOS DE MODAIS DE AGENDAMENTO
+  // 10. MODALS STYLES
   // ==========================================
+  // 10.1. Basic Modal Styles
   modalView: {
     width: "85%",
     backgroundColor: colors.gradient.middle,
@@ -557,6 +684,8 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 15,
     alignSelf: "center",
   },
+
+  // 10.2. Appointment Modal Styles
   modalServico: {
     fontSize: 18,
     fontWeight: "600",
@@ -606,70 +735,8 @@ export const globalStyles = StyleSheet.create({
   horarioTextSelected: {
     color: colors.white,
   },
-  agendarButton: {
-    backgroundColor: colors.secondary,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  agendarButtonDisabled: {
-    backgroundColor: colors.disabled,
-  },
-  agendarButtonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
 
-  // ==========================================
-  // ESTILOS DA TELA DE PERFIL (PROFILE)
-  // ==========================================
-  backButton: {
-    padding: 5,
-  },
-  profileContent: {
-    flex: 1,
-    padding: 20,
-  },
-  profileLoadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: colors.textLight,
-  },
-  profileAvatarContainer: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  profileAvatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: colors.secondary,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  formGroup: {
-    marginBottom: 20,
-  },
-  formLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-    color: colors.textLighter,
-  },
-  formInput: {
-    backgroundColor: "#FFF",
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#DDD",
-    color: colors.textDark,
-  },
-  // Estilos para o modal de exclusão de horário
+  // 10.3. Delete Time Modal
   horarioDeleteModal: {
     width: "80%",
     backgroundColor: colors.gradient.middle,
@@ -721,7 +788,8 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  // Estilos para opções de horário
+
+  // 10.4. Service time options
   servicoHorarioOptionContainer: {
     position: "relative",
   },
@@ -740,30 +808,31 @@ export const globalStyles = StyleSheet.create({
   servicoHorarioOptionPressed: {
     backgroundColor: "rgba(58, 81, 153, 0.2)",
   },
-  radioGroup: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  radioButton: {
+
+  // ==========================================
+  // 11. PROFILE SCREEN STYLES
+  // ==========================================
+  profileContent: {
     flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: "#FFF",
-    alignItems: "center",
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: "#DDD",
+    padding: 20,
   },
-  radioSelected: {
-    backgroundColor: colors.button.primary,
-    borderColor: colors.button.primary,
-  },
-  radioText: {
+  profileLoadingText: {
+    marginTop: 10,
     fontSize: 16,
-    color: colors.textDark,
+    color: colors.textLight,
   },
-  radioTextSelected: {
-    color: "#FFF",
+  profileAvatarContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  profileAvatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
   backButtonContainer: {
     marginTop: 15,
@@ -781,33 +850,111 @@ export const globalStyles = StyleSheet.create({
   },
 
   // ==========================================
-  // ESTILOS DE BOTÕES COMUNS
+  // 12. IMAGES & MEDIA STYLES
   // ==========================================
-  button: {
-    backgroundColor: colors.button.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 10,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  image: {
+    width: 400,
+    height: 450,
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 20,
+    borderWidth: 2,
   },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 1,
+  logoImage: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+    borderRadius: 20,
+    resizeMode: "contain",
   },
 
   // ==========================================
-  // ESTILOS DA TELA ADMIN TOOLS
+  // 13. AUTHENTICATION SCREENS
+  // ==========================================
+  authContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  authTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: colors.primary,
+    textAlign: "center",
+    marginBottom: 30,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  authInput: {
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.input,
+    borderRadius: 25,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: colors.text,
+    marginBottom: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  authInputFocused: {
+    borderColor: colors.button.primary,
+    backgroundColor: colors.inputFocused,
+  },
+  passwordContainer: {
+    width: "100%",
+    position: "relative",
+    marginBottom: 20,
+  },
+  passwordIconContainer: {
+    position: "absolute",
+    right: 15,
+    top: 14,
+    zIndex: 1,
+  },
+  authButton: {
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.button.primary,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  authButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  backToHomeButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 25,
+    backgroundColor: "rgba(85, 85, 85, 0.5)",
+    width: "80%",
+  },
+  backToHomeText: {
+    color: colors.white,
+    marginLeft: 8,
+    fontSize: 14,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+
+  // ==========================================
+  // 14. ADMIN TOOLS STYLES
   // ==========================================
   adminContainer: {
     flex: 1,
@@ -1011,13 +1158,9 @@ export const globalStyles = StyleSheet.create({
     color: colors.secondary,
     fontWeight: "bold",
   },
-  disabledButton: {
-    opacity: 0.6,
-    backgroundColor: "#aaaaaa",
-  },
 
   // ==========================================
-  // ESTILOS DO COMPONENTE SERVIÇOS E HORÁRIOS
+  // 15. SERVICES & TIME MANAGEMENT
   // ==========================================
   servicosHorariosContainer: {
     flex: 1,
@@ -1110,6 +1253,89 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  // ==========================================
+  // 16. SERVICE FORM STYLES
+  // ==========================================
+  serviceFormTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: colors.button.primary,
+    textAlign: "center",
+  },
+  serviceFormGroup: {
+    marginBottom: 15,
+  },
+  serviceFormLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: colors.textDark,
+  },
+  serviceFormInput: {
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#DDD",
+    color: colors.textDark,
+  },
+  serviceFormTextArea: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  iconButtonServices: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  selectedIconButtonServices: {
+    backgroundColor: colors.button.primary,
+    borderColor: colors.button.primary,
+  },
+  serviceFormButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  serviceFormCancelButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  serviceFormCancelButtonText: {
+    color: colors.textDark,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  serviceFormSaveButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: colors.button.primary,
+    alignItems: "center",
+  },
+  serviceFormSaveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  // ==========================================
+  // 17. SERVICE MODALS
+  // ==========================================
   servicoModalView: {
     width: "90%",
     maxHeight: "85%",
@@ -1248,183 +1474,9 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  loadingIndicator: {
-    marginTop: 20,
-  },
 
   // ==========================================
-  // ESTILOS DO FORMULÁRIO DE SERVIÇOS
-  // ==========================================
-  serviceFormTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: colors.button.primary,
-    textAlign: "center",
-  },
-  serviceFormGroup: {
-    marginBottom: 15,
-  },
-  serviceFormLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-    color: colors.textDark,
-  },
-  serviceFormInput: {
-    backgroundColor: "#FFF",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#DDD",
-    color: colors.textDark,
-  },
-  serviceFormTextArea: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
-  iconButtonServices: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#f0f0f0",
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  selectedIconButtonServices: {
-    backgroundColor: colors.button.primary,
-    borderColor: colors.button.primary,
-  },
-  serviceFormButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  serviceFormCancelButton: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  serviceFormCancelButtonText: {
-    color: colors.textDark,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  serviceFormSaveButton: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: colors.button.primary,
-    alignItems: "center",
-  },
-  serviceFormSaveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
-  // ==========================================
-  // ESTILOS DE LOGIN/REGISTER/WELCOME MELHORADOS
-  // ==========================================
-  authContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 32,
-  },
-  logoImage: {
-    width: 300,
-    height: 300,
-    marginBottom: 20,
-    borderRadius: 20,
-    resizeMode: "contain",
-  },
-  authTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: colors.primary,
-    textAlign: "center",
-    marginBottom: 30,
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
-  authInput: {
-    width: "100%",
-    height: 50,
-    backgroundColor: colors.input,
-    borderRadius: 25,
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: colors.text,
-    marginBottom: 16,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  authInputFocused: {
-    borderColor: colors.button.primary,
-    backgroundColor: colors.inputFocused,
-  },
-  passwordContainer: {
-    width: "100%",
-    position: "relative",
-    marginBottom: 20,
-  },
-  passwordIconContainer: {
-    position: "absolute",
-    right: 15,
-    top: 14,
-    zIndex: 1,
-  },
-  authButton: {
-    width: "100%",
-    height: 50,
-    backgroundColor: colors.button.primary,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  authButtonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "bold",
-    letterSpacing: 1,
-  },
-  backToHomeButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-    padding: 10,
-    borderRadius: 25,
-    backgroundColor: "rgba(85, 85, 85, 0.5)",
-    width: "80%",
-  },
-  backToHomeText: {
-    color: colors.white,
-    marginLeft: 8,
-    fontSize: 14,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-
-  // ==========================================
-  // ESTILOS PARA O LIXEIRA MODAL
+  // 18. TRASH BIN (LIXEIRA) STYLES
   // ==========================================
   lixeiraModalCenteredView: {
     flex: 1,
@@ -1581,7 +1633,7 @@ export const globalStyles = StyleSheet.create({
   },
 
   // ==========================================
-  // ESTILOS PARA O STATUS MODAL
+  // 19. STATUS MODAL STYLES
   // ==========================================
   statusModalCenteredView: {
     flex: 1,
@@ -1698,7 +1750,7 @@ export const globalStyles = StyleSheet.create({
   },
 
   // ==========================================
-  // ESTILOS PARA O AGENDAMENTO CARD
+  // 20. APPOINTMENT CARD STYLES
   // ==========================================
   agendamentoCardContainer: {
     backgroundColor: "rgba(15, 23, 42, 0.8)",
@@ -1821,7 +1873,7 @@ export const globalStyles = StyleSheet.create({
   },
 
   // ==========================================
-  // ESTILOS PARA A LISTA DE AGENDAMENTOS
+  // 21. APPOINTMENTS LIST STYLES
   // ==========================================
   agendamentosListContainer: {
     flex: 1,
@@ -1895,19 +1947,6 @@ export const globalStyles = StyleSheet.create({
   agendamentosListContent: {
     maxHeight: 600,
     paddingBottom: 20,
-  },
-
-  // Banner component styles
-  bannerItemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-    width: "100%",
-  },
-  bannerIcon: {
-    marginRight: 12,
-    marginLeft: 5,
-    color: colors.barber.gold,
   },
 });
 

@@ -71,7 +71,7 @@ const ServicesList: React.FC<ServicesListProps> = ({
               <MaterialIcons
                 name={(servico.iconName || "content-cut") as any}
                 size={45}
-                color={colors.textLighter}
+                color={colors.barber.gold}
               />
             </View>
             <Text style={globalStyles.servicoNome}>{servico.nome}</Text>
