@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors, globalStyles } from "../globalStyle/styles";
 import { Agendamento } from "../../types/types";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { db } from "../../../config/firebaseConfig";
 
 interface StatusModalProps {
   visible: boolean;
@@ -17,6 +26,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   onClose,
   onStatusChange,
 }) => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const statusOptions = [
     {
       value: "pendente",
@@ -55,6 +65,33 @@ const StatusModal: React.FC<StatusModalProps> = ({
       setStatusSelecionado(agendamento.status || "pendente");
     }
   }, [visible, agendamento]);
+
+  const handleStatusChange = async () => {
+    if (!agendamento || !statusSelecionado) return;
+
+    setIsUpdating(true);
+    try {
+      // Atualizar o documento no Firestore
+      const agendamentoRef = doc(db, "agendamentos", agendamento.id);
+      await updateDoc(agendamentoRef, {
+        status: statusSelecionado,
+        atualizado_em: Timestamp.now(),
+      });
+
+      // Chamar o callback para atualizar a UI
+      onStatusChange(agendamento.id, statusSelecionado);
+      onClose();
+    } catch (error: any) {
+      console.error("Erro ao atualizar status:", error);
+      Alert.alert(
+        "Erro",
+        "Não foi possível atualizar o status: " +
+          (error.message || "Erro desconhecido")
+      );
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   if (!agendamento) return null;
 
@@ -146,18 +183,23 @@ const StatusModal: React.FC<StatusModalProps> = ({
             <TouchableOpacity
               style={globalStyles.statusCancelButton}
               onPress={onClose}
+              disabled={isUpdating}
             >
               <Text style={globalStyles.statusButtonText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={globalStyles.statusConfirmButton}
-              onPress={() => {
-                if (statusSelecionado) {
-                  onStatusChange(agendamento.id, statusSelecionado);
-                }
-              }}
+              style={[
+                globalStyles.statusConfirmButton,
+                isUpdating && { opacity: 0.7 },
+              ]}
+              onPress={handleStatusChange}
+              disabled={isUpdating}
             >
-              <Text style={globalStyles.statusButtonText}>Confirmar</Text>
+              {isUpdating ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={globalStyles.statusButtonText}>Confirmar</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>

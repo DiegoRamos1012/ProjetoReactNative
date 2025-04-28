@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
+  RefreshControl,
 } from "react-native";
 import {
   collection,
@@ -199,30 +200,32 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
           onPress: async () => {
             try {
               setExcluindoAgendamento(agendamento.id);
-              
+
               // Primeiro busca o documento completo para armazenar na lixeira
               const agendamentoRef = doc(db, "agendamentos", agendamento.id);
               const agendamentoDoc = await getDoc(agendamentoRef);
-              
+
               if (agendamentoDoc.exists()) {
                 const agendamentoData = agendamentoDoc.data();
-                
+
                 // Adiciona à coleção da lixeira com data de exclusão
                 await addDoc(collection(db, "agendamentos_lixeira"), {
                   ...agendamentoData,
                   id_original: agendamento.id,
                   data_exclusao: Timestamp.now(),
                 });
-                
+
                 // Remove o documento da coleção principal
                 await deleteDoc(agendamentoRef);
-                
+
                 // Atualiza a lista de agendamentos
-                setAgendamentos(agendamentos.filter(a => a.id !== agendamento.id));
-                
+                setAgendamentos(
+                  agendamentos.filter((a) => a.id !== agendamento.id)
+                );
+
                 // Atualiza a lixeira
                 fetchAgendamentosExcluidos();
-                
+
                 Alert.alert("Sucesso", "Agendamento movido para a lixeira.");
               } else {
                 throw new Error("Agendamento não encontrado");
@@ -246,13 +249,14 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
   // Função para restaurar um agendamento da lixeira
   const restaurarAgendamento = async (agendamento: Agendamento) => {
     if (!canAccessTools) return;
-    
+
     try {
       setExcluindoAgendamento(agendamento.id);
-      
+
       // Preparar o objeto para adicionar de volta à coleção principal
-      const { data_exclusao, id_original, ...dadosAgendamento } = agendamento as any;
-      
+      const { data_exclusao, id_original, ...dadosAgendamento } =
+        agendamento as any;
+
       // Se tiver o ID original, usar ele, caso contrário gerar um novo
       if (id_original) {
         // Adicionar de volta com o ID original
@@ -267,14 +271,16 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
           restaurado_em: Timestamp.now(),
         });
       }
-      
+
       // Remover da lixeira
       await deleteDoc(doc(db, "agendamentos_lixeira", agendamento.id));
-      
+
       // Atualizar as listas
       fetchAgendamentos();
-      setAgendamentosExcluidos(agendamentosExcluidos.filter(a => a.id !== agendamento.id));
-      
+      setAgendamentosExcluidos(
+        agendamentosExcluidos.filter((a) => a.id !== agendamento.id)
+      );
+
       Alert.alert("Sucesso", "Agendamento restaurado com sucesso.");
     } catch (error: any) {
       console.error("Erro ao restaurar agendamento:", error);
@@ -291,7 +297,7 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
   // Função para excluir permanentemente um agendamento
   const excluirPermanentemente = async (agendamento: Agendamento) => {
     if (!canAccessTools) return;
-    
+
     Alert.alert(
       "Excluir permanentemente",
       "Este agendamento será excluído permanentemente e não poderá ser recuperado. Deseja continuar?",
@@ -306,13 +312,15 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
           onPress: async () => {
             try {
               setExcluindoAgendamento(agendamento.id);
-              
+
               // Excluir permanentemente da lixeira
               await deleteDoc(doc(db, "agendamentos_lixeira", agendamento.id));
-              
+
               // Atualizar a lista da lixeira
-              setAgendamentosExcluidos(agendamentosExcluidos.filter(a => a.id !== agendamento.id));
-              
+              setAgendamentosExcluidos(
+                agendamentosExcluidos.filter((a) => a.id !== agendamento.id)
+              );
+
               Alert.alert("Sucesso", "Agendamento excluído permanentemente.");
             } catch (error: any) {
               console.error("Erro ao excluir permanentemente:", error);
@@ -404,6 +412,14 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={true}
           nestedScrollEnabled={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={loadingAgendamentos}
+              onRefresh={fetchAgendamentos}
+              colors={[colors.button.primary]}
+              tintColor={colors.button.primary}
+            />
+          }
         >
           {agendamentos.map((agendamento) => (
             <AgendamentoCard
@@ -427,6 +443,14 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
         onStatusChange={(id, status) => {
           if (onStatusChange) {
             onStatusChange(id, status);
+
+            // Atualizar o estado local dos agendamentos
+            setAgendamentos((prevAgendamentos) =>
+              prevAgendamentos.map((ag) =>
+                ag.id === id ? { ...ag, status } : ag
+              )
+            );
+
             setStatusModalVisible(false);
           }
         }}

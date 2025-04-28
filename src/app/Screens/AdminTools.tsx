@@ -595,8 +595,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                 canAccessTools={canAccessTools}
                 expanded={agendamentosExpanded}
                 onStatusChange={(id, status) => {
-                  console.log(`Agendamento ${id} alterado para ${status}`);
-                  // Você pode adicionar lógica adicional aqui se necessário
+                  console.log(`Agendamento ${id} alterado para "${status}"`);
                 }}
               />
             </View>
