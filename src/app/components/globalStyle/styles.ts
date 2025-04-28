@@ -419,6 +419,7 @@ export const globalStyles = StyleSheet.create({
   userEmail: {
     fontSize: 14,
     color: colors.white,
+    marginTop: 5,
   },
   logoutButton: {
     padding: 10,

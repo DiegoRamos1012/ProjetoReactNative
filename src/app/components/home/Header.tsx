@@ -18,6 +18,40 @@ const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  // Função para obter a data atual formatada em português
+  const obterDataFormatada = () => {
+    const diasSemana = [
+      "Domingo",
+      "Segunda",
+      "Terça",
+      "Quarta",
+      "Quinta",
+      "Sexta",
+      "Sábado",
+    ];
+    const meses = [
+      "janeiro",
+      "fevereiro",
+      "março",
+      "abril",
+      "maio",
+      "junho",
+      "julho",
+      "agosto",
+      "setembro",
+      "outubro",
+      "novembro",
+      "dezembro",
+    ];
+
+    const hoje = new Date();
+    const diaSemana = diasSemana[hoje.getDay()];
+    const dia = hoje.getDate();
+    const mes = meses[hoje.getMonth()];
+
+    return `${diaSemana}, dia ${dia} de ${mes}`;
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -47,6 +81,9 @@ const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
           <View>
             <Text style={globalStyles.userName}>
               Olá, {user.displayName || "Cliente"}
+            </Text>
+            <Text style={globalStyles.userEmail}>
+              {obterDataFormatada()}
             </Text>
           </View>
         </View>
