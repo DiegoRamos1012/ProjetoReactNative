@@ -65,9 +65,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
       setNome(service.nome);
       setDescricao(service.descricao || "");
       // Convert number to string for display in the input
-      setPrecoInput(
-        `R$ ${String(service.preco).replace(".", ",")}`
-      );
+      setPrecoInput(`R$ ${String(service.preco).replace(".", ",")}`);
       setTempo(service.tempo);
       setIconName(service.iconName);
       setSelectedHorarios(service.horarios || []);
@@ -122,6 +120,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
       iconName,
       horarios: selectedHorarios,
       observacao,
+      ordem: 0,
     };
     onSave(updatedService);
   };
@@ -176,13 +175,34 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
         </View>
         <View style={globalStyles.serviceFormGroup}>
           <Text style={globalStyles.serviceFormLabel}>Preço*</Text>
-          <TextInput
-            style={globalStyles.serviceFormInput}
-            value={precoInput}
-            onChangeText={setPrecoInput}
-            placeholder="Ex: R$ 35,00"
-            keyboardType="decimal-pad"
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            <Text
+              style={{
+                position: "absolute",
+                left: 12,
+                fontSize: 16,
+                color: colors.barber.gold,
+                fontWeight: "500",
+                zIndex: 1,
+              }}
+            >
+              R$
+            </Text>
+            <TextInput
+              style={[globalStyles.serviceFormInput, { paddingLeft: 44 }]}
+              value={precoInput.replace("R$ ", "")}
+              onChangeText={(text) => setPrecoInput(`R$ ${text}`)}
+              placeholder="0,00"
+              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              keyboardType="decimal-pad"
+            />
+          </View>
         </View>
         <View style={globalStyles.serviceFormGroup}>
           <Text style={globalStyles.serviceFormLabel}>Duração*</Text>

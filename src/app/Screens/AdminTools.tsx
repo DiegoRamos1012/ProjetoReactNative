@@ -280,7 +280,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
         <Text style={globalStyles.adminUserName}>
           {item.nome || "Sem nome"}
         </Text>
-        <Text style={globalStyles.adminUserEmail}>
+        <Text style={globalStyles.adminUserPhone}>
           Número de telefone: {item.telefone || "Sem número cadastrado"}
         </Text>
         <View style={globalStyles.horizontalLine} />

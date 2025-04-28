@@ -82,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ user, setUser }) => {
             <Text style={globalStyles.userName}>
               Olá, {user.displayName || "Cliente"}
             </Text>
-            <Text style={globalStyles.userEmail}>
+            <Text style={globalStyles.userDatetime}>
               {obterDataFormatada()}
             </Text>
           </View>

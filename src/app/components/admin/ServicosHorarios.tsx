@@ -524,7 +524,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
             <MaterialIcons
               name={item.iconName as any}
               size={24}
-              color={colors.secondary}
+              color={colors.barber.gold}
             />
           </View>
           <View style={globalStyles.servicoTextContainer}>
@@ -564,19 +564,19 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
       onRequestClose={() => setServicosModalVisible(false)}
     >
       <View style={globalStyles.centeredView}>
-        <View style={[globalStyles.servicoModalView, { paddingRight: 0 }]}>
+        <View style={[globalStyles.serviceFormModalView]}>
           <TouchableOpacity
-            style={globalStyles.closeButton}
+            style={globalStyles.serviceFormCloseButton}
             onPress={() => setServicosModalVisible(false)}
           >
-            <MaterialIcons name="close" size={24} color="#333" />
+            <MaterialIcons name="close" size={24} color={colors.white} />
           </TouchableOpacity>
 
           <ScrollView
             showsVerticalScrollIndicator={true}
-            contentContainerStyle={{ paddingRight: 20 }}
+            contentContainerStyle={{ padding: 20 }}
           >
-            <Text style={globalStyles.servicoModalTitle}>
+            <Text style={globalStyles.serviceFormTitle}>
               {editandoServico ? "Editar Serviço" : "Novo Serviço"}
             </Text>
 
@@ -590,6 +590,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                   setServicoAtual({ ...servicoAtual, nome: text })
                 }
                 placeholder="Ex: Corte de Cabelo"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
               />
             </View>
 
@@ -603,6 +604,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                   setServicoAtual({ ...servicoAtual, descricao: text })
                 }
                 placeholder="Descreva o serviço"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
                 multiline
                 numberOfLines={3}
               />
@@ -625,17 +627,15 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                       position: "absolute",
                       left: 12,
                       fontSize: 16,
-                      color: colors.textDark,
+                      color: colors.barber.gold,
+                      fontWeight: "500",
                       zIndex: 1,
                     }}
                   >
                     R$
                   </Text>
                   <TextInput
-                    style={[
-                      globalStyles.formInput,
-                      { paddingLeft: 34 }, // Reduzido para eliminar o espaço em branco
-                    ]}
+                    style={[globalStyles.formInput, { paddingLeft: 44 }]}
                     value={
                       servicoAtual.preco === 0
                         ? ""
@@ -658,6 +658,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                       setServicoAtual({ ...servicoAtual, preco: value });
                     }}
                     placeholder="0,00"
+                    placeholderTextColor="rgba(255, 255, 255, 0.6)"
                     keyboardType="numeric"
                     maxLength={10}
                   />
@@ -680,6 +681,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                     setServicoAtual({ ...servicoAtual, tempo: text })
                   }
                   placeholder="Ex: 30 minutos"
+                  placeholderTextColor="rgba(255, 255, 255, 0.6)"
                 />
               </View>
             </View>
@@ -694,7 +696,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                     style={[
                       globalStyles.iconOption,
                       servicoAtual.iconName === icone.value &&
-                        globalStyles.iconSelected,
+                        globalStyles.iconSelector,
                     ]}
                     onPress={() =>
                       setServicoAtual({
@@ -710,7 +712,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                         color={
                           servicoAtual.iconName === icone.value
                             ? "#fff"
-                            : "#333"
+                            : colors.barber.gold
                         }
                       />
                     )}
@@ -721,7 +723,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                         color={
                           servicoAtual.iconName === icone.value
                             ? "#fff"
-                            : "#333"
+                            : colors.barber.gold
                         }
                       />
                     )}
@@ -732,15 +734,20 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                         color={
                           servicoAtual.iconName === icone.value
                             ? "#fff"
-                            : "#333"
+                            : colors.barber.gold
                         }
                       />
                     )}
                     <Text
                       style={[
-                        globalStyles.iconText,
+                        {
+                          fontSize: 12,
+                          marginTop: 4,
+                          textAlign: "center",
+                          color: colors.textDark,
+                        },
                         servicoAtual.iconName === icone.value &&
-                          globalStyles.iconTextSelected,
+                          globalStyles.radioTextSelected,
                       ]}
                     >
                       {icone.nome}
@@ -800,6 +807,7 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
                   value={horarioPersonalizado}
                   onChangeText={setHorarioPersonalizado}
                   placeholder="HH:MM (Ex: 14:30)"
+                  placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   keyboardType="numbers-and-punctuation"
                 />
                 <TouchableOpacity

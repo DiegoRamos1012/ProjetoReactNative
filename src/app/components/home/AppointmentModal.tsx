@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Servico } from "../../types/types";
@@ -14,38 +15,165 @@ import globalStyles, { colors } from "../globalStyle/styles";
 import { formatCurrencyBRL } from "../../format";
 
 const localStyles = StyleSheet.create({
+  modalContainer: {
+    width: "90%",
+    maxHeight: "85%",
+    backgroundColor: colors.gradient.middle,
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.barber.gold,
+  },
+  modalHeader: {
+    backgroundColor: colors.gradient.start,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(212, 175, 55, 0.3)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  modalTitle: {
+    color: colors.white,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  closeButtonStyle: {
+    width: 36,
+    height: 36,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalContent: {
+    padding: 20,
+  },
   observacaoContainer: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 5,
+    marginVertical: 15,
+    padding: 12,
+    backgroundColor: "rgba(30, 41, 59, 0.9)",
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.barber.gold,
   },
   observacaoLabel: {
+    color: colors.barber.gold,
     fontWeight: "bold",
     marginBottom: 5,
+    fontSize: 14,
   },
   observacaoText: {
-    color: colors.textLighter,
+    color: colors.white,
+    fontStyle: "italic",
+  },
+  servicoNome: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.white,
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  servicoPreco: {
+    fontSize: 18,
+    color: colors.barber.gold,
+    fontWeight: "600",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  servicoDescricao: {
+    fontSize: 16,
+    color: colors.white,
+    marginBottom: 15,
+    lineHeight: 22,
+    textAlign: "center",
+    backgroundColor: "rgba(30, 41, 59, 0.7)",
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.barber.gold,
+  },
+  horarioContainer: {
+    marginVertical: 15,
+  },
+  horarioTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: colors.white,
+    marginBottom: 12,
+  },
+  horarioOptions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  horarioOption: {
+    backgroundColor: "rgba(30, 41, 59, 0.9)",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginRight: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "rgba(212, 175, 55, 0.3)",
+  },
+  horarioSelected: {
+    backgroundColor: colors.button.primary,
+    borderColor: colors.barber.gold,
+  },
+  horarioText: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: "500",
   },
   clientObservationContainer: {
-    marginVertical: 5,
+    marginVertical: 15,
     width: "100%",
-    color: colors.textLighter,
   },
   clientObservationLabel: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
+    color: colors.white,
     marginBottom: 10,
-    color: colors.textLighter,
   },
   clientObservationInput: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    minHeight: 80,
+    borderColor: "rgba(212, 175, 55, 0.3)",
+    borderRadius: 8,
+    padding: 12,
+    minHeight: 100,
     textAlignVertical: "top",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "rgba(30, 41, 59, 0.85)",
+    color: colors.white,
+  },
+  agendarButton: {
+    backgroundColor: colors.barber.gold,
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  agendarButtonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  agendarButtonDisabled: {
+    backgroundColor: "rgba(212, 175, 55, 0.3)",
+  },
+  emptyText: {
+    color: colors.textLight,
+    fontStyle: "italic",
+    textAlign: "center",
+    margin: 20,
   },
 });
 
@@ -65,11 +193,9 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
   loading,
 }) => {
   const [horaSelecionada, setHoraSelecionada] = useState("");
-  // Verificando se o nome da variável está correto para consistência com AdminTools
   const [observacao, setObservacao] = useState("");
 
   const handleConfirm = () => {
-    // Passando a observação para ser salva no Firestore
     onConfirm(horaSelecionada, observacao);
   };
 
@@ -89,107 +215,112 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
       onRequestClose={handleClose}
     >
       <View style={globalStyles.centeredView}>
-        <View style={globalStyles.modalView}>
-          <MaterialIcons
-            name="close"
-            size={24}
-            color="#333"
-            style={globalStyles.closeButton}
-            onPress={handleClose}
-          />
-          {/* Se o serviço tiver observação, exibir para o cliente */}
-          {servico?.observacao && (
-            <View style={localStyles.observacaoContainer}>
-              <Text style={localStyles.observacaoLabel}>Observação:</Text>
-              <Text style={localStyles.observacaoText}>
-                {servico.observacao}
-              </Text>
-            </View>
-          )}
-          <Text style={globalStyles.modalServico}>{servico.nome}</Text>
-          <Text style={globalStyles.modalPreco}>
-            {typeof servico.preco === "number"
-              ? formatCurrencyBRL(servico.preco)
-              : `R$ ${servico.preco}`}{" "}
-            • {servico.tempo}
-          </Text>
-          <Text style={globalStyles.modalDescricao}>
-            Descrição: {servico.descricao}
-          </Text>
+        <View style={localStyles.modalContainer}>
+          <View style={localStyles.modalHeader}>
+            <Text style={localStyles.modalTitle}>Agendar Serviço</Text>
+            <TouchableOpacity
+              style={localStyles.closeButtonStyle}
+              onPress={handleClose}
+            >
+              <MaterialIcons name="close" size={24} color={colors.white} />
+            </TouchableOpacity>
+          </View>
 
-          <View style={globalStyles.horarioContainer}>
-            <Text style={globalStyles.horarioTitle}>
-              Horários Disponíveis Hoje:
-            </Text>
-            <View style={globalStyles.horarioOptions}>
-              {/* Use service-specific hours instead of hardcoded ones */}
-              {servico.horarios && servico.horarios.length > 0 ? (
-                // Sort hours chronologically
-                [...servico.horarios].sort().map((hora) => (
-                  <TouchableOpacity
-                    key={hora}
-                    style={[
-                      globalStyles.horarioOption,
-                      horaSelecionada === hora && globalStyles.horarioSelected,
-                    ]}
-                    onPress={() => setHoraSelecionada(hora)}
-                  >
-                    <Text
-                      style={[
-                        globalStyles.horarioText,
-                        horaSelecionada === hora &&
-                          globalStyles.horarioTextSelected,
-                      ]}
-                    >
-                      {hora}
-                    </Text>
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <Text style={globalStyles.emptyText}>
-                  Não há horários disponíveis para este serviço.
+          <ScrollView>
+            <View style={localStyles.modalContent}>
+              <Text style={localStyles.servicoNome}>{servico.nome}</Text>
+              <Text style={localStyles.servicoPreco}>
+                {typeof servico.preco === "number"
+                  ? formatCurrencyBRL(servico.preco)
+                  : `R$ ${servico.preco}`}{" "}
+                • {servico.tempo}
+              </Text>
+
+              {servico.descricao && (
+                <Text style={localStyles.servicoDescricao}>
+                  {servico.descricao}
                 </Text>
               )}
+
+              {servico?.observacao && (
+                <View style={localStyles.observacaoContainer}>
+                  <Text style={localStyles.observacaoLabel}>
+                    Observação do serviço:
+                  </Text>
+                  <Text style={localStyles.observacaoText}>
+                    {servico.observacao}
+                  </Text>
+                </View>
+              )}
+
+              <View style={localStyles.horarioContainer}>
+                <Text style={localStyles.horarioTitle}>
+                  Horários Disponíveis:
+                </Text>
+                <View style={localStyles.horarioOptions}>
+                  {servico.horarios && servico.horarios.length > 0 ? (
+                    [...servico.horarios].sort().map((hora) => (
+                      <TouchableOpacity
+                        key={hora}
+                        style={[
+                          localStyles.horarioOption,
+                          horaSelecionada === hora &&
+                            localStyles.horarioSelected,
+                        ]}
+                        onPress={() => setHoraSelecionada(hora)}
+                      >
+                        <Text style={localStyles.horarioText}>{hora}</Text>
+                      </TouchableOpacity>
+                    ))
+                  ) : (
+                    <Text style={localStyles.emptyText}>
+                      Não há horários disponíveis para este serviço.
+                    </Text>
+                  )}
+                </View>
+              </View>
+
+              <View style={localStyles.clientObservationContainer}>
+                <Text style={localStyles.clientObservationLabel}>
+                  Observações para o profissional (opcional):
+                </Text>
+                <TextInput
+                  style={localStyles.clientObservationInput}
+                  placeholder="Descreva aqui suas necessidades específicas..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                  value={observacao}
+                  onChangeText={setObservacao}
+                  multiline={true}
+                  numberOfLines={4}
+                  maxLength={200}
+                />
+              </View>
+
+              <TouchableOpacity
+                style={[
+                  localStyles.agendarButton,
+                  (!horaSelecionada ||
+                    !servico.horarios ||
+                    servico.horarios.length === 0) &&
+                    localStyles.agendarButtonDisabled,
+                ]}
+                disabled={
+                  !horaSelecionada ||
+                  !servico.horarios ||
+                  servico.horarios.length === 0
+                }
+                onPress={handleConfirm}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#000" size="small" />
+                ) : (
+                  <Text style={localStyles.agendarButtonText}>
+                    CONFIRMAR AGENDAMENTO
+                  </Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
-
-          {/* Add observation field for the client */}
-          <View style={localStyles.clientObservationContainer}>
-            <Text style={localStyles.clientObservationLabel}>
-              Observação (opcional):
-            </Text>
-            <TextInput
-              style={localStyles.clientObservationInput}
-              placeholder="Precisa de algo especial? Insira aqui! Isso ajuda o profissional a saber exatamente do que você precisa"
-              value={observacao}
-              onChangeText={setObservacao}
-              multiline={true}
-              numberOfLines={3}
-              maxLength={200}
-            />
-          </View>
-
-          <TouchableOpacity
-            style={[
-              globalStyles.agendarButton,
-              (!horaSelecionada ||
-                !servico.horarios ||
-                servico.horarios.length === 0) &&
-                globalStyles.agendarButtonDisabled,
-            ]}
-            disabled={
-              !horaSelecionada ||
-              !servico.horarios ||
-              servico.horarios.length === 0
-            }
-            onPress={handleConfirm}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <Text style={globalStyles.agendarButtonText}>Agendar</Text>
-            )}
-          </TouchableOpacity>
+          </ScrollView>
         </View>
       </View>
     </Modal>

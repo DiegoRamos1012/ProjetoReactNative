@@ -86,36 +86,80 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
 
     return (
       <>
-        <Text style={globalStyles.agendamentoTitulo}>Seus agendamentos:</Text>
+        <Text style={styles.agendamentoTitle}>Seus agendamentos:</Text>
         {agendamentos.map((agendamento) => {
           // Obter serviço de forma segura
           const servico = findServicoSeguro(agendamento.servico);
 
+          // Definir ícone baseado no serviço se disponível
+          const iconName = servico?.iconName || "content-cut";
+
+          // Determinar status baseado em data/hora
+          const hoje = new Date();
+          const [dia, mes, ano] = agendamento.data.split("/").map(Number);
+          const [horas, minutos] = agendamento.hora.split(":").map(Number);
+          const dataAgendamento = new Date(ano, mes - 1, dia, horas, minutos);
+          const isPast = dataAgendamento < hoje;
+
           return (
-            <View key={agendamento.id} style={globalStyles.agendamentoItem}>
-              <View style={globalStyles.agendamentoInfo}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View key={agendamento.id} style={styles.agendamentoCard}>
+              <View style={styles.agendamentoHeader}>
+                <View style={styles.agendamentoIconContainer}>
                   <MaterialIcons
-                    name={"content-cut" as any}
-                    size={20}
-                    color={colors.textLighter}
-                    style={{ marginRight: 8 }}
+                    name={iconName as any}
+                    size={24}
+                    color={colors.barber.gold}
                   />
-                  <Text style={globalStyles.agendamentoServico}>
+                </View>
+                <View style={styles.agendamentoInfo}>
+                  <Text style={styles.agendamentoServico}>
                     {agendamento.servico}
                   </Text>
+                  <Text style={styles.agendamentoHorario}>
+                    <MaterialIcons
+                      name="event"
+                      size={14}
+                      color={colors.barber.gold}
+                      style={styles.smallIcon}
+                    />{" "}
+                    {agendamento.data} às {agendamento.hora}
+                  </Text>
+                  {agendamento.barbeiro && (
+                    <Text style={styles.agendamentoBarbeiro}>
+                      <MaterialIcons
+                        name="person"
+                        size={14}
+                        color={colors.barber.gold}
+                        style={styles.smallIcon}
+                      />{" "}
+                      {agendamento.barbeiro}
+                    </Text>
+                  )}
                 </View>
-                <Text style={globalStyles.agendamentoData}>
-                  {agendamento.data} às {agendamento.hora}
-                </Text>
+
+                <TouchableOpacity
+                  style={[styles.deleteButton, isPast && styles.disabledButton]}
+                  onPress={() => !isPast && handleDeletePress(agendamento)}
+                  disabled={isPast}
+                >
+                  <MaterialIcons name="delete" size={22} color="#FFFFFF" />
+                </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDeletePress(agendamento)}
-              >
-                <MaterialIcons name="delete" size={22} color="#FFFFFF" />
-              </TouchableOpacity>
+              {agendamento.observacao && (
+                <View style={styles.observacaoContainer}>
+                  <Text style={styles.observacaoTitle}>Observações:</Text>
+                  <Text style={styles.observacaoText}>
+                    {agendamento.observacao}
+                  </Text>
+                </View>
+              )}
+
+              {isPast && (
+                <View style={styles.statusContainer}>
+                  <Text style={styles.statusText}>Agendamento concluído</Text>
+                </View>
+              )}
             </View>
           );
         })}
@@ -129,10 +173,108 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
 const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: "rgba(255, 55, 91, 0.8)",
-    padding: 6,
-    borderRadius: 6,
+    padding: 8,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+    width: 36,
+    height: 36,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  agendamentoTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: colors.white,
+    marginTop: 10,
+  },
+  agendamentoCard: {
+    backgroundColor: "rgba(15, 23, 42, 0.8)",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.barber.gold,
+  },
+  agendamentoHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  agendamentoIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(212, 175, 55, 0.15)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: colors.barber.gold,
+  },
+  agendamentoInfo: {
+    flex: 1,
+  },
+  agendamentoServico: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: colors.white,
+    marginBottom: 2,
+  },
+  agendamentoHorario: {
+    fontSize: 13,
+    color: colors.textLighter,
+    marginBottom: 2,
+  },
+  agendamentoBarbeiro: {
+    fontSize: 13,
+    color: colors.textLighter,
+  },
+  observacaoContainer: {
+    marginTop: 8,
+    padding: 8,
+    backgroundColor: "rgba(30, 41, 59, 0.7)",
+    borderRadius: 6,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.barber.gold,
+  },
+  observacaoTitle: {
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: colors.barber.gold,
+  },
+  observacaoText: {
+    color: colors.white,
+    fontSize: 12,
+  },
+  statusContainer: {
+    marginTop: 8,
+    padding: 6,
+    backgroundColor: "rgba(76, 175, 80, 0.1)",
+    borderRadius: 6,
+    borderLeftWidth: 2,
+    borderLeftColor: "green",
+    alignItems: "center",
+  },
+  statusText: {
+    color: "#4CAF50",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  smallIcon: {
+    verticalAlign: "middle",
+  },
+  disabledButton: {
+    backgroundColor: "rgba(128, 128, 128, 0.5)",
   },
 });
 
