@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Alert } from "react-native";
 import { User } from "firebase/auth";
 import {
@@ -12,6 +12,8 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  getDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { Agendamento, Servico } from "../types/types";
@@ -22,7 +24,9 @@ export const useAppointments = (user: User) => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lastOperation, setLastOperation] = useState<string | null>(null);
 
+  // Função para buscar agendamentos com retorno de promise
   const fetchAppointments = useCallback(async () => {
     if (!user || !user.uid) {
       console.log(
@@ -85,6 +89,49 @@ export const useAppointments = (user: User) => {
     }
   }, [user]);
 
+  // Configurar listener para agendamentos em tempo real
+  useEffect(() => {
+    if (!user || !user.uid) return;
+
+    setLoading(true);
+
+    try {
+      const agendamentosRef = collection(db, "agendamentos");
+      const q = query(
+        agendamentosRef,
+        where("userId", "==", user.uid),
+        orderBy("data_timestamp", "desc")
+      );
+
+      // Criar um listener que atualiza em tempo real
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          console.log("Snapshot recebido - Atualizando agendamentos");
+          const agendamentosData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Agendamento[];
+
+          setAgendamentos(agendamentosData);
+          setErrorMessage(null);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Erro no listener de agendamentos:", error);
+          setErrorMessage(`Erro ao observar agendamentos: ${error.message}`);
+          setLoading(false);
+        }
+      );
+
+      // Cleanup: Remover o listener quando o componente desmontar
+      return () => unsubscribe();
+    } catch (error: any) {
+      console.error("Erro ao configurar listener:", error);
+      setLoading(false);
+    }
+  }, [user]);
+
   const refreshAppointments = useCallback(() => {
     console.log("Iniciando refresh...");
     setRefreshing(true);
@@ -126,17 +173,17 @@ export const useAppointments = (user: User) => {
       };
 
       // Salvar no Firestore
-      await addDoc(collection(db, "agendamentos"), agendamento);
+      const docRef = await addDoc(collection(db, "agendamentos"), agendamento);
 
       console.log("Agendamento salvo com sucesso");
+      setLastOperation("create");
 
       Alert.alert(
         "Agendamento Confirmado",
         `Seu ${servico.nome} foi agendado com sucesso para hoje às ${hora}!`
       );
 
-      // Atualizar a lista de agendamentos
-      await fetchAppointments();
+      // O listener onSnapshot já vai atualizar a lista automaticamente
       return true;
     } catch (error: any) {
       console.error("Erro ao criar agendamento:", error);
@@ -165,21 +212,35 @@ export const useAppointments = (user: User) => {
     try {
       setLoading(true);
 
-      // Deletar o documento do Firestore
-      await deleteDoc(doc(db, "agendamentos", appointmentId));
+      // Em vez de deletar, vamos atualizar o status para "cancelado"
+      const appointmentRef = doc(db, "agendamentos", appointmentId);
 
-      // Atualizar a lista de agendamentos removendo o item excluído
-      setAgendamentos((prevAgendamentos) =>
-        prevAgendamentos.filter(
-          (agendamento) => agendamento.id !== appointmentId
-        )
+      // Atualiza o documento com as novas informações
+      await updateDoc(appointmentRef, {
+        status: "cancelado",
+        cancelado_pelo_cliente: true,
+        notificado_admin: false,
+        data_cancelamento: Timestamp.now(),
+      });
+
+      setLastOperation("delete");
+
+      // A atualização virá automaticamente pelo listener onSnapshot
+
+      Alert.alert(
+        "Agendamento Cancelado",
+        "Seu agendamento foi cancelado com sucesso. Os profissionais foram notificados."
       );
 
       return true;
     } catch (error) {
-      console.error("Erro ao excluir agendamento:", error);
+      console.error("Erro ao cancelar agendamento:", error);
       setErrorMessage(
-        "Não foi possível excluir o agendamento. Tente novamente."
+        "Não foi possível cancelar o agendamento. Tente novamente."
+      );
+      Alert.alert(
+        "Erro ao Cancelar",
+        "Ocorreu um erro ao cancelar seu agendamento. Por favor, tente novamente."
       );
       return false;
     } finally {
@@ -214,13 +275,7 @@ export const useAppointments = (user: User) => {
         await Promise.all(updatePromises);
         console.log(`Nome atualizado em ${querySnapshot.size} agendamentos`);
 
-        // Atualizar a lista local de agendamentos
-        setAgendamentos((prevAgendamentos) =>
-          prevAgendamentos.map((agendamento) => ({
-            ...agendamento,
-            userName: newUserName,
-          }))
-        );
+        // A atualização virá automaticamente pelo listener onSnapshot
 
         return true;
       } catch (error) {
@@ -232,6 +287,77 @@ export const useAppointments = (user: User) => {
     },
     [user]
   );
+
+  // Função para remover agendamento do histórico do cliente
+  const removeFromHistory = async (appointmentId: string) => {
+    if (!user?.uid) return false;
+
+    try {
+      setLoading(true);
+
+      // Referência ao documento do agendamento
+      const appointmentRef = doc(db, "agendamentos", appointmentId);
+
+      // Primeiro, obter o documento para verificar se é do usuário atual
+      const appointmentDoc = await getDoc(appointmentRef);
+
+      if (!appointmentDoc.exists()) {
+        throw new Error("Agendamento não encontrado");
+      }
+
+      const appointmentData = appointmentDoc.data();
+
+      // Verificar se o agendamento pertence ao usuário
+      if (appointmentData.userId !== user.uid) {
+        throw new Error("Você não tem permissão para remover este agendamento");
+      }
+
+      // Verificar se é um agendamento passado, concluído ou cancelado
+      const isPast =
+        new Date(appointmentData.data_timestamp.toDate()) < new Date();
+      const isCompletedOrCanceled =
+        appointmentData.status === "concluido" ||
+        appointmentData.status === "cancelado";
+
+      if (!isPast && !isCompletedOrCanceled) {
+        throw new Error(
+          "Apenas agendamentos passados, concluídos ou cancelados podem ser removidos"
+        );
+      }
+
+      // Adicionar ao historico_agendamentos para manter registro (opcional)
+      await addDoc(collection(db, "historico_agendamentos"), {
+        ...appointmentData,
+        id_original: appointmentId,
+        removido_em: Timestamp.now(),
+        removido_por: user.uid,
+      });
+
+      // Remover da coleção principal
+      await deleteDoc(appointmentRef);
+
+      setLastOperation("remove");
+
+      // A atualização virá automaticamente pelo listener onSnapshot
+
+      Alert.alert(
+        "Removido do Histórico",
+        "O agendamento foi removido do seu histórico com sucesso!"
+      );
+
+      return true;
+    } catch (error: any) {
+      console.error("Erro ao remover do histórico:", error);
+      Alert.alert(
+        "Erro ao Remover",
+        error.message ||
+          "Ocorreu um erro ao remover o agendamento do histórico."
+      );
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Adicionando função para obter ícone de status
   const getStatusIcon = (status: string) => {
@@ -258,8 +384,10 @@ export const useAppointments = (user: User) => {
     refreshAppointments,
     createAppointment,
     deleteAppointment,
-    getStatusIcon, // Exportando a nova função
+    getStatusIcon,
     updateUserNameInAppointments,
+    removeFromHistory,
+    lastOperation,
   };
 };
 

@@ -37,8 +37,22 @@ service cloud.firestore {
                      request.resource.data.userId == request.auth.uid;
                      
       // Permitir atualização se o usuário for o dono do agendamento ou admin/funcionário
+      // Se for o próprio cliente, só pode atualizar para cancelar o agendamento
       allow update: if request.auth != null && 
-                     (resource.data.userId == request.auth.uid || canAccessAdminTools());
+                     (
+                       // Administradores e funcionários podem atualizar tudo
+                       canAccessAdminTools() || 
+                       // Cliente pode atualizar apenas seu próprio agendamento
+                       (resource.data.userId == request.auth.uid && 
+                         (
+                           // Cliente pode apenas atualizar o status para "cancelado"
+                           // e adicionar os campos necessários para o cancelamento
+                           request.resource.data.status == "cancelado" && 
+                           request.resource.data.cancelado_pelo_cliente == true &&
+                           request.resource.data.notificado_admin == false
+                         )
+                       )
+                     );
                      
       // Permitir exclusão se o usuário for o dono do agendamento ou admin/funcionário
       allow delete: if request.auth != null && 
@@ -55,6 +69,19 @@ service cloud.firestore {
       
       // Permitir exclusão (permanente) apenas para administradores e funcionários
       allow delete: if canAccessAdminTools();
+    }
+    
+    // Nova coleção: histórico de agendamentos
+    match /historico_agendamentos/{agendamentoId} {
+      // Permitir leitura apenas para administradores e funcionários
+      allow read: if canAccessAdminTools();
+      
+      // Permitir criação se o usuário for o dono do agendamento original
+      allow create: if request.auth != null && 
+                     request.resource.data.userId == request.auth.uid;
+      
+      // Exclusão apenas por administradores
+      allow delete: if isAdmin();
     }
     
     // Nova coleção: serviços

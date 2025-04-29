@@ -2010,6 +2010,73 @@ export const globalStyles = StyleSheet.create({
     maxHeight: 600,
     paddingBottom: 20,
   },
+
+  // ==========================================
+  // 22. APPOINTMENT MANAGEMENT BUTTONS
+  // ==========================================
+  removeHistoryButton: {
+    padding: 8,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 36,
+    height: 36,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  statusContainer: {
+    marginTop: 8,
+    padding: 6,
+    borderRadius: 6,
+    alignItems: "center",
+    borderLeftWidth: 3,
+  },
+  statusText: {
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  // Status colors
+  statusCanceled: {
+    backgroundColor: "rgba(211, 47, 47, 0.1)",
+    borderLeftColor: "#d32f2f",
+  },
+  statusCompleted: {
+    backgroundColor: "rgba(46, 125, 50, 0.1)",
+    borderLeftColor: "#2e7d32",
+  },
+  statusConfirmed: {
+    backgroundColor: "rgba(25, 118, 210, 0.1)",
+    borderLeftColor: "#1976d2",
+  },
+  statusPending: {
+    backgroundColor: "rgba(255, 152, 0, 0.1)",
+    borderLeftColor: "#ff9800",
+  },
+  statusTextCanceled: {
+    color: "#d32f2f",
+  },
+  statusTextCompleted: {
+    color: "#2e7d32",
+  },
+  statusTextConfirmed: {
+    color: "#1976d2",
+  },
+  statusTextPending: {
+    color: "#ff9800",
+  },
+  // Card backgrounds
+  cardBackgroundCanceled: {
+    backgroundColor: "rgba(255, 235, 238, 0.3)",
+  },
+  cardBackgroundCompleted: {
+    backgroundColor: "rgba(232, 245, 233, 0.3)",
+  },
+  cardBackgroundDefault: {
+    backgroundColor: "rgba(15, 23, 42, 0.8)",
+  },
 });
 
 export default globalStyles;

@@ -1,17 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Agendamento, Servico } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
-
-// Função para formatar moeda em BRL
-const formatCurrencyBRL = (value: number) => {
-  return value.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-};
-
+import useAppointments from "../../hooks/useAppointments";
+import { auth } from "../../../config/firebaseConfig";
 interface AppointmentsListProps {
   agendamentos: Agendamento[];
   loading: boolean;
@@ -28,8 +21,13 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
   refreshing,
   errorMessage,
   onDeleteAppointment,
-  servicos = [], // Valor padrão para evitar undefined
+  servicos = [],
 }) => {
+  // Usar o hook de agendamentos
+  const [isLoading, setIsLoading] = useState(false);
+  const user = auth.currentUser;
+  const appointmentsHook = useAppointments(user!);
+
   // Função segura para encontrar um serviço pelo nome
   const findServicoSeguro = (nomeServico: string): Servico | undefined => {
     // Verificar se a lista de serviços existe e tem itens
@@ -84,6 +82,137 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
       );
     };
 
+    // Renderiza cada card de agendamento
+    const renderAppointmentCard = (agendamento: Agendamento) => {
+      // Detecta se o agendamento é no passado ou futuro
+      const dataAgendamento = agendamento.data_timestamp.toDate();
+      const isPast = dataAgendamento < new Date();
+
+      // Detecta o estado do agendamento
+      const isCompleted = agendamento.status === "concluido";
+      const isCanceled = agendamento.status === "cancelado";
+
+      return (
+        <View
+          key={agendamento.id}
+          style={[
+            styles.agendamentoCard,
+            isPast && !isCompleted ? { opacity: 0.7 } : null,
+            isCanceled
+              ? globalStyles.cardBackgroundCanceled
+              : isCompleted
+              ? globalStyles.cardBackgroundCompleted
+              : globalStyles.cardBackgroundDefault,
+          ]}
+        >
+          <View style={styles.agendamentoHeader}>
+            <View style={styles.agendamentoIconContainer}>
+              <MaterialIcons
+                name="content-cut"
+                size={24}
+                color={colors.barber.gold}
+              />
+            </View>
+            <View style={styles.agendamentoInfo}>
+              <Text style={styles.agendamentoServico}>
+                {agendamento.servico}
+              </Text>
+              <Text style={styles.agendamentoHorario}>
+                <MaterialIcons
+                  name="event"
+                  size={14}
+                  color={colors.barber.gold}
+                  style={styles.smallIcon}
+                />{" "}
+                {agendamento.data} às {agendamento.hora}
+              </Text>
+              {agendamento.barbeiro && (
+                <Text style={styles.agendamentoBarbeiro}>
+                  <MaterialIcons
+                    name="person"
+                    size={14}
+                    color={colors.barber.gold}
+                    style={styles.smallIcon}
+                  />{" "}
+                  {agendamento.barbeiro}
+                </Text>
+              )}
+            </View>
+
+            <View>
+              {/* Botão de cancelar para agendamentos futuros não cancelados */}
+              {!isPast && !isCanceled && !isCompleted && (
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => handleDeletePress(agendamento)}
+                >
+                  <MaterialIcons name="cancel" size={22} color="#FFFFFF" />
+                </TouchableOpacity>
+              )}
+
+              {/* Botão para remover do histórico (agendamentos passados, concluídos ou cancelados) */}
+              {(isPast || isCompleted || isCanceled) && (
+                <TouchableOpacity
+                  style={globalStyles.removeHistoryButton}
+                  onPress={() => confirmRemoveFromHistory(agendamento.id)}
+                >
+                  <MaterialIcons
+                    name="delete-outline"
+                    size={22}
+                    color="#FFFFFF"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          {agendamento.observacao && (
+            <View style={styles.observacaoContainer}>
+              <Text style={styles.observacaoTitle}>Observações:</Text>
+              <Text style={styles.observacaoText}>
+                {agendamento.observacao}
+              </Text>
+            </View>
+          )}
+
+          {/* Mostrar status para o cliente */}
+          <View
+            style={[
+              globalStyles.statusContainer,
+              isCanceled
+                ? globalStyles.statusCanceled
+                : isCompleted
+                ? globalStyles.statusCompleted
+                : agendamento.status === "confirmado"
+                ? globalStyles.statusConfirmed
+                : globalStyles.statusPending,
+            ]}
+          >
+            <Text
+              style={[
+                globalStyles.statusText,
+                isCanceled
+                  ? globalStyles.statusTextCanceled
+                  : isCompleted
+                  ? globalStyles.statusTextCompleted
+                  : agendamento.status === "confirmado"
+                  ? globalStyles.statusTextConfirmed
+                  : globalStyles.statusTextPending,
+              ]}
+            >
+              {isCompleted
+                ? "Concluído"
+                : isCanceled
+                ? "Cancelado"
+                : agendamento.status === "confirmado"
+                ? "Confirmado"
+                : "Pendente"}
+            </Text>
+          </View>
+        </View>
+      );
+    };
+
     return (
       <>
         <Text style={styles.agendamentoTitle}>Seus agendamentos:</Text>
@@ -94,77 +223,42 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
           // Definir ícone baseado no serviço se disponível
           const iconName = servico?.iconName || "content-cut";
 
-          // Determinar status baseado em data/hora
-          const hoje = new Date();
-          const [dia, mes, ano] = agendamento.data.split("/").map(Number);
-          const [horas, minutos] = agendamento.hora.split(":").map(Number);
-          const dataAgendamento = new Date(ano, mes - 1, dia, horas, minutos);
-          const isPast = dataAgendamento < hoje;
-
-          return (
-            <View key={agendamento.id} style={styles.agendamentoCard}>
-              <View style={styles.agendamentoHeader}>
-                <View style={styles.agendamentoIconContainer}>
-                  <MaterialIcons
-                    name={iconName as any}
-                    size={24}
-                    color={colors.barber.gold}
-                  />
-                </View>
-                <View style={styles.agendamentoInfo}>
-                  <Text style={styles.agendamentoServico}>
-                    {agendamento.servico}
-                  </Text>
-                  <Text style={styles.agendamentoHorario}>
-                    <MaterialIcons
-                      name="event"
-                      size={14}
-                      color={colors.barber.gold}
-                      style={styles.smallIcon}
-                    />{" "}
-                    {agendamento.data} às {agendamento.hora}
-                  </Text>
-                  {agendamento.barbeiro && (
-                    <Text style={styles.agendamentoBarbeiro}>
-                      <MaterialIcons
-                        name="person"
-                        size={14}
-                        color={colors.barber.gold}
-                        style={styles.smallIcon}
-                      />{" "}
-                      {agendamento.barbeiro}
-                    </Text>
-                  )}
-                </View>
-
-                <TouchableOpacity
-                  style={[styles.deleteButton, isPast && styles.disabledButton]}
-                  onPress={() => !isPast && handleDeletePress(agendamento)}
-                  disabled={isPast}
-                >
-                  <MaterialIcons name="delete" size={22} color="#FFFFFF" />
-                </TouchableOpacity>
-              </View>
-
-              {agendamento.observacao && (
-                <View style={styles.observacaoContainer}>
-                  <Text style={styles.observacaoTitle}>Observações:</Text>
-                  <Text style={styles.observacaoText}>
-                    {agendamento.observacao}
-                  </Text>
-                </View>
-              )}
-
-              {isPast && (
-                <View style={styles.statusContainer}>
-                  <Text style={styles.statusText}>Agendamento concluído</Text>
-                </View>
-              )}
-            </View>
-          );
+          return renderAppointmentCard(agendamento);
         })}
       </>
     );
+  };
+
+  // Função para confirmar remoção do histórico
+  const confirmRemoveFromHistory = (agendamentoId: string) => {
+    Alert.alert(
+      "Remover do Histórico",
+      "Este agendamento será removido do seu histórico. Esta ação não pode ser desfeita.",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Remover",
+          style: "destructive",
+          onPress: () => removeFromHistory(agendamentoId),
+        },
+      ]
+    );
+  };
+
+  // Função para remover agendamento do histórico
+  const removeFromHistory = async (agendamentoId: string) => {
+    try {
+      setIsLoading(true);
+      await appointmentsHook.removeFromHistory(agendamentoId);
+      // A lista será atualizada pelo hook
+    } catch (error) {
+      console.error("Erro ao remover do histórico:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return <View>{renderContent()}</View>;
@@ -193,7 +287,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   agendamentoCard: {
-    backgroundColor: "rgba(15, 23, 42, 0.8)",
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
@@ -259,22 +352,15 @@ const styles = StyleSheet.create({
   statusContainer: {
     marginTop: 8,
     padding: 6,
-    backgroundColor: "rgba(76, 175, 80, 0.1)",
     borderRadius: 6,
-    borderLeftWidth: 2,
-    borderLeftColor: "green",
     alignItems: "center",
   },
   statusText: {
-    color: "#4CAF50",
     fontWeight: "bold",
     fontSize: 12,
   },
   smallIcon: {
     verticalAlign: "middle",
-  },
-  disabledButton: {
-    backgroundColor: "rgba(128, 128, 128, 0.5)",
   },
 });
 

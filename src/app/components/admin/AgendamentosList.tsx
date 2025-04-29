@@ -20,6 +20,7 @@ import {
   deleteDoc,
   addDoc,
   getDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "../../../config/firebaseConfig";
 import { Agendamento } from "../../types/types";
@@ -98,13 +99,70 @@ const AgendamentosList: React.FC<AgendamentosListProps> = ({
     string | null
   >(null);
 
+  // Estado para monitorar agendamentos cancelados pelos clientes
+  const [agendamentosCancelados, setAgendamentosCancelados] = useState<
+    string[]
+  >([]);
+
   // Buscar agendamentos quando o componente montar se estiver expandido
   useEffect(() => {
     if (expanded) {
       fetchAgendamentos();
       fetchAgendamentosExcluidos();
+      checkForCanceledAppointments();
     }
   }, [expanded]);
+
+  // Função para verificar se há agendamentos cancelados pelos clientes
+  const checkForCanceledAppointments = async () => {
+    if (!canAccessTools) return;
+
+    try {
+      const agendamentosRef = collection(db, "agendamentos");
+      // Busca agendamentos que foram recentemente cancelados pelos clientes
+      const q = query(
+        agendamentosRef,
+        where("status", "==", "cancelado"),
+        where("cancelado_pelo_cliente", "==", true),
+        where("notificado_admin", "==", false)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const canceladosIds: string[] = [];
+
+      // Se encontrar agendamentos cancelados não notificados
+      if (!querySnapshot.empty) {
+        // Batch para atualizar todos os agendamentos de uma vez
+        const batch = writeBatch(db);
+
+        querySnapshot.forEach((doc) => {
+          canceladosIds.push(doc.id);
+          // Marca como notificado no banco de dados
+          const docRef = doc.ref;
+          batch.update(docRef, { notificado_admin: true });
+        });
+
+        // Executa o batch de atualizações
+        await batch.commit();
+
+        // Atualiza o estado com os IDs cancelados
+        setAgendamentosCancelados(canceladosIds);
+
+        // Notifica o admin
+        if (canceladosIds.length > 0) {
+          Alert.alert(
+            "Agendamentos Cancelados",
+            `${canceladosIds.length} agendamento(s) ${
+              canceladosIds.length === 1 ? "foi cancelado" : "foram cancelados"
+            } pelos clientes.`,
+            [{ text: "OK", onPress: () => fetchAgendamentos() }]
+          );
+        }
+      }
+    } catch (error: any) {
+      console.error("Erro ao verificar agendamentos cancelados:", error);
+    }
+  };
 
   // Função para buscar todos os agendamentos
   const fetchAgendamentos = async () => {
