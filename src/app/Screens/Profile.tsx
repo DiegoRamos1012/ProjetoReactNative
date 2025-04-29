@@ -184,112 +184,156 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
           </Text>
         </View>
       ) : (
-        <ScrollView
-          style={[
-            globalStyles.profileContent,
-            { backgroundColor: colors.gradient.middle },
-          ]}
-        >
-          <View style={globalStyles.profileAvatarContainer}>
-            <View style={globalStyles.profileAvatar}>
-              <MaterialIcons name="person" size={60} color="#FFF" />
-            </View>
-            <Text style={globalStyles.userEmail}>{user.email}</Text>
-          </View>
-
-          <View style={globalStyles.formGroup}>
-            <Text style={globalStyles.formLabel}>Nome</Text>
-            <TextInput
-              style={globalStyles.formInput}
-              value={nome}
-              onChangeText={setNome}
-              placeholder="Seu nome completo"
-              placeholderTextColor="#999"
-            />
-          </View>
-
-          <View style={globalStyles.formGroup}>
-            <Text style={globalStyles.formLabel}>Telefone</Text>
-            <TextInput
-              style={globalStyles.formInput}
-              value={telefone}
-              onChangeText={handlePhoneChange}
-              placeholder="(00) 00000-0000"
-              keyboardType="phone-pad"
-              placeholderTextColor="#999"
-              maxLength={15}
-            />
-          </View>
-
-          <View style={globalStyles.formGroup}>
-            <Text style={globalStyles.formLabel}>Data de Nascimento</Text>
-            <TextInput
-              style={globalStyles.formInput}
-              value={dataNascimento}
-              onChangeText={handleDateChange}
-              placeholder="DD/MM/AAAA"
-              placeholderTextColor="#999"
-              keyboardType="numeric"
-              maxLength={10} // To account for the format DD/MM/YYYY
-            />
-          </View>
-
-          <View style={globalStyles.formGroup}>
-            <Text style={globalStyles.formLabel}>Sexo</Text>
-            <View style={globalStyles.radioGroup}>
-              <TouchableOpacity
+        <ScrollView style={globalStyles.profileContent}>
+          <View style={globalStyles.sectionEnhanced}>
+            <View style={globalStyles.profileAvatarContainer}>
+              <View
                 style={[
-                  globalStyles.radioButton,
-                  sexo === "Masculino" && globalStyles.radioSelected,
+                  globalStyles.profileAvatar,
+                  {
+                    backgroundColor: "rgba(15, 23, 42, 0.8)", // Fundo escuro similar ao resto da aplicação
+                    borderWidth: 2,
+                    borderColor: colors.barber.gold, // Borda dourada
+                  },
                 ]}
-                onPress={() => setSexo("Masculino")}
               >
-                <Text
-                  style={[
-                    globalStyles.radioText,
-                    sexo === "Masculino" && globalStyles.radioTextSelected,
-                  ]}
-                >
-                  Masculino
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
+                <MaterialIcons
+                  name="person"
+                  size={60}
+                  color="#FFFFFF" // Ícone em branco para contrastar com o fundo escuro
+                />
+              </View>
+              <Text
                 style={[
-                  globalStyles.radioButton,
-                  sexo === "Feminino" && globalStyles.radioSelected,
+                  globalStyles.userDatetime,
+                  { marginTop: 10, color: colors.white },
                 ]}
-                onPress={() => setSexo("Feminino")}
               >
-                <Text
-                  style={[
-                    globalStyles.radioText,
-                    sexo === "Feminino" && globalStyles.radioTextSelected,
-                  ]}
-                >
-                  Feminino
-                </Text>
-              </TouchableOpacity>
+                {user.email}
+              </Text>
             </View>
-          </View>
 
-          <TouchableOpacity
-            style={[
-              globalStyles.agendarButton,
-              { backgroundColor: colors.button.primary },
-            ]}
-            onPress={handleSave}
-            disabled={saving}
-          >
-            <Text
+            <View style={globalStyles.formGroup}>
+              <Text style={globalStyles.formLabel}>Nome</Text>
+              <TextInput
+                style={globalStyles.formInput}
+                value={nome}
+                onChangeText={setNome}
+                placeholder="Seu nome completo"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              />
+            </View>
+
+            <View style={globalStyles.formGroup}>
+              <Text style={globalStyles.formLabel}>Telefone</Text>
+              <TextInput
+                style={globalStyles.formInput}
+                value={telefone}
+                onChangeText={handlePhoneChange}
+                placeholder="(00) 00000-0000"
+                keyboardType="phone-pad"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                maxLength={15}
+              />
+            </View>
+
+            <View style={globalStyles.formGroup}>
+              <Text style={globalStyles.formLabel}>Data de Nascimento</Text>
+              <TextInput
+                style={globalStyles.formInput}
+                value={dataNascimento}
+                onChangeText={handleDateChange}
+                placeholder="DD/MM/AAAA"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                keyboardType="numeric"
+                maxLength={10}
+              />
+            </View>
+
+            <View style={globalStyles.formGroup}>
+              <Text style={globalStyles.formLabel}>Sexo</Text>
+              <View style={[globalStyles.radioGroup, { marginBottom: 20 }]}>
+                <TouchableOpacity
+                  style={[
+                    globalStyles.radioButton,
+                    {
+                      backgroundColor:
+                        sexo === "Masculino"
+                          ? colors.button.primary
+                          : "rgba(30, 41, 59, 0.85)",
+                      borderColor:
+                        sexo === "Masculino"
+                          ? colors.barber.gold
+                          : "rgba(212, 175, 55, 0.3)",
+                    },
+                  ]}
+                  onPress={() => setSexo("Masculino")}
+                >
+                  <Text
+                    style={[
+                      globalStyles.radioText,
+                      {
+                        color:
+                          sexo === "Masculino"
+                            ? colors.white
+                            : colors.textLighter,
+                      },
+                    ]}
+                  >
+                    Masculino
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    globalStyles.radioButton,
+                    {
+                      backgroundColor:
+                        sexo === "Feminino"
+                          ? colors.button.primary
+                          : "rgba(30, 41, 59, 0.85)",
+                      borderColor:
+                        sexo === "Feminino"
+                          ? colors.barber.gold
+                          : "rgba(212, 175, 55, 0.3)",
+                    },
+                  ]}
+                  onPress={() => setSexo("Feminino")}
+                >
+                  <Text
+                    style={[
+                      globalStyles.radioText,
+                      {
+                        color:
+                          sexo === "Feminino"
+                            ? colors.white
+                            : colors.textLighter,
+                      },
+                    ]}
+                  >
+                    Feminino
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <TouchableOpacity
               style={[
-                globalStyles.agendarButtonText,
-                { color: colors.primary },
+                globalStyles.button,
+                { backgroundColor: colors.barber.gold, marginTop: 10 },
               ]}
+              onPress={handleSave}
+              disabled={saving}
             >
-              {saving ? "Salvando..." : "Salvar Alterações"}
-            </Text>
-          </TouchableOpacity>
+              {saving ? (
+                <ActivityIndicator size="small" color="#000" />
+              ) : (
+                <Text style={[globalStyles.buttonText, { color: "#000" }]}>
+                  SALVAR ALTERAÇÕES
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       )}
     </View>
