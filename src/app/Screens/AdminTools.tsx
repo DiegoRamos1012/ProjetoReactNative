@@ -24,6 +24,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
 import ServicosHorarios from "../components/admin/ServicosHorarios";
 import AgendamentosList from "../components/admin/AgendamentosList";
+import BlockedDaysManager from "../components/admin/BlockedDaysManager";
 import useServicos from "../data/services";
 
 interface UserListItem extends UserData {
@@ -589,6 +590,9 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                   color={colors.primary}
                 />
               </TouchableOpacity>
+
+              {/* Gerenciador de dias bloqueados */}
+              {agendamentosExpanded && <BlockedDaysManager />}
 
               {/* Usando o componente dedicado para exibir os agendamentos */}
               <AgendamentosList

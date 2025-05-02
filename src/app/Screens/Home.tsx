@@ -66,15 +66,16 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
 
   // Versão corrigida da função de confirmação de agendamento
   const handleConfirmAppointment = async (
+    servico: Servico,
     data: string,
     hora: string,
     observacao?: string
   ) => {
-    if (!servicoSelecionado || !user) return;
+    if (!user) return;
 
     // Usar a função do hook useAppointments para criar o agendamento
     const success = await createAppointment(
-      servicoSelecionado,
+      servico,
       data,
       hora,
       observacao

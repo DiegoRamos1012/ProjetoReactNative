@@ -92,6 +92,15 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Nova coleção: configuração (para dias bloqueados e outras configurações)
+    match /config/{configId} {
+      // Permitir leitura para usuários autenticados (todos precisam ver os dias bloqueados)
+      allow read: if request.auth != null;
+      
+      // Permitir escrita (criação, atualização, exclusão) somente para administradores e funcionários
+      allow write: if canAccessAdminTools();
+    }
+    
     // Regra padrão: negar tudo que não foi explicitamente permitido
     match /{document=**} {
       allow read, write: if false;

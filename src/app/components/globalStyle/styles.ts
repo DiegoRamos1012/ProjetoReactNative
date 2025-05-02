@@ -2383,6 +2383,125 @@ export const globalStyles = StyleSheet.create({
   appointmentSmallIcon: {
     verticalAlign: "middle",
   },
+
+  // ==========================================
+  // BLOCKED DAYS MANAGER STYLES
+  // ==========================================
+  blockedDaysButton: {
+    backgroundColor: colors.button.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  blockedDaysButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  blockedDaysModalView: {
+    width: "90%",
+    maxHeight: "85%",
+    backgroundColor: colors.gradient.middle,
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.barber.gold,
+  },
+  blockedDaysModalHeader: {
+    backgroundColor: colors.gradient.start,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(212, 175, 55, 0.3)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  blockedDaysModalTitle: {
+    color: colors.white,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  blockedDaysCloseButton: {
+    width: 36,
+    height: 36,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  blockedDaysModalContent: {
+    padding: 15,
+    maxHeight: 500,
+  },
+  blockedDaysInstructions: {
+    color: colors.white,
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  blockedDaysLegend: {
+    marginTop: 15,
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    borderRadius: 8,
+  },
+  blockedDaysLegendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  blockedDaysLegendColor: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  blockedDaysLegendText: {
+    color: colors.white,
+    fontSize: 14,
+  },
+  blockedDaysModalFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 15,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(212, 175, 55, 0.3)",
+    backgroundColor: colors.gradient.start,
+  },
+  blockedDaysCancelButton: {
+    flex: 1,
+    backgroundColor: "rgba(85, 85, 85, 0.8)",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginRight: 10,
+  },
+  blockedDaysSaveButton: {
+    flex: 1,
+    backgroundColor: colors.barber.gold,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
 });
 
 export default globalStyles;
