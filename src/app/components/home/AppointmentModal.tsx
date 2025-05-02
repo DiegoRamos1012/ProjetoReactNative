@@ -4,207 +4,16 @@ import {
   Text,
   Modal,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
   TextInput,
   ScrollView,
   Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Calendar } from "react-native-calendars";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 import { Servico } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
 import { formatCurrencyBRL } from "../../format";
-
-const localStyles = StyleSheet.create({
-  modalContainer: {
-    width: "90%",
-    maxHeight: "85%",
-    backgroundColor: colors.gradient.middle,
-    borderRadius: 12,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 10,
-    borderWidth: 1,
-    borderColor: colors.barber.gold,
-  },
-  modalHeader: {
-    backgroundColor: colors.gradient.start,
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(212, 175, 55, 0.3)",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  modalTitle: {
-    color: colors.white,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  closeButtonStyle: {
-    width: 36,
-    height: 36,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modalContent: {
-    padding: 20,
-  },
-  observacaoContainer: {
-    marginVertical: 15,
-    padding: 12,
-    backgroundColor: "rgba(30, 41, 59, 0.9)",
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.barber.gold,
-  },
-  observacaoLabel: {
-    color: colors.barber.gold,
-    fontWeight: "bold",
-    marginBottom: 5,
-    fontSize: 14,
-  },
-  observacaoText: {
-    color: colors.white,
-    fontStyle: "italic",
-  },
-  servicoNome: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  servicoPreco: {
-    fontSize: 18,
-    color: colors.barber.gold,
-    fontWeight: "600",
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  servicoDescricao: {
-    fontSize: 16,
-    color: colors.white,
-    marginBottom: 15,
-    lineHeight: 22,
-    textAlign: "center",
-    backgroundColor: "rgba(30, 41, 59, 0.7)",
-    padding: 12,
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.barber.gold,
-  },
-  horarioContainer: {
-    marginVertical: 15,
-  },
-  horarioTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.white,
-    marginBottom: 12,
-  },
-  horarioOptions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  horarioOption: {
-    backgroundColor: "rgba(30, 41, 59, 0.9)",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginRight: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-  },
-  horarioSelected: {
-    backgroundColor: colors.button.primary,
-    borderColor: colors.barber.gold,
-  },
-  horarioText: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  clientObservationContainer: {
-    marginVertical: 15,
-    width: "100%",
-  },
-  clientObservationLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.white,
-    marginBottom: 10,
-  },
-  clientObservationInput: {
-    borderWidth: 1,
-    borderColor: "rgba(212, 175, 55, 0.3)",
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 100,
-    textAlignVertical: "top",
-    backgroundColor: "rgba(30, 41, 59, 0.85)",
-    color: colors.white,
-  },
-  agendarButton: {
-    backgroundColor: colors.barber.gold,
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  agendarButtonText: {
-    color: "#000",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  agendarButtonDisabled: {
-    backgroundColor: "rgba(212, 175, 55, 0.3)",
-  },
-  emptyText: {
-    color: colors.textLight,
-    fontStyle: "italic",
-    textAlign: "center",
-    margin: 20,
-  },
-  calendarContainer: {
-    backgroundColor: "rgba(30, 41, 59, 0.9)",
-    borderRadius: 8,
-    padding: 10,
-    marginVertical: 15,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.barber.gold,
-  },
-  calendarTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.white,
-    marginBottom: 8,
-  },
-  dateSelected: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(30, 41, 59, 0.7)",
-    padding: 8,
-    borderRadius: 6,
-    marginTop: 8,
-  },
-  dateText: {
-    color: colors.white,
-    marginLeft: 8,
-    fontSize: 14,
-  },
-});
 
 interface AppointmentModalProps {
   visible: boolean;
@@ -293,6 +102,50 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
   if (!servico) return null;
 
+  LocaleConfig.locales["pt-br"] = {
+    monthNames: [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ],
+    monthNamesShort: [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ],
+    dayNames: [
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado",
+    ],
+    dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+    today: "Hoje",
+  };
+
+  LocaleConfig.defaultLocale = "pt-br";
+
   return (
     <Modal
       animationType="slide"
@@ -301,11 +154,13 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
       onRequestClose={handleClose}
     >
       <View style={globalStyles.centeredView}>
-        <View style={localStyles.modalContainer}>
-          <View style={localStyles.modalHeader}>
-            <Text style={localStyles.modalTitle}>Agendar Serviço</Text>
+        <View style={globalStyles.appointmentModalContainer}>
+          <View style={globalStyles.appointmentModalHeader}>
+            <Text style={globalStyles.appointmentModalTitle}>
+              Agendar Serviço
+            </Text>
             <TouchableOpacity
-              style={localStyles.closeButtonStyle}
+              style={globalStyles.appointmentCloseButton}
               onPress={handleClose}
             >
               <MaterialIcons name="close" size={24} color={colors.white} />
@@ -313,9 +168,11 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
           </View>
 
           <ScrollView>
-            <View style={localStyles.modalContent}>
-              <Text style={localStyles.servicoNome}>{servico.nome}</Text>
-              <Text style={localStyles.servicoPreco}>
+            <View style={globalStyles.appointmentModalContent}>
+              <Text style={globalStyles.appointmentServicoNome}>
+                {servico.nome}
+              </Text>
+              <Text style={globalStyles.appointmentServicoPreco}>
                 {typeof servico.preco === "number"
                   ? formatCurrencyBRL(servico.preco)
                   : `R$ ${servico.preco}`}{" "}
@@ -323,24 +180,24 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
               </Text>
 
               {servico.descricao && (
-                <Text style={localStyles.servicoDescricao}>
+                <Text style={globalStyles.appointmentServicoDescricao}>
                   {servico.descricao}
                 </Text>
               )}
 
               {servico?.observacao && (
-                <View style={localStyles.observacaoContainer}>
-                  <Text style={localStyles.observacaoLabel}>
+                <View style={globalStyles.appointmentObservacaoContainer}>
+                  <Text style={globalStyles.appointmentObservacaoLabel}>
                     Observação do serviço:
                   </Text>
-                  <Text style={localStyles.observacaoText}>
+                  <Text style={globalStyles.appointmentObservacaoText}>
                     {servico.observacao}
                   </Text>
                 </View>
               )}
 
-              <View style={localStyles.calendarContainer}>
-                <Text style={localStyles.calendarTitle}>
+              <View style={globalStyles.appointmentCalendarContainer}>
+                <Text style={globalStyles.appointmentCalendarTitle}>
                   Selecione uma data:
                 </Text>
                 <Calendar
@@ -366,52 +223,54 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 />
 
                 {dataSelecionada && (
-                  <View style={localStyles.dateSelected}>
+                  <View style={globalStyles.appointmentDateSelected}>
                     <MaterialIcons
                       name="event"
                       size={18}
                       color={colors.barber.gold}
                     />
-                    <Text style={localStyles.dateText}>
+                    <Text style={globalStyles.appointmentDateText}>
                       Data selecionada: {formatarData(dataSelecionada)}
                     </Text>
                   </View>
                 )}
               </View>
 
-              <View style={localStyles.horarioContainer}>
-                <Text style={localStyles.horarioTitle}>
+              <View style={globalStyles.appointmentHorarioContainer}>
+                <Text style={globalStyles.appointmentHorarioTitle}>
                   Horários Disponíveis:
                 </Text>
-                <View style={localStyles.horarioOptions}>
+                <View style={globalStyles.appointmentHorarioOptions}>
                   {servico.horarios && servico.horarios.length > 0 ? (
                     [...servico.horarios].sort().map((hora) => (
                       <TouchableOpacity
                         key={hora}
                         style={[
-                          localStyles.horarioOption,
+                          globalStyles.appointmentHorarioOption,
                           horaSelecionada === hora &&
-                            localStyles.horarioSelected,
+                            globalStyles.appointmentHorarioSelected,
                         ]}
                         onPress={() => setHoraSelecionada(hora)}
                       >
-                        <Text style={localStyles.horarioText}>{hora}</Text>
+                        <Text style={globalStyles.appointmentHorarioText}>
+                          {hora}
+                        </Text>
                       </TouchableOpacity>
                     ))
                   ) : (
-                    <Text style={localStyles.emptyText}>
+                    <Text style={globalStyles.appointmentEmptyText}>
                       Não há horários disponíveis para este serviço.
                     </Text>
                   )}
                 </View>
               </View>
 
-              <View style={localStyles.clientObservationContainer}>
-                <Text style={localStyles.clientObservationLabel}>
+              <View style={globalStyles.appointmentClientObservationContainer}>
+                <Text style={globalStyles.appointmentClientObservationLabel}>
                   Observações para o profissional (opcional):
                 </Text>
                 <TextInput
-                  style={localStyles.clientObservationInput}
+                  style={globalStyles.appointmentClientObservationInput}
                   placeholder="Descreva aqui suas necessidades específicas..."
                   placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   value={observacao}
@@ -424,12 +283,12 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
               <TouchableOpacity
                 style={[
-                  localStyles.agendarButton,
+                  globalStyles.appointmentAgendarButton,
                   (!dataSelecionada ||
                     !horaSelecionada ||
                     !servico.horarios ||
                     servico.horarios.length === 0) &&
-                    localStyles.agendarButtonDisabled,
+                    globalStyles.appointmentAgendarButtonDisabled,
                 ]}
                 disabled={
                   !dataSelecionada ||
@@ -442,7 +301,7 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 {loading ? (
                   <ActivityIndicator color="#000" size="small" />
                 ) : (
-                  <Text style={localStyles.agendarButtonText}>
+                  <Text style={globalStyles.appointmentAgendarButtonText}>
                     CONFIRMAR AGENDAMENTO
                   </Text>
                 )}

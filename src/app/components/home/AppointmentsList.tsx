@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Alert, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Agendamento, Servico } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
@@ -8,11 +8,11 @@ import { auth } from "../../../config/firebaseConfig";
 interface AppointmentsListProps {
   agendamentos: Agendamento[];
   loading: boolean;
-  isLoading: boolean; // Adicionado para correção do erro
+  isLoading: boolean;
   refreshing: boolean;
   errorMessage: string | null;
   onDeleteAppointment: (id: string) => void;
-  servicos?: Servico[]; // Adicionado para correção do erro
+  servicos?: Servico[];
 }
 
 const AppointmentsList: React.FC<AppointmentsListProps> = ({
@@ -96,7 +96,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
         <View
           key={agendamento.id}
           style={[
-            styles.agendamentoCard,
+            globalStyles.appointmentCard,
             isPast && !isCompleted ? { opacity: 0.7 } : null,
             isCanceled
               ? globalStyles.cardBackgroundCanceled
@@ -105,34 +105,34 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
               : globalStyles.cardBackgroundDefault,
           ]}
         >
-          <View style={styles.agendamentoHeader}>
-            <View style={styles.agendamentoIconContainer}>
+          <View style={globalStyles.appointmentHeader}>
+            <View style={globalStyles.appointmentIconContainer}>
               <MaterialIcons
                 name="content-cut"
                 size={24}
                 color={colors.barber.gold}
               />
             </View>
-            <View style={styles.agendamentoInfo}>
-              <Text style={styles.agendamentoServico}>
+            <View style={globalStyles.appointmentInfo}>
+              <Text style={globalStyles.appointmentServico}>
                 {agendamento.servico}
               </Text>
-              <Text style={styles.agendamentoHorario}>
+              <Text style={globalStyles.appointmentHorario}>
                 <MaterialIcons
                   name="event"
                   size={14}
                   color={colors.barber.gold}
-                  style={styles.smallIcon}
+                  style={globalStyles.appointmentSmallIcon}
                 />{" "}
                 {agendamento.data} às {agendamento.hora}
               </Text>
               {agendamento.barbeiro && (
-                <Text style={styles.agendamentoBarbeiro}>
+                <Text style={globalStyles.appointmentBarbeiro}>
                   <MaterialIcons
                     name="person"
                     size={14}
                     color={colors.barber.gold}
-                    style={styles.smallIcon}
+                    style={globalStyles.appointmentSmallIcon}
                   />{" "}
                   {agendamento.barbeiro}
                 </Text>
@@ -143,7 +143,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
               {/* Botão de cancelar para agendamentos futuros não cancelados */}
               {!isPast && !isCanceled && !isCompleted && (
                 <TouchableOpacity
-                  style={styles.deleteButton}
+                  style={globalStyles.appointmentDeleteButton}
                   onPress={() => handleDeletePress(agendamento)}
                 >
                   <MaterialIcons name="cancel" size={22} color="#FFFFFF" />
@@ -167,9 +167,11 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
           </View>
 
           {agendamento.observacao && (
-            <View style={styles.observacaoContainer}>
-              <Text style={styles.observacaoTitle}>Observações:</Text>
-              <Text style={styles.observacaoText}>
+            <View style={globalStyles.appointmentObservacaoContainer}>
+              <Text style={globalStyles.appointmentObservacaoTitle}>
+                Observações:
+              </Text>
+              <Text style={globalStyles.appointmentObservacaoText}>
                 {agendamento.observacao}
               </Text>
             </View>
@@ -215,7 +217,9 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
 
     return (
       <>
-        <Text style={styles.agendamentoTitle}>Seus agendamentos:</Text>
+        <Text style={globalStyles.appointmentListTitle}>
+          Seus agendamentos:
+        </Text>
         {agendamentos.map((agendamento) => {
           // Obter serviço de forma segura
           const servico = findServicoSeguro(agendamento.servico);
@@ -263,105 +267,5 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
 
   return <View>{renderContent()}</View>;
 };
-
-const styles = StyleSheet.create({
-  deleteButton: {
-    backgroundColor: "rgba(255, 55, 91, 0.8)",
-    padding: 8,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 36,
-    height: 36,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  agendamentoTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: colors.white,
-    marginTop: 10,
-  },
-  agendamentoCard: {
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.barber.gold,
-  },
-  agendamentoHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  agendamentoIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(212, 175, 55, 0.15)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: colors.barber.gold,
-  },
-  agendamentoInfo: {
-    flex: 1,
-  },
-  agendamentoServico: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: colors.white,
-    marginBottom: 2,
-  },
-  agendamentoHorario: {
-    fontSize: 13,
-    color: colors.textLighter,
-    marginBottom: 2,
-  },
-  agendamentoBarbeiro: {
-    fontSize: 13,
-    color: colors.textLighter,
-  },
-  observacaoContainer: {
-    marginTop: 8,
-    padding: 8,
-    backgroundColor: "rgba(30, 41, 59, 0.7)",
-    borderRadius: 6,
-    borderLeftWidth: 2,
-    borderLeftColor: colors.barber.gold,
-  },
-  observacaoTitle: {
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: colors.barber.gold,
-  },
-  observacaoText: {
-    color: colors.white,
-    fontSize: 12,
-  },
-  statusContainer: {
-    marginTop: 8,
-    padding: 6,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  statusText: {
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  smallIcon: {
-    verticalAlign: "middle",
-  },
-});
 
 export default AppointmentsList;
