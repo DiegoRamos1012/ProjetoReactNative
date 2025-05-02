@@ -6,11 +6,14 @@ import AppNavigator from "./navigation/AppNavigator";
 import globalStyles from "./components/globalStyle/styles";
 
 // Log de desenvolvimento - será o primeiro log que aparece
+console.log("========================================================")
+console.log("Para emulação no Expo Go, utilize a versão de SDK 52")
+console.log("========================================================")
 console.log(
-  "%c Desenvolvido por: Diego Ramos dos Santos",
+  "%c Desenvolvido por: Diego Ramos dos Santos. Github: @diego1012",
   "color: #2A4A73; font-size: 14px; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.3);"
 );
-
+console.log("========================================================")
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
