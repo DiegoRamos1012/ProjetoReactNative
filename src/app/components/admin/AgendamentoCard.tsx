@@ -100,9 +100,17 @@ const AgendamentoCard: React.FC<AgendamentoCardProps> = ({
           <Text style={globalStyles.agendamentoCardUserName}>
             {agendamento.userName || "Cliente não identificado"}
           </Text>
-          <Text style={globalStyles.agendamentoCardDateTime}>
-            {formatarData(agendamento.data)} às {agendamento.hora}
-          </Text>
+          <View style={globalStyles.agendamentoCardDateTimeContainer}>
+            <MaterialIcons
+              name="event"
+              size={14}
+              color={colors.barber.gold}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={globalStyles.agendamentoCardDateTime}>
+              {formatarData(agendamento.data)} às {agendamento.hora}
+            </Text>
+          </View>
         </View>
         <View
           style={[

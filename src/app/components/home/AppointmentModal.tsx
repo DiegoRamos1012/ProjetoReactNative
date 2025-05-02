@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,10 @@ import {
   ActivityIndicator,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Calendar } from "react-native-calendars";
 import { Servico } from "../../types/types";
 import globalStyles, { colors } from "../globalStyle/styles";
 import { formatCurrencyBRL } from "../../format";
@@ -175,13 +177,40 @@ const localStyles = StyleSheet.create({
     textAlign: "center",
     margin: 20,
   },
+  calendarContainer: {
+    backgroundColor: "rgba(30, 41, 59, 0.9)",
+    borderRadius: 8,
+    padding: 10,
+    marginVertical: 15,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.barber.gold,
+  },
+  calendarTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.white,
+    marginBottom: 8,
+  },
+  dateSelected: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(30, 41, 59, 0.7)",
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 8,
+  },
+  dateText: {
+    color: colors.white,
+    marginLeft: 8,
+    fontSize: 14,
+  },
 });
 
 interface AppointmentModalProps {
   visible: boolean;
   servico: Servico | null;
   onClose: () => void;
-  onConfirm: (hora: string, observacao?: string) => void;
+  onConfirm: (data: string, hora: string, observacao?: string) => void;
   loading: boolean;
 }
 
@@ -194,14 +223,71 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
 }) => {
   const [horaSelecionada, setHoraSelecionada] = useState("");
   const [observacao, setObservacao] = useState("");
+  const [dataSelecionada, setDataSelecionada] = useState("");
+  const [markedDates, setMarkedDates] = useState({});
+
+  const hoje = new Date().toISOString().split("T")[0];
+
+  const getDataMaxima = () => {
+    const dataMax = new Date();
+    dataMax.setDate(dataMax.getDate() + 30);
+    return dataMax.toISOString().split("T")[0];
+  };
+
+  useEffect(() => {
+    if (!visible) {
+      setHoraSelecionada("");
+      setObservacao("");
+      setDataSelecionada("");
+      setMarkedDates({});
+    } else {
+      handleDateSelect(hoje);
+    }
+  }, [visible]);
+
+  const formatarData = (dataString) => {
+    if (!dataString) return "";
+
+    const [ano, mes, dia] = dataString.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
+  const handleDateSelect = (data) => {
+    setDataSelecionada(data);
+
+    const newMarkedDates = {};
+    newMarkedDates[data] = {
+      selected: true,
+      selectedColor: colors.button.primary,
+    };
+    setMarkedDates(newMarkedDates);
+  };
 
   const handleConfirm = () => {
-    onConfirm(horaSelecionada, observacao);
+    if (!dataSelecionada) {
+      Alert.alert(
+        "Escolha uma data",
+        "Por favor, selecione uma data para o agendamento."
+      );
+      return;
+    }
+
+    if (!horaSelecionada) {
+      Alert.alert(
+        "Escolha um horário",
+        "Por favor, selecione um horário para o agendamento."
+      );
+      return;
+    }
+
+    onConfirm(dataSelecionada, horaSelecionada, observacao);
   };
 
   const handleClose = () => {
     setHoraSelecionada("");
     setObservacao("");
+    setDataSelecionada("");
+    setMarkedDates({});
     onClose();
   };
 
@@ -253,6 +339,46 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 </View>
               )}
 
+              <View style={localStyles.calendarContainer}>
+                <Text style={localStyles.calendarTitle}>
+                  Selecione uma data:
+                </Text>
+                <Calendar
+                  onDayPress={(day) => handleDateSelect(day.dateString)}
+                  markedDates={markedDates}
+                  minDate={hoje}
+                  maxDate={getDataMaxima()}
+                  monthFormat={"MMMM yyyy"}
+                  hideExtraDays={true}
+                  enableSwipeMonths={true}
+                  theme={{
+                    backgroundColor: "transparent",
+                    calendarBackground: "transparent",
+                    textSectionTitleColor: colors.white,
+                    selectedDayBackgroundColor: colors.button.primary,
+                    selectedDayTextColor: colors.white,
+                    todayTextColor: colors.barber.gold,
+                    dayTextColor: colors.white,
+                    textDisabledColor: "rgba(255, 255, 255, 0.3)",
+                    monthTextColor: colors.white,
+                    arrowColor: colors.barber.gold,
+                  }}
+                />
+
+                {dataSelecionada && (
+                  <View style={localStyles.dateSelected}>
+                    <MaterialIcons
+                      name="event"
+                      size={18}
+                      color={colors.barber.gold}
+                    />
+                    <Text style={localStyles.dateText}>
+                      Data selecionada: {formatarData(dataSelecionada)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
               <View style={localStyles.horarioContainer}>
                 <Text style={localStyles.horarioTitle}>
                   Horários Disponíveis:
@@ -299,12 +425,14 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
               <TouchableOpacity
                 style={[
                   localStyles.agendarButton,
-                  (!horaSelecionada ||
+                  (!dataSelecionada ||
+                    !horaSelecionada ||
                     !servico.horarios ||
                     servico.horarios.length === 0) &&
                     localStyles.agendarButtonDisabled,
                 ]}
                 disabled={
+                  !dataSelecionada ||
                   !horaSelecionada ||
                   !servico.horarios ||
                   servico.horarios.length === 0

@@ -150,6 +150,7 @@ export const useAppointments = (user: User) => {
   // Função para criar um novo agendamento
   const createAppointment = async (
     servico: Servico,
+    dataAgendamento: string,
     hora: string,
     observacao?: string
   ) => {
@@ -157,6 +158,16 @@ export const useAppointments = (user: User) => {
     setLoading(true);
 
     try {
+      // Converter a data do formato YYYY-MM-DD para Date
+      const [ano, mes, dia] = dataAgendamento.split("-");
+      const dataObj = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
+
+      // Formatar a data para exibição no formato brasileiro
+      const dataFormatada = `${dia.padStart(2, "0")}/${mes.padStart(
+        2,
+        "0"
+      )}/${ano}`;
+
       // Criar o objeto de agendamento com todos os campos necessários
       const agendamento = {
         userId: user.uid,
@@ -164,12 +175,12 @@ export const useAppointments = (user: User) => {
         userEmail: user.email,
         servico: servico.nome,
         preco: servico.preco,
-        data: new Date().toLocaleDateString("pt-BR"),
+        data: dataFormatada,
         hora: hora,
         status: "pendente",
         observacao: observacao || "", // Garantindo que a observação seja salva
         criado_em: Timestamp.now(),
-        data_timestamp: Timestamp.now(),
+        data_timestamp: Timestamp.fromDate(dataObj), // Usar a data selecionada pelo usuário
       };
 
       // Salvar no Firestore
@@ -180,7 +191,7 @@ export const useAppointments = (user: User) => {
 
       Alert.alert(
         "Agendamento Confirmado",
-        `Seu ${servico.nome} foi agendado com sucesso para hoje às ${hora}!`
+        `Seu ${servico.nome} foi agendado com sucesso para ${dataFormatada} às ${hora}!`
       );
 
       // O listener onSnapshot já vai atualizar a lista automaticamente

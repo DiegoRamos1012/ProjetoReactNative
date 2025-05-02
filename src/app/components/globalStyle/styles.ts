@@ -1859,6 +1859,11 @@ export const globalStyles = StyleSheet.create({
     color: colors.white,
     marginBottom: 3,
   },
+  agendamentoCardDateTimeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 3,
+  },
   agendamentoCardDateTime: {
     fontSize: 14,
     color: colors.textLighter,

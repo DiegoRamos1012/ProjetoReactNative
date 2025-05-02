@@ -13,8 +13,6 @@ import AppointmentsList from "../components/home/AppointmentsList";
 import AppointmentModal from "../components/home/AppointmentModal";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-;
-
 export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(
@@ -68,6 +66,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
 
   // Versão corrigida da função de confirmação de agendamento
   const handleConfirmAppointment = async (
+    data: string,
     hora: string,
     observacao?: string
   ) => {
@@ -76,6 +75,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
     // Usar a função do hook useAppointments para criar o agendamento
     const success = await createAppointment(
       servicoSelecionado,
+      data,
       hora,
       observacao
     );
