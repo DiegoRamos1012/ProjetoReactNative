@@ -2254,6 +2254,25 @@ export const globalStyles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: colors.barber.gold,
   },
+  appointmentCalendarHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  appointmentCalendarNavigation: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  appointmentCalendarNavButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
   appointmentCalendarTitle: {
     fontSize: 16,
     fontWeight: "600",
