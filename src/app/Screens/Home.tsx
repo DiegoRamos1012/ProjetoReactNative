@@ -123,7 +123,7 @@ export const Home: React.FC<HomeProps> = ({ user, setUser }) => {
           <Banner
             title="Ávila Barbearia"
             subtitle="Terça a sexta: 09:00 - 20:00. Sábado: 
-            09:00 - 18:00."
+            09:00 - 16:00."
           />
 
           {/* Lista de serviços - Usando serviços do Firebase */}

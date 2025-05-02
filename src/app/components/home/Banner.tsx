@@ -1,7 +1,9 @@
+// Componente responsável por exibir o banner com nome do estabelecimento, informações de contato e horário de funcionamento
+
 import React from "react";
 import { View, Text } from "react-native";
 import globalStyles, { colors } from "../globalStyle/styles";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 interface BannerProps {
   title: string;
   subtitle: string;
@@ -59,6 +61,15 @@ const Banner: React.FC<BannerProps> = ({
         <Text style={globalStyles.bannerSubtitle}>
           {phoneNumber || "+55 12 99607-2065"}
         </Text>
+      </View>
+      <View style={globalStyles.bannerItemContainer}>
+        <FontAwesome
+          name="map-marker"
+          size={20}
+          color={colors.barber.gold}
+          style={globalStyles.bannerIcon}
+        />
+        <Text style={globalStyles.bannerSubtitle}>Av. Rio Buquira, 790 - Altos da Vila Paiva, São José dos Campos - SP</Text>
       </View>
     </View>
   );
