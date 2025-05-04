@@ -4,16 +4,19 @@ import { User } from "firebase/auth";
 import { colors } from "../components/globalStyle/styles";
 import { useNavigationContainerRef } from "@react-navigation/native";
 
+// Screens
 import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
 import Login from "../Screens/Login";
 import AdminTools from "../Screens/AdminTools";
+import NotificationSettings from "../components/screens/NotificationSettings";
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Profile: undefined;
   AdminTools: undefined;
+  NotificationSettings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -146,6 +149,21 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
             }}
           >
             {(props) => <AdminTools {...props} user={user} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="NotificationSettings"
+            options={{
+              title: "Configurações de Notificação",
+              animation: "slide_from_right",
+              animationDuration: 300,
+            }}
+            listeners={{
+              focus: () => {
+                prevRouteRef.current = "NotificationSettings";
+              },
+            }}
+          >
+            {() => <NotificationSettings />}
           </Stack.Screen>
         </>
       )}

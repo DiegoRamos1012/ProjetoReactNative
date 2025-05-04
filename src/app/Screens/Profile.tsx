@@ -17,6 +17,14 @@ import { formatPhoneNumber, formatBirthDate } from "../format";
 import { auth } from "../../config/firebaseConfig";
 import { updateProfile } from "firebase/auth";
 import { useAppointments } from "../hooks/useAppointments";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+
+type ProfileNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Profile"
+>;
 
 const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [loading, setLoading] = useState(false);
@@ -28,6 +36,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
   const [sexo, setSexo] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const { updateUserNameInAppointments } = useAppointments(user);
+  const typedNavigation = useNavigation<ProfileNavigationProp>();
 
   // Buscar dados do usuário no Firestore
   useEffect(() => {
@@ -332,6 +341,30 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
                   SALVAR ALTERAÇÕES
                 </Text>
               )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                globalStyles.button,
+                {
+                  backgroundColor: colors.button.secondary,
+                  marginTop: 15,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              ]}
+              onPress={() => typedNavigation.navigate("NotificationSettings")}
+            >
+              <MaterialIcons
+                name="notifications"
+                size={20}
+                color="#FFF"
+                style={{ marginRight: 8 }}
+              />
+              <Text style={globalStyles.buttonText}>
+                CONFIGURAÇÕES DE NOTIFICAÇÕES
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
