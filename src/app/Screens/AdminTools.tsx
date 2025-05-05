@@ -9,10 +9,18 @@ import {
   RefreshControl,
   Modal,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { AdminToolsProps, UserData, UserRole } from "../types/types";
+import {
+  AdminToolsProps,
+  UserData,
+  UserRole,
+  Employee,
+  Client,
+  Service,
+} from "../types/types";
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import {
   isUserAdmin,
@@ -20,7 +28,7 @@ import {
   canAccessAdminTools,
   changeUserCargo,
 } from "../../services/authService";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { CARGOS, getCargoNome, getCargoCor } from "../constants/cargos";
 import ServicosHorarios from "../components/admin/ServicosHorarios";
 import AgendamentosList from "../components/admin/AgendamentosList";
@@ -41,6 +49,14 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+
+  // Estados para modais
+  const [showStaffModal, setShowStaffModal] = useState(false);
+  const [showClientsModal, setShowClientsModal] = useState(false);
+  const [showServicesModal, setShowServicesModal] = useState(false);
 
   // Estados para controlar a expansão/contração das seções
   const [usuariosExpanded, setUsuariosExpanded] = useState(true);
@@ -405,6 +421,82 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     </Modal>
   );
 
+  const renderAdminOptions = () => {
+    return (
+      <>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Gerenciamento</Text>
+          <View style={styles.optionsContainer}>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => setShowStaffModal(true)}
+            >
+              <View
+                style={[
+                  styles.optionIcon,
+                  { backgroundColor: colors.funcionarioCargo },
+                ]}
+              >
+                <Ionicons name="person" size={24} color={colors.white} />
+              </View>
+              <Text style={styles.optionText}>Funcionários</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => setShowClientsModal(true)}
+            >
+              <View
+                style={[
+                  styles.optionIcon,
+                  { backgroundColor: colors.clientRole },
+                ]}
+              >
+                <Ionicons name="people" size={24} color={colors.white} />
+              </View>
+              <Text style={styles.optionText}>Clientes</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => setShowServicesModal(true)}
+            >
+              <View
+                style={[
+                  styles.optionIcon,
+                  { backgroundColor: colors.barber.gold },
+                ]}
+              >
+                <Ionicons name="cut" size={24} color={colors.textDark} />
+              </View>
+              <Text style={styles.optionText}>Serviços</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.option, styles.notificationOption]}
+              onPress={() => navigation.navigate("NotificationSettings")}
+            >
+              <View
+                style={[
+                  styles.optionIcon,
+                  { backgroundColor: colors.notification.active },
+                ]}
+              >
+                <Ionicons name="notifications" size={24} color={colors.white} />
+              </View>
+              <View style={styles.notificationTextContainer}>
+                <Text style={styles.optionText}>Notificações</Text>
+                <Text style={styles.notificationBadge}>Novo</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Resto do código existente */}
+      </>
+    );
+  };
+
   if (loading) {
     return (
       <View style={globalStyles.loadingContainer}>
@@ -621,5 +713,72 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  section: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  optionsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  option: {
+    width: "48%",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  optionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  optionText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  notificationOption: {
+    position: "relative",
+    borderWidth: 1,
+    borderColor: colors.notification.active,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    shadowColor: colors.notification.active,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  notificationTextContainer: {
+    flexDirection: "column",
+  },
+  notificationBadge: {
+    backgroundColor: colors.error,
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: "bold",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginTop: 4,
+    alignSelf: "flex-start",
+  },
+});
 
 export default AdminTools;

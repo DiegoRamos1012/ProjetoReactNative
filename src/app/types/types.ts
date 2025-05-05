@@ -1,5 +1,4 @@
 import { User } from "firebase/auth";
-import { Timestamp } from "firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 
@@ -18,6 +17,10 @@ export type LoginScreenProps = NativeStackScreenProps<
 export type AdminToolsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "AdminTools"
+>;
+export type NotificationSettingsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "NotificationSettings"
 >;
 
 // Compatibilidade com código antigo
@@ -50,6 +53,11 @@ export interface AdminToolsProps extends AdminToolsScreenProps {
   user: User;
 }
 
+export interface NotificationSettingsProps
+  extends NotificationSettingsScreenProps {
+  user: User | null;
+}
+
 // Interface adicionada do arquivo antigo
 export interface ServicesManagementProps {
   navigation: any;
@@ -69,6 +77,40 @@ export interface UserData {
   updatedAt?: Date;
   cargo: string;
   icone?: string; // Adicionando campo opcional para ícone
+}
+
+export interface Employee {
+  id: string;
+  nome: string;
+  telefone?: string;
+  email?: string;
+  cargo: string;
+  role: UserRole;
+  ativo: boolean;
+  especialidades?: string[];
+  fotoPerfil?: string;
+}
+
+export interface Client {
+  id: string;
+  nome: string;
+  telefone?: string;
+  email?: string;
+  dataCadastro?: Date;
+  ultimoAgendamento?: Date;
+  totalAgendamentos?: number;
+  observacoes?: string;
+}
+
+export interface Service {
+  id: string;
+  nome: string;
+  descricao?: string;
+  preco: number;
+  tempo: string;
+  categoria?: string;
+  disponivel: boolean;
+  iconName?: string;
 }
 
 export interface Servico {
@@ -105,4 +147,15 @@ export interface Agendamento {
 export interface InicioProps {
   setUser: (user: User | null) => void;
   user: User;
+}
+
+// Tipo para configurações de notificação
+export interface NotificationSettings {
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+  appointmentReminders: boolean;
+  promotions: boolean;
+  systemUpdates: boolean;
+  userId: string;
+  updatedAt: Date;
 }

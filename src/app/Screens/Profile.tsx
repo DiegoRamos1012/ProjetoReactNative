@@ -19,7 +19,7 @@ import { updateProfile } from "firebase/auth";
 import { useAppointments } from "../hooks/useAppointments";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../navigation/AppNavigator";
+import { RootStackParamList } from "../navigation/AppNavigator";
 
 type ProfileNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -159,22 +159,39 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
           Meu Perfil
         </Text>
 
-        {/* Botão Admin com estilo padronizado */}
-        {isAdmin && (
+        <View style={{ flexDirection: "row" }}>
+          {/* Botão Notificações */}
           <TouchableOpacity
-            onPress={() => navigation.navigate("AdminTools")}
+            onPress={() => typedNavigation.navigate("NotificationSettings")}
             style={[
               globalStyles.backButton,
-              { backgroundColor: colors.gradient.start },
+              { backgroundColor: colors.gradient.start, marginRight: 5 },
             ]}
           >
             <MaterialIcons
-              name="admin-panel-settings"
+              name="notifications"
               size={24}
               color={colors.primary}
             />
           </TouchableOpacity>
-        )}
+
+          {/* Botão Admin com estilo padronizado */}
+          {isAdmin && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("AdminTools")}
+              style={[
+                globalStyles.backButton,
+                { backgroundColor: colors.gradient.start },
+              ]}
+            >
+              <MaterialIcons
+                name="admin-panel-settings"
+                size={24}
+                color={colors.primary}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Formulário com cores padronizadas */}
@@ -341,30 +358,6 @@ const Profile: React.FC<ProfileProps> = ({ navigation, user }) => {
                   SALVAR ALTERAÇÕES
                 </Text>
               )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                globalStyles.button,
-                {
-                  backgroundColor: colors.button.secondary,
-                  marginTop: 15,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-              ]}
-              onPress={() => typedNavigation.navigate("NotificationSettings")}
-            >
-              <MaterialIcons
-                name="notifications"
-                size={20}
-                color="#FFF"
-                style={{ marginRight: 8 }}
-              />
-              <Text style={globalStyles.buttonText}>
-                CONFIGURAÇÕES DE NOTIFICAÇÕES
-              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

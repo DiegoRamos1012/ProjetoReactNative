@@ -23,6 +23,15 @@ export const colors = {
   danger: "#dc2626", // Vermelho para botões de ação perigosa
   link: "#4a9eff", // Azul claro - Links clicáveis
 
+  // Notification Colors
+  notification: {
+    active: "#22c55e", // Verde para notificações ativas
+    inactive: "#6b7280", // Cinza para notificações inativas
+    reminder: "#3b82f6", // Azul para lembretes
+    promo: "#8b5cf6", // Roxo para promoções
+    update: "#f59e0b", // Laranja para atualizações
+  },
+
   // Gray Scale
   gray: "#888888", // Cinza médio para textos secundários
   lightGray: "#cccccc", // Cinza claro para detalhes e borda
