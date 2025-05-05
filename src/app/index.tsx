@@ -4,7 +4,6 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
 import AppNavigator from "./navigation/AppNavigator";
 import globalStyles from "./components/globalStyle/styles";
-import { useNotifications } from "./hooks/useNotifications";
 
 // Log de desenvolvimento - será o primeiro log que aparece
 console.log("========================================================");
@@ -20,7 +19,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   // Inicializar o serviço de notificações
-  useNotifications();
 
   // Função callback memoizada para atualizar o usuário
   const handleSetUser = useCallback((newUser: User | null) => {

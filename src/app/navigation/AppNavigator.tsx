@@ -9,7 +9,6 @@ import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
 import Login from "../Screens/Login";
 import AdminTools from "../Screens/AdminTools";
-import NotificationSettings from "../components/screens/NotificationSettings";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -149,21 +148,6 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({ user, setUser }) => {
             }}
           >
             {(props) => <AdminTools {...props} user={user} />}
-          </Stack.Screen>
-          <Stack.Screen
-            name="NotificationSettings"
-            options={{
-              title: "Configurações de Notificação",
-              animation: "slide_from_right",
-              animationDuration: 300,
-            }}
-            listeners={{
-              focus: () => {
-                prevRouteRef.current = "NotificationSettings";
-              },
-            }}
-          >
-            {() => <NotificationSettings />}
           </Stack.Screen>
         </>
       )}
