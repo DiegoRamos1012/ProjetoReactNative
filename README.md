@@ -17,3 +17,8 @@
 - Adição, edição e remoção de serviços
 - Gerenciamento de usuários
 - Restauração de agendamentos excluídos
+
+  ## Futuras implementações
+  - Notificações Push
+  - Redesign
+  - Mudança de email
