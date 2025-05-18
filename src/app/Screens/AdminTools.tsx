@@ -262,9 +262,10 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   // Toggle para expandir/contrair seção de serviços
   const toggleServicosSection = () => {
     setServicosExpanded(!servicosExpanded);
-    // Se expandir a seção de serviços, minimiza a de usuários para evitar problemas com listas
+    // Se expandir a seção de serviços, minimiza a de usuários e agendamentos
     if (!servicosExpanded) {
       setUsuariosExpanded(false);
+      setAgendamentosExpanded(false);
     }
   };
 
@@ -424,69 +425,72 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const renderAdminOptions = () => {
     return (
       <>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Gerenciamento</Text>
-          <View style={styles.optionsContainer}>
+        <View style={globalStyles.adminSection}>
+          <Text style={globalStyles.adminSectionTitle}>Gerenciamento</Text>
+          <View style={globalStyles.adminOptionsContainer}>
             <TouchableOpacity
-              style={styles.option}
+              style={globalStyles.adminOption}
               onPress={() => setShowStaffModal(true)}
             >
               <View
                 style={[
-                  styles.optionIcon,
+                  globalStyles.adminOptionIcon,
                   { backgroundColor: colors.funcionarioCargo },
                 ]}
               >
                 <Ionicons name="person" size={24} color={colors.white} />
               </View>
-              <Text style={styles.optionText}>Funcionários</Text>
+              <Text style={globalStyles.adminOptionText}>Funcionários</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.option}
+              style={globalStyles.adminOption}
               onPress={() => setShowClientsModal(true)}
             >
               <View
                 style={[
-                  styles.optionIcon,
+                  globalStyles.adminOptionIcon,
                   { backgroundColor: colors.clientRole },
                 ]}
               >
                 <Ionicons name="people" size={24} color={colors.white} />
               </View>
-              <Text style={styles.optionText}>Clientes</Text>
+              <Text style={globalStyles.adminOptionText}>Clientes</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.option}
+              style={globalStyles.adminOption}
               onPress={() => setShowServicesModal(true)}
             >
               <View
                 style={[
-                  styles.optionIcon,
+                  globalStyles.adminOptionIcon,
                   { backgroundColor: colors.barber.gold },
                 ]}
               >
                 <Ionicons name="cut" size={24} color={colors.textDark} />
               </View>
-              <Text style={styles.optionText}>Serviços</Text>
+              <Text style={globalStyles.adminOptionText}>Serviços</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.option, styles.notificationOption]}
+              style={[
+                globalStyles.adminOption,
+                globalStyles.adminNotificationOption,
+              ]}
               onPress={() => navigation.navigate("NotificationSettings")}
             >
               <View
                 style={[
-                  styles.optionIcon,
+                  globalStyles.adminOptionIcon,
                   { backgroundColor: colors.notification.active },
                 ]}
               >
                 <Ionicons name="notifications" size={24} color={colors.white} />
               </View>
-              <View style={styles.notificationTextContainer}>
-                <Text style={styles.optionText}>Notificações</Text>
-                <Text style={styles.notificationBadge}>Novo</Text>
+              <View style={globalStyles.adminNotificationTextContainer}>
+                <Text style={globalStyles.adminOptionText}>Notificações</Text>
+                <Text style={globalStyles.adminNotificationBadge}>Novo</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -563,7 +567,11 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
             <View
               style={[
                 globalStyles.adminContainer,
-                { backgroundColor: colors.gradient.middle },
+                {
+                  backgroundColor: colors.gradient.middle,
+                  flex: usuariosExpanded ? 1 : null,
+                  marginBottom: usuariosExpanded ? 15 : 5,
+                },
               ]}
             >
               <TouchableOpacity
@@ -591,7 +599,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
 
               {/* Lista de usuários - mostrada apenas quando expandida */}
               {usuariosExpanded && (
-                <View style={{ maxHeight: 400 }}>
+                <View style={{ flex: 1 }}>
                   {users.length === 0 ? (
                     <Text style={globalStyles.emptyListText}>
                       Nenhum usuário encontrado
@@ -616,8 +624,9 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                 globalStyles.adminContainer,
                 {
                   marginTop: 15,
-                  flex: 1,
+                  flex: servicosExpanded ? 1 : null,
                   backgroundColor: colors.gradient.middle,
+                  marginBottom: servicosExpanded ? 15 : 5,
                 },
               ]}
             >
@@ -645,7 +654,11 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
               </TouchableOpacity>
 
               {/* Componente de Serviços */}
-              {servicosExpanded && <ServicosHorarios isAdmin={isAdmin} />}
+              {servicosExpanded && (
+                <View style={{ flex: 1 }}>
+                  <ServicosHorarios isAdmin={isAdmin} />
+                </View>
+              )}
             </View>
 
             {/* Nova Seção de Agendamentos usando o componente dedicado */}
@@ -655,7 +668,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                 {
                   marginTop: 15,
                   marginBottom: 20,
-                  flex: 1,
+                  flex: agendamentosExpanded ? 1 : null,
                   backgroundColor: colors.gradient.middle,
                 },
               ]}
@@ -713,72 +726,5 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  section: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    color: colors.white,
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  optionsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  option: {
-    width: "48%",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  optionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  optionText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  notificationOption: {
-    position: "relative",
-    borderWidth: 1,
-    borderColor: colors.notification.active,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    shadowColor: colors.notification.active,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 4,
-  },
-  notificationTextContainer: {
-    flexDirection: "column",
-  },
-  notificationBadge: {
-    backgroundColor: colors.error,
-    color: colors.white,
-    fontSize: 10,
-    fontWeight: "bold",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-    marginTop: 4,
-    alignSelf: "flex-start",
-  },
-});
 
 export default AdminTools;

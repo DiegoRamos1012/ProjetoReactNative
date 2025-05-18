@@ -876,16 +876,10 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
   );
 
   return (
-    <View style={globalStyles.servicosHorariosContainer}>
-      <View style={globalStyles.servicosContainer}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         {/* Header com botões de ações */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: 15,
-          }}
-        >
+        <View style={globalStyles.servicosHeaderContainer}>
           <TouchableOpacity
             style={globalStyles.addServicoButton}
             onPress={handleAddServico}
@@ -943,39 +937,24 @@ const ServicosHorarios: React.FC<ServicosHorariosProps> = ({ isAdmin }) => {
             style={globalStyles.loadingIndicator}
           />
         ) : (
-          <>
-            {isReordering && (
-              <Text
-                style={{
-                  marginBottom: 10,
-                  fontStyle: "italic",
-                  color: colors.button.primary,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                }}
-              >
-                Use os botões para reorganizar a ordem dos serviços
+          <FlatList
+            ref={flatListRef}
+            data={servicosOrdenados}
+            keyExtractor={(item) => item.id}
+            renderItem={renderServicoItem}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={true}
+            style={{ flex: 1 }}
+            nestedScrollEnabled={true}
+            scrollEnabled={true}
+            ListEmptyComponent={
+              <Text style={globalStyles.emptyListText}>
+                Nenhum serviço cadastrado
               </Text>
-            )}
-
-            <FlatList
-              ref={flatListRef}
-              data={servicosOrdenados}
-              keyExtractor={(item) => item.id}
-              renderItem={renderServicoItem}
-              contentContainerStyle={{ paddingBottom: 20 }}
-              showsVerticalScrollIndicator={true}
-              style={{ maxHeight: 400 }}
-              ListEmptyComponent={
-                <Text style={globalStyles.emptyListText}>
-                  Nenhum serviço cadastrado
-                </Text>
-              }
-            />
-          </>
+            }
+          />
         )}
       </View>
-
       {renderServicosModal()}
       {renderDeleteHorarioModal()}
     </View>

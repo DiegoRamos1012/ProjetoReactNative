@@ -1199,6 +1199,16 @@ export const globalStyles = StyleSheet.create({
     marginTop: 15,
     flex: 1,
   },
+  servicosHeaderContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  servicosListContainer: {
+    flex: 1,
+    paddingBottom: 20,
+    minHeight: 320,
+  },
   addServicoButton: {
     backgroundColor: colors.barber.gold,
     flexDirection: "row",
@@ -1218,9 +1228,6 @@ export const globalStyles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginLeft: 8,
-  },
-  servicosListContainer: {
-    paddingBottom: 20,
   },
   servicoListItem: {
     backgroundColor: "rgba(12, 35, 64, 0.8)",
@@ -2510,6 +2517,74 @@ export const globalStyles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
+  },
+
+  // ==========================================
+  // 24. ADMIN TOOLS DASHBOARD STYLES
+  // ==========================================
+  adminSection: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  adminSectionTitle: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  adminOptionsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  adminOption: {
+    width: "48%",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  adminOptionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  adminOptionText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  adminNotificationOption: {
+    position: "relative",
+    borderWidth: 1,
+    borderColor: colors.notification.active,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    shadowColor: colors.notification.active,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  adminNotificationTextContainer: {
+    flexDirection: "column",
+  },
+  adminNotificationBadge: {
+    backgroundColor: colors.error,
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: "bold",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginTop: 4,
+    alignSelf: "flex-start",
   },
 });
 
