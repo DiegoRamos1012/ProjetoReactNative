@@ -4,7 +4,7 @@
     "slug": "projetoappbarbearia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo_avila_barbearia.png",
+    "icon": "./assets/images/logo_avila_barbearia(square).png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo_avila_barbearia.png",
+        "foregroundImage": "./assets/images/logo_avila_barbearia(square).png",
         "backgroundColor": "#000000"
       },
       "package": "com.diego.appbarbearia",
@@ -36,7 +36,7 @@
     [
       "expo-splash-screen",
       {
-        "image": "./assets/images/logo_avila_barbearia.png",
+        "image": "./assets/images/logo_avila_barbearia(square).png",
         "imageWidth": 600,
         "resizeMode": "contain",
         "backgroundColor": "#000000"
@@ -45,7 +45,7 @@
     [
       "expo-notifications",
       {
-        "icon": "./assets/images/logo_avila_barbearia.png",
+        "icon": "./assets/images/logo_avila_barbearia(square).png",
         "color": "#ffffff"      }
     ]
   ],
@@ -77,7 +77,6 @@
     "developmentClient": {
       "silentLaunch": true
     },
-    "assetBundlePatterns": ["**/*"],
-    "usesAppleSignIn": true
+    "assetBundlePatterns": ["**/*"]
   }
 }

@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import {
   View,
   Text,
@@ -6,9 +11,13 @@ import {
   TextInput,
   FlatList,
   Alert,
-  Modal,
   ActivityIndicator,
   Switch,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -44,7 +53,18 @@ interface NotificationsPushProps {
   isAdmin: boolean;
 }
 
-const NotificationsPush: React.FC<NotificationsPushProps> = ({ isAdmin }) => {
+// Adicione uma interface de referência
+export interface NotificationsPushRef {
+  openModal: () => void;
+  closeModal: () => void;
+  refresh: () => void;
+}
+
+// Modifique a declaração do componente para usar forwardRef
+const NotificationsPush = forwardRef<
+  NotificationsPushRef,
+  NotificationsPushProps
+>(({ isAdmin }, ref) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -323,8 +343,13 @@ const NotificationsPush: React.FC<NotificationsPushProps> = ({ isAdmin }) => {
   };
 
   const openNewNotificationModal = () => {
+    Keyboard.dismiss(); // Fechar teclado se estiver aberto
     resetForm();
-    setModalVisible(true);
+
+    // Usar setTimeout para evitar problemas de timing
+    setTimeout(() => {
+      setModalVisible(true);
+    }, 100);
   };
 
   const getTargetGroupName = (target: string) => {
@@ -446,196 +471,258 @@ const NotificationsPush: React.FC<NotificationsPushProps> = ({ isAdmin }) => {
   );
 
   // Modal para criar/editar notificações
-  const renderNotificationModal = () => (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={globalStyles.centeredView}>
-        <View style={globalStyles.notificationModalView}>
-          <View style={globalStyles.notificationModalHeader}>
-            <Text style={globalStyles.notificationModalTitle}>
-              {editingNotification ? "Editar Notificação" : "Nova Notificação"}
-            </Text>
-            <TouchableOpacity
-              style={globalStyles.notificationCloseButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <MaterialIcons name="close" size={24} color={colors.white} />
-            </TouchableOpacity>
-          </View>
+  const renderNotificationModal = () => {
+    if (!modalVisible) return null;
 
-          <View style={globalStyles.notificationModalContent}>
-            <View style={globalStyles.notificationFormGroup}>
-              <Text style={globalStyles.notificationFormLabel}>Título</Text>
-              <TextInput
-                style={globalStyles.notificationFormInput}
-                value={title}
-                onChangeText={setTitle}
-                placeholder="Digite o título da notificação"
-                placeholderTextColor="rgba(255, 255, 255, 0.5)"
-              />
-            </View>
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.75)",
+          zIndex: 1000,
+          elevation: 1000,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Camada externa para capturar toques fora do modal */}
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+            setTimeout(() => setModalVisible(false), 50);
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+        </TouchableWithoutFeedback>
 
-            <View style={globalStyles.notificationFormGroup}>
-              <Text style={globalStyles.notificationFormLabel}>Mensagem</Text>
-              <TextInput
-                style={[
-                  globalStyles.notificationFormInput,
-                  globalStyles.notificationFormTextarea,
-                ]}
-                value={body}
-                onChangeText={setBody}
-                placeholder="Digite a mensagem da notificação"
-                placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                multiline
-                numberOfLines={4}
-              />
-            </View>
-
-            <View style={globalStyles.notificationFormGroup}>
-              <Text style={globalStyles.notificationFormLabel}>
-                Destinatários
+        {/* Container do modal */}
+        <TouchableWithoutFeedback>
+          <View
+            style={[
+              globalStyles.notificationModalView,
+              {
+                width: Dimensions.get("window").width * 0.95, // Aumentando de 0.9 para 0.95
+                maxHeight: Dimensions.get("window").height * 0.85, // Definindo altura máxima
+              },
+            ]}
+          >
+            <View style={globalStyles.notificationModalHeader}>
+              <Text style={globalStyles.notificationModalTitle}>
+                {editingNotification
+                  ? "Editar Notificação"
+                  : "Nova Notificação"}
               </Text>
-              <View style={globalStyles.notificationTargetGroup}>
-                <TouchableOpacity
-                  style={[
-                    globalStyles.notificationTargetOption,
-                    targetGroup === "all" &&
-                      globalStyles.notificationTargetSelected,
-                  ]}
-                  onPress={() => setTargetGroup("all")}
-                >
-                  <Text
-                    style={[
-                      globalStyles.notificationTargetText,
-                      targetGroup === "all" &&
-                        globalStyles.notificationTargetTextSelected,
-                    ]}
-                  >
-                    Todos
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    globalStyles.notificationTargetOption,
-                    targetGroup === "clients" &&
-                      globalStyles.notificationTargetSelected,
-                  ]}
-                  onPress={() => setTargetGroup("clients")}
-                >
-                  <Text
-                    style={[
-                      globalStyles.notificationTargetText,
-                      targetGroup === "clients" &&
-                        globalStyles.notificationTargetTextSelected,
-                    ]}
-                  >
-                    Clientes
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    globalStyles.notificationTargetOption,
-                    targetGroup === "staff" &&
-                      globalStyles.notificationTargetSelected,
-                  ]}
-                  onPress={() => setTargetGroup("staff")}
-                >
-                  <Text
-                    style={[
-                      globalStyles.notificationTargetText,
-                      targetGroup === "staff" &&
-                        globalStyles.notificationTargetTextSelected,
-                    ]}
-                  >
-                    Funcionários
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    globalStyles.notificationTargetOption,
-                    targetGroup === "admin" &&
-                      globalStyles.notificationTargetSelected,
-                  ]}
-                  onPress={() => setTargetGroup("admin")}
-                >
-                  <Text
-                    style={[
-                      globalStyles.notificationTargetText,
-                      targetGroup === "admin" &&
-                        globalStyles.notificationTargetTextSelected,
-                    ]}
-                  >
-                    Admins
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={globalStyles.notificationCloseButton}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setTimeout(() => setModalVisible(false), 50);
+                }}
+              >
+                <MaterialIcons name="close" size={24} color={colors.white} />
+              </TouchableOpacity>
             </View>
 
-            <View style={globalStyles.notificationFormGroup}>
-              <View style={globalStyles.notificationSwitchContainer}>
-                <Text style={globalStyles.notificationFormLabel}>
-                  É uma promoção?
-                </Text>
-                <Switch
-                  value={isPromo}
-                  onValueChange={setIsPromo}
-                  trackColor={{
-                    false: colors.gray,
-                    true: colors.notification.promo,
-                  }}
-                  thumbColor={isPromo ? colors.white : colors.lightGray}
+            <View style={globalStyles.notificationModalContent}>
+              <View style={globalStyles.notificationFormGroup}>
+                <Text style={globalStyles.notificationFormLabel}>Título</Text>
+                <TextInput
+                  style={[
+                    globalStyles.notificationFormInput,
+                    { color: colors.white }, // Garantir que o texto seja visível
+                  ]}
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder="Digite o título da notificação"
+                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 />
               </View>
-              {isPromo && (
-                <Text style={globalStyles.notificationFormHelper}>
-                  Notificações promocionais aparecem destacadas e podem ter
-                  regras especiais de envio
-                </Text>
-              )}
-            </View>
 
-            <View style={globalStyles.notificationFormButtons}>
-              <TouchableOpacity
-                style={globalStyles.notificationCancelButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={globalStyles.notificationButtonText}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
+              <View style={globalStyles.notificationFormGroup}>
+                <Text style={globalStyles.notificationFormLabel}>Mensagem</Text>
+                <TextInput
+                  style={[
+                    globalStyles.notificationFormInput,
+                    globalStyles.notificationFormTextarea,
+                  ]}
+                  value={body}
+                  onChangeText={setBody}
+                  placeholder="Digite a mensagem da notificação"
+                  placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                  multiline
+                  numberOfLines={4}
+                />
+              </View>
 
-              <TouchableOpacity
-                style={globalStyles.notificationSaveButton}
-                onPress={
-                  editingNotification
-                    ? handleUpdateNotification
-                    : handleCreateNotification
-                }
-              >
-                <Text style={globalStyles.notificationButtonText}>
-                  {editingNotification ? "Atualizar" : "Criar"}
+              <View style={globalStyles.notificationFormGroup}>
+                <Text style={globalStyles.notificationFormLabel}>
+                  Destinatários
                 </Text>
-              </TouchableOpacity>
+                <View style={globalStyles.notificationTargetGroup}>
+                  <TouchableOpacity
+                    style={[
+                      globalStyles.notificationTargetOption,
+                      targetGroup === "all" &&
+                        globalStyles.notificationTargetSelected,
+                    ]}
+                    onPress={() => setTargetGroup("all")}
+                  >
+                    <Text
+                      style={[
+                        globalStyles.notificationTargetText,
+                        targetGroup === "all" &&
+                          globalStyles.notificationTargetTextSelected,
+                      ]}
+                    >
+                      Todos
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      globalStyles.notificationTargetOption,
+                      targetGroup === "clients" &&
+                        globalStyles.notificationTargetSelected,
+                    ]}
+                    onPress={() => setTargetGroup("clients")}
+                  >
+                    <Text
+                      style={[
+                        globalStyles.notificationTargetText,
+                        targetGroup === "clients" &&
+                          globalStyles.notificationTargetTextSelected,
+                      ]}
+                    >
+                      Clientes
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      globalStyles.notificationTargetOption,
+                      targetGroup === "staff" &&
+                        globalStyles.notificationTargetSelected,
+                    ]}
+                    onPress={() => setTargetGroup("staff")}
+                  >
+                    <Text
+                      style={[
+                        globalStyles.notificationTargetText,
+                        targetGroup === "staff" &&
+                          globalStyles.notificationTargetTextSelected,
+                      ]}
+                    >
+                      Funcionários
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      globalStyles.notificationTargetOption,
+                      targetGroup === "admin" &&
+                        globalStyles.notificationTargetSelected,
+                    ]}
+                    onPress={() => setTargetGroup("admin")}
+                  >
+                    <Text
+                      style={[
+                        globalStyles.notificationTargetText,
+                        targetGroup === "admin" &&
+                          globalStyles.notificationTargetTextSelected,
+                      ]}
+                    >
+                      Admins
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={globalStyles.notificationFormGroup}>
+                <View style={globalStyles.notificationSwitchContainer}>
+                  <Text style={globalStyles.notificationFormLabel}>
+                    É uma promoção?
+                  </Text>
+                  <Switch
+                    value={isPromo}
+                    onValueChange={setIsPromo}
+                    trackColor={{
+                      false: colors.gray,
+                      true: colors.notification.promo,
+                    }}
+                    thumbColor={isPromo ? colors.white : colors.lightGray}
+                  />
+                </View>
+                {isPromo && (
+                  <Text style={globalStyles.notificationFormHelper}>
+                    Notificações promocionais aparecem destacadas e podem ter
+                    regras especiais de envio
+                  </Text>
+                )}
+              </View>
+
+              <View style={globalStyles.notificationFormButtons}>
+                <TouchableOpacity
+                  style={globalStyles.notificationCancelButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={globalStyles.notificationButtonText}>
+                    Cancelar
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={globalStyles.notificationSaveButton}
+                  onPress={
+                    editingNotification
+                      ? handleUpdateNotification
+                      : handleCreateNotification
+                  }
+                >
+                  <Text style={globalStyles.notificationButtonText}>
+                    {editingNotification ? "Atualizar" : "Criar"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </View>
-    </Modal>
-  );
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    );
+  };
+
+  // Expor funções via ref
+  useImperativeHandle(ref, () => ({
+    openModal: openNewNotificationModal,
+    closeModal: () => setModalVisible(false),
+    refresh: fetchNotifications,
+  }));
 
   return (
-    <View style={globalStyles.notificationsContainer}>
+    <View
+      style={[globalStyles.notificationsContainer, { position: "relative" }]}
+    >
       <View style={globalStyles.notificationsHeader}>
         <TouchableOpacity
           style={globalStyles.addNotificationButton}
-          onPress={openNewNotificationModal}
+          onPress={() => {
+            Keyboard.dismiss();
+            // Usar setTimeout para garantir que o teclado feche completamente
+            setTimeout(openNewNotificationModal, 100);
+          }}
+          activeOpacity={0.7}
         >
           <MaterialIcons name="add" size={24} color="#000" />
           <Text style={globalStyles.addNotificationButtonText}>
@@ -672,9 +759,13 @@ const NotificationsPush: React.FC<NotificationsPushProps> = ({ isAdmin }) => {
         />
       )}
 
+      {/* Render o modal no final para garantir que ele fique acima de tudo */}
       {renderNotificationModal()}
     </View>
   );
-};
+});
+
+// Adicionar displayName para facilitar depuração
+NotificationsPush.displayName = "NotificationsPush";
 
 export default NotificationsPush;
