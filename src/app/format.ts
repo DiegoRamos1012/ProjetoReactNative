@@ -37,6 +37,23 @@ export const formatBirthDate = (value: string) => {
   )}/${limitedValue.slice(4)}`;
 };
 
+export const formatarData = (data: Date): string => {
+  if (!data) return "";
+
+  try {
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(data);
+  } catch (error) {
+    console.error("Erro ao formatar data:", error);
+    return data.toString();
+  }
+};
+
 /**
  * Formata uma data para o formato brasileiro (DD/MM/YYYY)
  * @param date Data a ser formatada (timestamp do Firebase, Date ou string)

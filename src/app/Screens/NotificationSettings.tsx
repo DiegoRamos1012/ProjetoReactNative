@@ -16,6 +16,7 @@ import {
 import globalStyles, { colors } from "../components/globalStyle/styles";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import { updateNotificationPreferences } from "../components/services/notificationService";
 
 const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   navigation,
@@ -94,6 +95,33 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
     }
   };
 
+  // Função para alternar o estado das notificações
+  const toggleNotifications = async (enabled: boolean) => {
+    if (!user || !user.uid) return;
+
+    try {
+      setLoading(true);
+      const success = await updateNotificationPreferences(user.uid, enabled);
+
+      if (success) {
+        setPushEnabled(enabled);
+      } else {
+        // Reverter alteração visual se falhar
+        setPushEnabled(!enabled);
+        Alert.alert(
+          "Erro",
+          "Não foi possível atualizar suas preferências de notificação"
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar preferências:", error);
+      setPushEnabled(!enabled); // Reverter
+      Alert.alert("Erro", "Ocorreu um erro ao salvar suas preferências");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Salvar automaticamente quando qualquer configuração mudar
   useEffect(() => {
     if (loading || !user?.uid) return;
@@ -154,7 +182,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             </View>
             <Switch
               value={pushEnabled}
-              onValueChange={setPushEnabled}
+              onValueChange={toggleNotifications}
               trackColor={{
                 false: colors.gray,
                 true: colors.notification.active,

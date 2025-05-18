@@ -34,6 +34,7 @@ import ServicosHorarios from "../components/admin/ServicosHorarios";
 import AgendamentosList from "../components/admin/AgendamentosList";
 import BlockedDaysManager from "../components/admin/BlockedDaysManager";
 import useServicos from "../data/services";
+import NotificationsPush from "../components/admin/NotificationsPush";
 
 interface UserListItem extends UserData {
   id: string;
@@ -62,6 +63,7 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
   const [usuariosExpanded, setUsuariosExpanded] = useState(true);
   const [servicosExpanded, setServicosExpanded] = useState(false);
   const [agendamentosExpanded, setAgendamentosExpanded] = useState(false);
+  const [notificacoesExpanded, setNotificacoesExpanded] = useState(false); // Novo estado para notificações
 
   // Use o hook para serviços
   const { servicos } = useServicos();
@@ -276,6 +278,16 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
     if (!agendamentosExpanded) {
       setUsuariosExpanded(false);
       setServicosExpanded(false);
+    }
+  };
+
+  // Toggle para expandir/contrair seção de notificações
+  const toggleNotificacoesSection = () => {
+    setNotificacoesExpanded(!notificacoesExpanded);
+    if (!notificacoesExpanded) {
+      setUsuariosExpanded(false);
+      setServicosExpanded(false);
+      setAgendamentosExpanded(false);
     }
   };
 
@@ -707,6 +719,49 @@ const AdminTools: React.FC<AdminToolsProps> = ({ navigation, user }) => {
                   console.log(`Agendamento ${id} alterado para "${status}"`);
                 }}
               />
+            </View>
+
+            {/* Seção de Notificações Push */}
+            <View
+              style={[
+                globalStyles.adminContainer,
+                {
+                  marginTop: 15,
+                  marginBottom: 20,
+                  flex: notificacoesExpanded ? 1 : null,
+                  backgroundColor: colors.gradient.middle,
+                },
+              ]}
+            >
+              <TouchableOpacity
+                style={[
+                  globalStyles.adminHeader,
+                  {
+                    backgroundColor: colors.button.primary,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  },
+                ]}
+                onPress={toggleNotificacoesSection}
+              >
+                <Text
+                  style={[globalStyles.adminTitle, { color: colors.primary }]}
+                >
+                  Notificações Push
+                </Text>
+                <MaterialIcons
+                  name={notificacoesExpanded ? "expand-less" : "expand-more"}
+                  size={24}
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
+
+              {/* Componente de Notificações Push */}
+              {notificacoesExpanded && (
+                <View style={{ flex: 1 }}>
+                  <NotificationsPush isAdmin={isAdmin} />
+                </View>
+              )}
             </View>
           </View>
         )}

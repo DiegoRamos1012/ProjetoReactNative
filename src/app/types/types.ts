@@ -76,7 +76,9 @@ export interface UserData {
   role: UserRole;
   updatedAt?: Date;
   cargo: string;
-  icone?: string; // Adicionando campo opcional para ícone
+  icone?: string; 
+  pushToken?: string;
+  notificationsEnabled?: boolean;
 }
 
 export interface Employee {

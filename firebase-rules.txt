@@ -24,6 +24,12 @@ service cloud.firestore {
       // Permitir escrita ao próprio usuário OU por administradores
       allow write: if request.auth != null && 
                     (request.auth.uid == userId || isAdmin());
+                
+      // Permitir atualizações específicas de campos relacionados a notificações pelo próprio usuário
+      allow update: if request.auth != null && 
+                    request.auth.uid == userId && 
+                    request.resource.data.diff(resource.data).affectedKeys()
+                      .hasOnly(['pushToken', 'notificationsEnabled']);
     }
     
     // Regras para a coleção de agendamentos
@@ -108,6 +114,18 @@ service cloud.firestore {
       
       // Administradores podem ler as configurações de notificação de qualquer usuário
       allow read: if isAdmin();
+    }
+    
+    // Nova coleção: notifications para gerenciar notificações push
+    match /notifications/{notificationId} {
+      // Permitir leitura para todos os usuários autenticados
+      allow read: if request.auth != null;
+      
+      // Permitir criação/atualização apenas para administradores
+      allow create, update: if isAdmin();
+      
+      // Permitir exclusão apenas para administradores
+      allow delete: if isAdmin();
     }
     
     // Regra padrão: negar tudo que não foi explicitamente permitido
